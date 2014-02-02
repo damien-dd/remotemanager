@@ -8,6 +8,7 @@ from django.db import connection
 import subprocess
 import serial
 import datetime
+import calendar
 import re
 import pytz
 import time
@@ -84,7 +85,7 @@ def timeline_charts(request):
 
 
 @login_required
-def get_serie(request, serie_id, timestep):
+def get_serie(request, serie_id, timestep, timezone, from_date, to_date):
 	serie = Serie.objects.get(id=serie_id)
 
 	if timestep.startswith('minute'):
@@ -109,8 +110,16 @@ def get_serie(request, serie_id, timestep):
 			'month': '''1440*cast(julianday(date(datafield_timestamp, 'start of month', '+1 month'))-julianday(datafield_timestamp, 'start of month') as integer)''',
 			'year':  '''1440*cast(julianday(date(datafield_timestamp, 'start of year', '+1 year'))-julianday(datafield_timestamp, 'start of year') as integer)''',
 			}
+		fromDate=calendar.timegm(time.strptime(from_date, "%Y%m%d"))
+	        toDate=calendar.timegm(time.strptime(to_date, "%Y%m%d"))+24*60*60
+        	timezone_offset = 0
+	        if timezone.startswith('GMT+'):
+        	        timezone_offset+=int(timezone[4:])*60*60
+	        elif timezone.startswith('GMT-'):
+        	        timezone_offset-=int(timezone[4:])*60*60
+
 		cursor = connection.cursor()
-		query = 'select strftime(\'%%%%s\', strftime(\'%s\', datafield_timestamp))*1000, %s((datafield_value-%f)*%f), %s-SUM(datafield_nb_points) from main_app_datafield where datafield_nb_points>0 and datafield_serie_id=%d group by strftime(\'%s\', datafield_timestamp)' % (groupby[timestep], str(serie.serie_type), serie.serie_values_offset, serie.serie_values_multiplier, total_minutes[timestep], int(serie_id), groupby[timestep])
+		query = 'select (strftime(\'%%%%s\', strftime(\'%(groupby)s\', datafield_timestamp))+%(timezone_offset)d)*1000, %(serie_type)s((datafield_value-%(serie_offset)f)*%(serie_multiplier)f), %(total_minutes)s-SUM(datafield_nb_points) from main_app_datafield where datafield_nb_points>0 and datafield_serie_id=%(serie_id)d group by strftime(\'%(groupby)s\', datafield_timestamp)' % {'groupby': groupby[timestep], 'serie_type': str(serie.serie_type), 'serie_offset': serie.serie_values_offset, 'serie_multiplier': serie.serie_values_multiplier, 'total_minutes': total_minutes[timestep], 'serie_id': int(serie_id), 'timezone_offset': timezone_offset}
 		cursor.execute(query)
 		data=cursor.fetchall()
 	
@@ -122,7 +131,7 @@ def timeline_chart(request, timelinechart_id):
 		form = DataHistoryForm(request.POST, request.FILES)
 		if form.is_valid():
 			serieplots = SeriePlot.objects.filter(serieplot_timelinechart__id=int(timelinechart_id)).order_by('serieplot_rank')
-			return render_to_response('timeline_chart_plot.html', {'title': 'Production/Consommation electrique', 'serieplots': serieplots, 'timestep': form.cleaned_data['timestep']}, context_instance=RequestContext(request))
+			return render_to_response('timeline_chart_plot.html', {'serieplots': serieplots, 'timestep': form.cleaned_data['timestep'], 'timezone': form.data['timezone'], 'from_date': form.cleaned_data['from_date'], 'to_date': form.cleaned_data['to_date']}, context_instance=RequestContext(request))
 	else:
 		form = DataHistoryForm()
 

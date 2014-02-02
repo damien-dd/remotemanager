@@ -7,9 +7,15 @@
 <script src="/static/js/modules/exporting.js"></script>
 <script type="text/javascript">
 $(function() {
-	var seriesOption = [], nbSeries = 0;
+	var seriesOption = [], nbSeries = 0, empty=true;
+
+	var msg = document.createElement('p');
+	msg.appendChild(document.createTextNode("Chargement..."));
+	document.getElementById("container").appendChild(msg);
+
 	{% for serieplot in serieplots %}
-		$.getJSON('/serie/'+{{serieplot.serieplot_serie.id}}+'/{{timestep}}/', function(data) {
+		$.getJSON('/serie/{{serieplot.serieplot_serie.id}}/{{timestep}}/{{timezone}}/from/{{from_date|date:"Ymd"}}/to/{{to_date|date:"Ymd"}}/', 
+function(data) {
 
 			var dataLength = data.length, j;
 			var serieValues = [], serieMissingPoints = [];
@@ -38,6 +44,10 @@ $(function() {
 						text: text
 					});
 				}
+			}
+
+			if (dataLength > 0) {
+				empty=false;
 			}
 
 			seriesOption[{{forloop.counter0}}*2]={
@@ -72,8 +82,21 @@ $(function() {
 
 			nbSeries=nbSeries+1;
 			if (nbSeries == {{serieplots|length}}) {
-				createChart();
+				if (empty == true) {
+						var msg = document.createElement('p');
+						msg.appendChild(document.createTextNode("Pas de donnees sur la periode selectionnee."));
+						document.getElementById("container").appendChild(msg);
+				}
+				else {
+					$("#container").css({"height": "600px", "min-width": "500px"});
+					createChart();
+				}
 			}
+		})
+		.error(function(jqXHR, textStatus, errorThrown) {
+			var errorMsg = document.createElement('p');
+			errorMsg.appendChild(document.createTextNode("Erreur lors du chargement des donnees\"{{serieplot.serieplot_serie.serie_name}}\""));
+			document.getElementById("container").appendChild(errorMsg);
 		});
 	{% endfor %}
 
@@ -182,5 +205,5 @@ $(function() {
 
 {% block content %}
 {{ block.super }}
-<div id="container" style="height: 600px; min-width: 500px"></div>
+<div id="container"></div>
 {% endblock %}
