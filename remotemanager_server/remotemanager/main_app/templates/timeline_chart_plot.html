@@ -59,6 +59,7 @@ function(data) {
 				id: '{{serieplot.serieplot_serie.serie_name}}',
 				color: '#{{serieplot.serieplot_color|safe}}',
 				tooltip: {
+					valueSuffix: '{{serieplot.serieplot_serie.serie_unit}}',
 					valueDecimals: {{serieplot.serieplot_serie.serie_values_decimals}}
 				}
 			};
