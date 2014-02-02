@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+	<link rel='stylesheet' type='text/css' href='/static/css/style.css' />
+	<title>Remote Manager</title>
+	{% block head %}
+	{% endblock %}
+</head>
+
+<body>
+
+	<div id="page-wrap">
+
+        <header>
+		<h1>Remote Manager</h1>
+		{% if user.is_authenticated %}
+		<p>Connecté en tant que <em>{{ user.username }}</em>. <a href="/logout/">Se déconnecter</a></p>
+
+		<nav>
+			<ul class="group">
+				
+				
+				<li><a href="/charts/timeline/">Statistiques</a></li>
+				<li><a href="/rtcmd/">Commandes temps-réel</a></li>
+				<li><a href="/loader/">Program loader</a></li>
+				
+			</ul>
+		</nav>
+		{% endif %}
+	</header>
+		
+		<section id="main-content">
+		<div id="guts">
+		{% block content %}
+		{% endblock %}
+		</div>
+		</section>
+		
+	</div>
+	
+	<footer>
+	  Remote Management system - &copy;2013 Damien Dando
+	</footer>
+
+</body>
+</html>

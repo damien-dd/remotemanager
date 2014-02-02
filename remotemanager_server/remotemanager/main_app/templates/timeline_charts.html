@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Graphiques</h2>
+{% for chart in charts %}
+<a href="/chart/timeline/{{chart.id}}/">{{chart.timelinechart_title}}</a><br />
+{% endfor %}
+{% endblock %}

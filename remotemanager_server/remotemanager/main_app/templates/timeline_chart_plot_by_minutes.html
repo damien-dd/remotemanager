@@ -1,0 +1,97 @@
+{% extends 'timeline_chart.html' %}
+
+{% block head %}
+{{ block.super }}
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script src="/static/js/highstock.js"></script>
+<script src="/static/js/modules/exporting.js"></script>
+<script type="text/javascript">
+$(function() {
+	var seriesOption = [], nbSeries = 0;
+	{% for serieplot in serieplots %}
+		$.getJSON('/serie/'+{{serieplot.serieplot_serie.id}}+'/minute/{{}}', function(data) {
+
+			var dataLength = data.length, j;
+			var serieValues = [], serieMissingPoints = [];
+			
+			for (j = 0; j < dataLength; j++) {
+				serieValues.push([
+					data[j][0], // the date
+					data[j][1]  // the value
+				]);
+			}
+
+			seriesOption[{{forloop.counter0}}]={
+				{% if serieplot.serieplot_serie.serie_type == 'SUM' %}
+				type: 'column',
+				{% endif %}
+				name: '{{serieplot.serieplot_serie.serie_name}}',
+				data: serieValues,
+				id: '{{serieplot.serieplot_serie.serie_name}}',
+				color: '#{{serieplot.serieplot_color|safe}}',
+				tooltip: {
+					valueDecimals: {{serieplot.serieplot_serie.serie_values_decimals}}
+				}
+			};
+
+			nbSeries=nbSeries+1;
+			if (nbSeries == {{serieplots|length}}) {
+				createChart();
+			}
+		});
+	{% endfor %}
+
+	function createChart() {
+	// create the chart
+	$('#container').highcharts('StockChart', {
+		    
+		rangeSelector: {
+			selected: 0,
+			buttons: [
+			{
+				type: 'all',
+				text: 'All'
+			}]
+		},
+
+		title: {
+			text: '{{serieplots.0.serieplot_timelinechart.timelinechart_title}}'
+		},
+		legend: {
+			enabled: true
+		},
+		xAxis: {
+			ordinal: false
+		},
+		yAxis: [{
+			title: {
+				text: '{{serieplots.0.serieplot_timelinechart.timelinechart_yaxis_text}}'
+			},
+			lineWidth: 2
+		}],
+		tooltip: {
+			{% if timestep == 'hour' %}
+			xDateFormat: '%d/%m/%Y %Hh'
+			{% endif %}
+			{% if timestep == 'day' %}
+			xDateFormat: '%d/%m/%Y'
+			{% endif %}
+			{% if timestep == 'month' %}
+			xDateFormat: '%m/%Y'
+			{% endif %}
+			{% if timestep == 'year' %}
+			xDateFormat: '%Y'
+			{% endif %}
+		},
+		series: seriesOption
+	});
+	}
+});
+		</script>
+{% endblock %}
+
+
+{% block content %}
+{{ block.super }}
+<div id="container" style="height: 600px; min-width: 500px"></div>
+{% endblock %}

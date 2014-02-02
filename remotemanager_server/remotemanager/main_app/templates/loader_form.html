@@ -1,0 +1,11 @@
+{% extends 'loader.html' %}
+
+{% block content %}
+{{ block.super }}
+<p>
+<form enctype="multipart/form-data" action="/loader/" method="post">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Submit" />
+</form>
+</p>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends 'loader.html' %}
+
+{% block content %}
+{{ block.super }}
+<p style="font-family: 'Lucida Console', Monaco, monospace">
+{{ output|linebreaksbr }}
+</p>
+{% endblock %}
