@@ -15,6 +15,18 @@ def get_status():
 		return None
 
 
+def get_rfcomm_status(bluetooth_device):
+	dev = str(bluetooth_device.remotedevice_dev)
+	rfcomm_interfaces = subprocess.check_output('/usr/bin/rfcomm').strip().split('\n')
+	for rfcomm_interface in rfcomm_interfaces:
+		rfcomm_dev, rfcomm_output = rfcomm_interface.strip().split(':', 1)
+		rfcomm_mac, rfcomm_output = rfcomm_output.strip().split(' ', 1)
+		rfcomm_output, rfcomm_state = rfcomm_output.strip().rsplit(' ', 1)
+		if dev.endswith(rfcomm_dev):
+			return (rfcomm_mac, rfcomm_state)
+
+	return (None, None)
+
 def bind_device(bluetooth_device):
 	dev = str(bluetooth_device.remotedevice_dev)
 	channel = str(bluetooth_device.bluetoothremotedevice_channel)

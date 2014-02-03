@@ -21,12 +21,11 @@ def get_vbat():
 
 	try:
 		bt_device = device.bluetoothremotedevice
-		if not bluetooth.enable():
-			return 'Cannot enable bluetooth'
-		if not bluetooth.bind_device(bt_device):
-			return 'Cannot bind bluetooth device'
+		bt_device.enable(True)
 	except BluetoothRemoteDevice.DoesNotExist:
 		pass
+	except Exception, err:
+		return err
 
 	ser = serial.Serial(dev, 115200, timeout=3)
 	ser.write('R')
@@ -64,12 +63,11 @@ def get_temp():
 
 	try:
 		bt_device = device.bluetoothremotedevice
-		if not bluetooth.enable():
-			return 'Cannot enable bluetooth'
-		if not bluetooth.bind_device(bt_device):
-			return 'Cannot bind bluetooth device'
+		bt_device.enable(True)
 	except BluetoothRemoteDevice.DoesNotExist:
 		pass
+	except Exception, err:
+		return err
 
 	ser = serial.Serial(dev, 115200, timeout=3)
 	ser.write('READ_ALL\r')
