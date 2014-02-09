@@ -96,7 +96,7 @@ function(data) {
 		})
 		.error(function(jqXHR, textStatus, errorThrown) {
 			var errorMsg = document.createElement('p');
-			errorMsg.appendChild(document.createTextNode("Erreur lors du chargement des donnees\"{{serieplot.serieplot_serie.serie_name}}\""));
+			errorMsg.appendChild(document.createTextNode("Erreur lors du chargement des donnees\"{{serieplot.serieplot_serie.serie_name}}\":"+textStatus));
 			document.getElementById("container").appendChild(errorMsg);
 		});
 	{% endfor %}
