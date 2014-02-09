@@ -40,7 +40,7 @@ class RemoteDevice(models.Model):
 			if enable:
 				if rfcomm_status not in ['closed', None]:
 					raise Exception('Device is currently in use')
-				if bt_device.bluetoothremotedevice_mac != rfcomm_mac and not bluetooth.bind_device(bt_device):
+				if bt_device.bluetoothremotedevice_mac.upper() != rfcomm_mac and not bluetooth.bind_device(bt_device):
 					try:
 						bluetooth.enable(False)
 					except Exception:

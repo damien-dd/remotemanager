@@ -19,11 +19,14 @@ def get_rfcomm_status(bluetooth_device):
 	dev = str(bluetooth_device.remotedevice_dev)
 	rfcomm_interfaces = subprocess.check_output('/usr/bin/rfcomm').strip().split('\n')
 	for rfcomm_interface in rfcomm_interfaces:
-		rfcomm_dev, rfcomm_output = rfcomm_interface.strip().split(':', 1)
-		rfcomm_mac, rfcomm_output = rfcomm_output.strip().split(' ', 1)
-		rfcomm_output, rfcomm_state = rfcomm_output.strip().rsplit(' ', 1)
-		if dev.endswith(rfcomm_dev):
-			return (rfcomm_mac, rfcomm_state)
+		if ':' in rfcomm_interface:
+			rfcomm_dev, rfcomm_output = rfcomm_interface.strip().split(':', 1)
+			if ' ' in rfcomm_output:
+				rfcomm_mac, rfcomm_output = rfcomm_output.strip().split(' ', 1)
+				if ' ' in rfcomm_output:
+					rfcomm_output, rfcomm_state = rfcomm_output.strip().rsplit(' ', 1)
+					if dev.endswith(rfcomm_dev):
+						return (rfcomm_mac.upper(), rfcomm_state)
 
 	return (None, None)
 
