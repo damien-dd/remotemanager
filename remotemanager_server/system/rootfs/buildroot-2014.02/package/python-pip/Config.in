@@ -1,0 +1,18 @@
+config BR2_PACKAGE_PYTHON_PIP
+	bool "python-pip"
+	select BR2_HOST_PYTHON_SSL_SUPPORT
+	help
+	  A tool for installing and managing Python packages.
+
+	  http://www.pip-installer.org
+
+config BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL
+	string "Additional modules"
+	help
+	  List of space-separated python modules to install via pip.
+	  See 'pip help install' for available installation methods. 
+	  For repeatable builds, download and save tgz files or clone 
+	  git repos for the components you care about.
+
+	  Example: module-name module-name==1.3.4 /my/module/mymodule.tgz 
+	  git://github.com/someuser/somemodule.git#v1.2

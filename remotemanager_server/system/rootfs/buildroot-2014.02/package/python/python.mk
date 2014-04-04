@@ -30,8 +30,7 @@ HOST_PYTHON_CONF_OPT += 	\
 	--disable-gdbm		\
 	--disable-bsddb		\
 	--disable-test-modules	\
-	--disable-bz2		\
-	--disable-ssl
+	--disable-bz2
 
 HOST_PYTHON_MAKE_ENV = \
 	PYTHON_MODULES_INCLUDE=$(HOST_DIR)/usr/include \
@@ -121,6 +120,10 @@ endif
 
 ifeq ($(BR2_PACKAGE_PYTHON_HASHLIB),y)
 PYTHON_DEPENDENCIES += openssl
+endif
+
+ifeq ($(BR2_HOST_PYTHON_SSL_SUPPORT), y)
+HOST_PYTHON_DEPENDENCIES += host-openssl
 endif
 
 PYTHON_CONF_ENV += \

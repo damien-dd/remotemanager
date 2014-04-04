@@ -120,6 +120,12 @@ config BR2_PACKAGE_PYTHON_HASHLIB
 	help
 	  hashlib support in Python
 
+config BR2_HOST_PYTHON_SSL_SUPPORT
+	bool
+	help
+	  Includes ssl support in host python build. 
+	  This is disabled by default to reduce build time.
+
 endmenu
 
 endif
