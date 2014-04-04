@@ -1,0 +1,20 @@
+config BR2_PACKAGE_POSTGRESQL
+	bool "PostgreSQL"
+	depends on BR2_INET_IPV6
+	select BR2_PACKAGE_READLINE
+	select BR2_PACKAGE_ZLIB
+	help
+	  PostgreSQL is a powerful, open source object-relational
+	  database system.
+
+	  Enable the readline package to gain readline support in
+	  pgsql (the command line interpreter), which offers
+	  command history and edit functions.
+
+	  Enable the zlib package to gain builtin compression for
+	  archives with pg_dump and pg_restore.
+
+	  http://www.postgresql.org
+
+comment "PostgreSQL needs a toolchain w/ IPv6"
+	depends on !BR2_INET_IPV6
