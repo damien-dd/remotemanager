@@ -21,4 +21,15 @@ define NOIP_INSTALL_TARGET_CMDS
 	$(INSTALL) -m 0755 -D $(@D)/noip2 $(TARGET_DIR)/usr/sbin/noip2
 endef
 
+define NOIP_INSTALL_INIT_SYSTEMD
+	[ -f $(TARGET_DIR)/etc/systemd/system/noip.service ] || \
+		$(INSTALL) -D -m 644 package/noip/noip.service \
+			$(TARGET_DIR)/etc/systemd/system/noip.service
+
+	mkdir -p $(TARGET_DIR)/etc/systemd/system/multi-user.target.wants
+
+	ln -fs ../noip.service \
+		$(TARGET_DIR)/etc/systemd/system/multi-user.target.wants/noip.service
+endef
+
 $(eval $(generic-package))
