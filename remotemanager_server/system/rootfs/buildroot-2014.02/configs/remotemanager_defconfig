@@ -202,17 +202,14 @@ BR2_TARGET_GENERIC_PASSWD_MD5=y
 # BR2_TARGET_GENERIC_PASSWD_SHA256 is not set
 # BR2_TARGET_GENERIC_PASSWD_SHA512 is not set
 BR2_TARGET_GENERIC_PASSWD_METHOD="md5"
-BR2_INIT_BUSYBOX=y
+# BR2_INIT_BUSYBOX is not set
 # BR2_INIT_SYSV is not set
-
-#
-# systemd needs udev /dev management and a toolchain w/ largefile, wchar, IPv6, threads
-#
+BR2_INIT_SYSTEMD=y
 # BR2_INIT_NONE is not set
 # BR2_ROOTFS_DEVICE_CREATION_STATIC is not set
-BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_DEVTMPFS=y
+# BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_DEVTMPFS is not set
 # BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_MDEV is not set
-# BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_UDEV is not set
+BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_UDEV=y
 BR2_ROOTFS_DEVICE_TABLE="system/device_table.txt"
 BR2_ROOTFS_SKELETON_DEFAULT=y
 # BR2_ROOTFS_SKELETON_CUSTOM is not set
@@ -232,7 +229,7 @@ BR2_TARGET_GENERIC_GETTY_BAUDRATE_115200=y
 BR2_TARGET_GENERIC_GETTY_BAUDRATE="115200"
 BR2_TARGET_GENERIC_GETTY_TERM="vt100"
 BR2_TARGET_GENERIC_GETTY_OPTIONS=""
-BR2_TARGET_GENERIC_REMOUNT_ROOTFS_RW=y
+# BR2_TARGET_GENERIC_REMOUNT_ROOTFS_RW is not set
 BR2_ROOTFS_OVERLAY=""
 BR2_ROOTFS_POST_BUILD_SCRIPT=""
 BR2_ROOTFS_POST_IMAGE_SCRIPT=""
@@ -359,6 +356,7 @@ BR2_PACKAGE_BZIP2=y
 #
 # BR2_PACKAGE_BINUTILS is not set
 # BR2_PACKAGE_BSDIFF is not set
+# BR2_PACKAGE_BUSTLE is not set
 # BR2_PACKAGE_CVS is not set
 # BR2_PACKAGE_FLEX is not set
 # BR2_PACKAGE_GIT is not set
@@ -394,7 +392,9 @@ BR2_PACKAGE_BZIP2=y
 # BR2_PACKAGE_MMC_UTILS is not set
 # BR2_PACKAGE_MTD is not set
 # BR2_PACKAGE_NFS_UTILS is not set
-# BR2_PACKAGE_NTFS_3G is not set
+BR2_PACKAGE_NTFS_3G=y
+# BR2_PACKAGE_NTFS_3G_ENCRYPTED is not set
+# BR2_PACKAGE_NTFS_3G_NTFSPROGS is not set
 # BR2_PACKAGE_SQUASHFS is not set
 # BR2_PACKAGE_SSHFS is not set
 # BR2_PACKAGE_SUNXI_TOOLS is not set
@@ -465,10 +465,7 @@ BR2_PACKAGE_QT5_JSCORE_AVAILABLE=y
 #
 # Qt5 needs a toolchain w/ wchar, IPv6, threads, C++
 #
-
-#
-# weston needs udev and a toolchain w/ threads
-#
+# BR2_PACKAGE_WESTON is not set
 # BR2_PACKAGE_XORG7 is not set
 
 #
@@ -511,7 +508,15 @@ BR2_PACKAGE_QT5_JSCORE_AVAILABLE=y
 # BR2_PACKAGE_CDRKIT is not set
 # BR2_PACKAGE_CRYPTSETUP is not set
 # BR2_PACKAGE_CWIID is not set
-# BR2_PACKAGE_DBUS is not set
+BR2_PACKAGE_DBUS=y
+BR2_DBUS_EXPAT=y
+# BR2_DBUS_LIBXML2 is not set
+
+#
+# dbus-c++ needs a toolchain w/ C++, threads
+#
+# BR2_PACKAGE_DBUS_GLIB is not set
+# BR2_PACKAGE_DBUS_PYTHON is not set
 # BR2_PACKAGE_DMRAID is not set
 # BR2_PACKAGE_DVB_APPS is not set
 # BR2_PACKAGE_DVBSNOOP is not set
@@ -607,20 +612,13 @@ BR2_PACKAGE_QT5_JSCORE_AVAILABLE=y
 # BR2_PACKAGE_TI_UIM is not set
 # BR2_PACKAGE_TI_UTILS is not set
 # BR2_PACKAGE_UBOOT_TOOLS is not set
-
-#
-# udev needs udev /dev management and a toolchain w/ largefile, wchar, dynamic library
-#
-
-#
-# udisks needs udev /dev management and a toolchain w/ wchar, threads, dynamic library
-#
+BR2_PACKAGE_UDEV=y
+# BR2_PACKAGE_UDEV_RULES_GEN is not set
+# BR2_PACKAGE_UDEV_ALL_EXTRAS is not set
+# BR2_PACKAGE_UDISKS is not set
 # BR2_PACKAGE_USB_MODESWITCH is not set
 # BR2_PACKAGE_USB_MODESWITCH_DATA is not set
-
-#
-# usbmount requires udev to be enabled
-#
+# BR2_PACKAGE_USBMOUNT is not set
 # BR2_PACKAGE_USBUTILS is not set
 # BR2_PACKAGE_W_SCAN is not set
 # BR2_PACKAGE_WIPE is not set
@@ -722,7 +720,7 @@ BR2_PACKAGE_PYTHON_SIMPLEJSON=y
 # BR2_PACKAGE_PYTHON_TORNADO is not set
 # BR2_PACKAGE_PYTHON_VERSIONTOOLS is not set
 BR2_PACKAGE_PYTHON_PIP=y
-BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL="django python-pip-packages/pytz-2014.1.tar.gz celery redis uwsgi"
+BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL="django python-pip-packages/pytz-2014.1.tar.gz celery redis uwsgi wsgiref South django-celery dropbox boto django-dbbackup"
 # BR2_PACKAGE_PYTHON3 is not set
 # BR2_PACKAGE_RUBY is not set
 # BR2_PACKAGE_TCL is not set
@@ -826,7 +824,8 @@ BR2_PACKAGE_BERKELEYDB=y
 #
 # MySQL needs a toolchain w/ C++, threads
 #
-# BR2_PACKAGE_REDIS is not set
+BR2_PACKAGE_REDIS=y
+BR2_PACKAGE_POSTGRESQL=y
 
 #
 # sqlcipher conflicts with sqlite
@@ -921,10 +920,7 @@ BR2_PACKAGE_WEBKIT_ARCH_SUPPORTS=y
 # lcdapi needs a toolchain w/ C++, threads
 #
 # BR2_PACKAGE_LIBAIO is not set
-
-#
-# libatasmart requires udev to be enabled
-#
+# BR2_PACKAGE_LIBATASMART is not set
 
 #
 # libcec needs a toolchain w/ C++, wchar, threads, dynamic library
@@ -934,10 +930,7 @@ BR2_PACKAGE_WEBKIT_ARCH_SUPPORTS=y
 # BR2_PACKAGE_LIBHID is not set
 # BR2_PACKAGE_LIBIQRF is not set
 # BR2_PACKAGE_LIBLLCP is not set
-
-#
-# libmbim needs udev /dev management and a toolchain w/ wchar, threads
-#
+# BR2_PACKAGE_LIBMBIM is not set
 # BR2_PACKAGE_LIBNFC is not set
 # BR2_PACKAGE_LIBQMI is not set
 # BR2_PACKAGE_LIBRAW1394 is not set
@@ -946,7 +939,8 @@ BR2_PACKAGE_WEBKIT_ARCH_SUPPORTS=y
 # libserial needs a toolchain w/ C++
 #
 # BR2_PACKAGE_LIBSOC is not set
-# BR2_PACKAGE_LIBUSB is not set
+BR2_PACKAGE_LIBUSB=y
+# BR2_PACKAGE_LIBUSB_COMPAT is not set
 # BR2_PACKAGE_LIBV4L is not set
 # BR2_PACKAGE_LIBXKBCOMMON is not set
 # BR2_PACKAGE_MTDEV is not set
@@ -1170,7 +1164,7 @@ BR2_PACKAGE_EXPAT=y
 #
 # BR2_PACKAGE_LIBARGTABLE2 is not set
 # BR2_PACKAGE_LIBATOMIC_OPS is not set
-# BR2_PACKAGE_LIBCAP is not set
+BR2_PACKAGE_LIBCAP=y
 # BR2_PACKAGE_LIBCAP_NG is not set
 
 #
@@ -1183,7 +1177,7 @@ BR2_PACKAGE_EXPAT=y
 # BR2_PACKAGE_LIBEVDEV is not set
 # BR2_PACKAGE_LIBEVENT is not set
 BR2_PACKAGE_LIBFFI=y
-# BR2_PACKAGE_LIBGLIB2 is not set
+BR2_PACKAGE_LIBGLIB2=y
 # BR2_PACKAGE_LIBICAL is not set
 # BR2_PACKAGE_LIBLOG4C_LOCALTIME is not set
 BR2_PACKAGE_LIBNSPR_ARCH_SUPPORT=y
@@ -1266,7 +1260,11 @@ BR2_PACKAGE_NCURSES=y
 # BR2_PACKAGE_NCURSES_TARGET_MENU is not set
 # BR2_PACKAGE_NCURSES_TARGET_PROGS is not set
 # BR2_PACKAGE_NEWT is not set
-# BR2_PACKAGE_PCRE is not set
+BR2_PACKAGE_PCRE=y
+# BR2_PACKAGE_PCRE_16 is not set
+# BR2_PACKAGE_PCRE_32 is not set
+BR2_PACKAGE_PCRE_UTF=y
+BR2_PACKAGE_PCRE_UCP=y
 # BR2_PACKAGE_POPT is not set
 BR2_PACKAGE_READLINE=y
 # BR2_PACKAGE_SLANG is not set
@@ -1294,6 +1292,7 @@ BR2_PACKAGE_READLINE=y
 # BR2_PACKAGE_AIRCRACK_NG is not set
 # BR2_PACKAGE_ARGUS is not set
 # BR2_PACKAGE_ARPTABLES is not set
+BR2_PACKAGE_AUTOSSH=y
 # BR2_PACKAGE_AVAHI is not set
 # BR2_PACKAGE_AXEL is not set
 
@@ -1301,7 +1300,11 @@ BR2_PACKAGE_READLINE=y
 # bcusdk needs a toolchain w/ C++
 #
 # BR2_PACKAGE_BIND is not set
-# BR2_PACKAGE_BLUEZ_UTILS is not set
+BR2_PACKAGE_BLUEZ_UTILS=y
+# BR2_PACKAGE_BLUEZ_UTILS_COMPAT is not set
+# BR2_PACKAGE_BLUEZ_UTILS_AUDIO is not set
+BR2_PACKAGE_BLUEZ_UTILS_USB=y
+# BR2_PACKAGE_BLUEZ_UTILS_GATT is not set
 # BR2_PACKAGE_BMON is not set
 # BR2_PACKAGE_BOA is not set
 # BR2_PACKAGE_BRIDGE_UTILS is not set
@@ -1356,6 +1359,9 @@ BR2_PACKAGE_READLINE=y
 # lftp requires a toolchain w/ C++, wchar
 #
 # BR2_PACKAGE_LIGHTTPD is not set
+BR2_PACKAGE_NGINX=y
+BR2_PACKAGE_NGINX_OPENSSL=y
+BR2_PACKAGE_NGINX_ZLIB=y
 
 #
 # linknx needs a toolchain w/ C++
@@ -1369,10 +1375,7 @@ BR2_PACKAGE_READLINE=y
 # BR2_PACKAGE_MACCHANGER is not set
 # BR2_PACKAGE_MII_DIAG is not set
 # BR2_PACKAGE_MINIDLNA is not set
-
-#
-# modemmanager needs udev /dev management and a toolchain w/ largefile, wchar, threads, IPv6
-#
+# BR2_PACKAGE_MODEM_MANAGER is not set
 # BR2_PACKAGE_MONGOOSE is not set
 
 #
@@ -1389,10 +1392,7 @@ BR2_PACKAGE_READLINE=y
 # BR2_PACKAGE_NETPLUG is not set
 # BR2_PACKAGE_NETSNMP is not set
 # BR2_PACKAGE_NETSTAT_NAT is not set
-
-#
-# NetworkManager needs udev /dev management and a toolchain w/ IPv6, largefile, wchar, threads
-#
+# BR2_PACKAGE_NETWORK_MANAGER is not set
 # BR2_PACKAGE_NFACCT is not set
 # BR2_PACKAGE_NGIRCD is not set
 # BR2_PACKAGE_NGREP is not set
@@ -1400,13 +1400,21 @@ BR2_PACKAGE_READLINE=y
 #
 # nmap needs a toolchain w/ C++, IPv6, threads
 #
-# BR2_PACKAGE_NOIP is not set
-# BR2_PACKAGE_NTP is not set
+BR2_PACKAGE_NOIP=y
+BR2_PACKAGE_NTP=y
+# BR2_PACKAGE_NTP_SNTP is not set
+# BR2_PACKAGE_NTP_NTP_KEYGEN is not set
+BR2_PACKAGE_NTP_NTPD=y
+BR2_PACKAGE_NTP_NTPDATE=y
+# BR2_PACKAGE_NTP_NTPDC is not set
+# BR2_PACKAGE_NTP_NTPQ is not set
+# BR2_PACKAGE_NTP_NTPSNMPD is not set
+# BR2_PACKAGE_NTP_TICKADJ is not set
 # BR2_PACKAGE_NUTTCP is not set
 # BR2_PACKAGE_OLSR is not set
 # BR2_PACKAGE_OPENNTPD is not set
 # BR2_PACKAGE_OPENOBEX is not set
-# BR2_PACKAGE_OPENSSH is not set
+BR2_PACKAGE_OPENSSH=y
 # BR2_PACKAGE_OPENSWAN is not set
 # BR2_PACKAGE_OPENVPN is not set
 # BR2_PACKAGE_P910ND is not set
@@ -1516,7 +1524,7 @@ BR2_PACKAGE_READLINE=y
 # BR2_PACKAGE_DSP_TOOLS is not set
 # BR2_PACKAGE_HTOP is not set
 # BR2_PACKAGE_KEYUTILS is not set
-# BR2_PACKAGE_KMOD is not set
+BR2_PACKAGE_KMOD=y
 # BR2_PACKAGE_LXC is not set
 # BR2_PACKAGE_MONIT is not set
 # BR2_PACKAGE_NCDU is not set
@@ -1524,11 +1532,12 @@ BR2_PACKAGE_READLINE=y
 # BR2_PACKAGE_POLKIT is not set
 # BR2_PACKAGE_QUOTA is not set
 # BR2_PACKAGE_SUPERVISOR is not set
-
-#
-# systemd needs udev /dev management and a toolchain w/ IPv6, threads
-#
-# BR2_PACKAGE_UTIL_LINUX is not set
+BR2_PACKAGE_SYSTEMD=y
+BR2_PACKAGE_UTIL_LINUX=y
+BR2_PACKAGE_UTIL_LINUX_LIBBLKID=y
+# BR2_PACKAGE_UTIL_LINUX_LIBMOUNT is not set
+BR2_PACKAGE_UTIL_LINUX_LIBUUID=y
+# BR2_PACKAGE_UTIL_LINUX_BINARIES is not set
 
 #
 # Text editors and viewers
@@ -1554,8 +1563,8 @@ BR2_PACKAGE_NANO_TINY=y
 # BR2_TARGET_ROOTFS_ROMFS is not set
 # BR2_TARGET_ROOTFS_SQUASHFS is not set
 BR2_TARGET_ROOTFS_TAR=y
-BR2_TARGET_ROOTFS_TAR_NONE=y
-# BR2_TARGET_ROOTFS_TAR_GZIP is not set
+# BR2_TARGET_ROOTFS_TAR_NONE is not set
+BR2_TARGET_ROOTFS_TAR_GZIP=y
 # BR2_TARGET_ROOTFS_TAR_BZIP2 is not set
 # BR2_TARGET_ROOTFS_TAR_LZMA is not set
 # BR2_TARGET_ROOTFS_TAR_LZO is not set
