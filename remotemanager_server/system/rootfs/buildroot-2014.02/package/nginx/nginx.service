@@ -1,0 +1,16 @@
+[Unit]
+Description=Nginx Web Server
+After=syslog.target
+
+[Service]
+Type=froking
+PIDFile = /var/run/nginx.pid
+ExecStartPre = /bin/mkdir -p /var/tmp/nginx
+ExecStartPre = /usr/local/nginx/sbin/nginx -t
+ExecStart = /usr/local/nginx/sbin/nginx
+ExecStop = /usr/local/nginx/sbin/nginx -s stop
+ExecReload = /usr/local/nginx/sbin/nginx -s reload
+RemainAfterExit = yes
+
+[Install]
+WantedBy=multi-user.target

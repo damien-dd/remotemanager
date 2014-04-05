@@ -1,0 +1,25 @@
+config BR2_PACKAGE_NGINX
+	bool "nginx"
+	help
+	  Nginx is an open source reverse proxy server for HTTP, HTTPS,
+	  SMTP, POP3, and IMAP protocols, as well as a load balancer,
+	  HTTP cache, and a web server (origin server) with a strong focus on,
+	  high concurrency, high performance and low memory usage.
+
+	  http://nginx.org/
+
+if BR2_PACKAGE_NGINX
+
+config BR2_PACKAGE_NGINX_OPENSSL
+	bool "openssl support"
+	select BR2_PACKAGE_OPENSSL
+	help
+	  Enable OpenSSL support for nginx.
+
+config BR2_PACKAGE_NGINX_ZLIB
+	bool "zlib support"
+	select BR2_PACKAGE_ZLIB
+	help
+	  Enable zlib support for nginx mod_compress.
+
+endif
