@@ -75,6 +75,7 @@ define DBUS_INSTALL_TARGET_FIXUP
 	mkdir -p $(TARGET_DIR)/var/lib
 	rm -rf $(TARGET_DIR)/var/lib/dbus
 	ln -sf /tmp/dbus $(TARGET_DIR)/var/lib/dbus
+	ln -s /var/lib/dbus/machine-id $(TARGET_DIR)/etc/machine-id
 endef
 
 DBUS_POST_INSTALL_TARGET_HOOKS += DBUS_INSTALL_TARGET_FIXUP
