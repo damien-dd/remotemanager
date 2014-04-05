@@ -8,7 +8,7 @@
 PYTHON_PIP_VERSION = 1.5.4
 PYTHON_PIP_SOURCE = pip-$(PYTHON_PIP_VERSION).tar.gz
 PYTHON_PIP_SITE = https://pypi.python.org/packages/source/p/pip
-PYTHON_PIP_DEPENDENCIES = python python-setuptools host-python-setuptools host-python-pip
+PYTHON_PIP_DEPENDENCIES = python python-setuptools host-python-setuptools host-python-pip host-postgresql
 PYTHON_PIP_LICENSE = MIT
 
 # README.rst refers to the file "LICENSE" but it's not included

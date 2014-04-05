@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.02-svn12 Configuration
+# Buildroot 2014.02-svn21 Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -720,7 +720,7 @@ BR2_PACKAGE_PYTHON_SIMPLEJSON=y
 # BR2_PACKAGE_PYTHON_TORNADO is not set
 # BR2_PACKAGE_PYTHON_VERSIONTOOLS is not set
 BR2_PACKAGE_PYTHON_PIP=y
-BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL="django python-pip-packages/pytz-2014.1.tar.gz celery redis uwsgi wsgiref South django-celery dropbox boto django-dbbackup"
+BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL="django python-pip-packages/pytz-2014.1.tar.gz celery redis uwsgi wsgiref South django-celery dropbox boto django-dbbackup psycopg2"
 # BR2_PACKAGE_PYTHON3 is not set
 # BR2_PACKAGE_RUBY is not set
 # BR2_PACKAGE_TCL is not set

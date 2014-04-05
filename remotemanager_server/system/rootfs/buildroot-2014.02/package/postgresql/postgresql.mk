@@ -8,7 +8,7 @@ POSTGRESQL_VERSION = 9.3.3
 POSTGRESQL_SOURCE = postgresql-$(POSTGRESQL_VERSION).tar.bz2
 POSTGRESQL_SITE = http://ftp.postgresql.org/pub/source/v$(POSTGRESQL_VERSION)
 POSTGRESQL_LICENSE = PostgreSQL
-POSTGRESQ_LICENSE_FILES = COPYRIGHT
+POSTGRESQL_LICENSE_FILES = COPYRIGHT
 
 ifneq ($(BR2_TOOLCHAIN_HAS_THREADS),y)
 	POSTGRESQL_CONF_OPT += --disable-thread-safety
@@ -70,3 +70,4 @@ define POSTGRESQL_INSTALL_INIT_SYSTEMD
 endef
 
 $(eval $(autotools-package))
+$(eval $(host-autotools-package))
