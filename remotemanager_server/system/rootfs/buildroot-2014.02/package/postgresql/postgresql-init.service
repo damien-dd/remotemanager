@@ -1,0 +1,14 @@
+[Unit]
+Description=Create initial PostgreSQL database files
+ConditionPathExists=|!/data/pgsql/PG_VERSION
+
+[Service]
+Type=oneshot
+User=postgres
+Group=postgres
+
+ExecStart=/usr/bin/pg_ctl initdb -D /data/pgsql
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

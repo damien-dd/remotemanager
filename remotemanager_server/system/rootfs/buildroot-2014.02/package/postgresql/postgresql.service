@@ -1,0 +1,26 @@
+[Unit]
+Description=PostgreSQL database server
+Requires=postgresql-init.service
+After=postgresql-init.service
+
+[Service]
+Type=froking
+TimeoutSec=60
+User=postgres
+Group=postgres
+
+Environment=PGLOG=/var/log/postgresql.log
+
+SyslogIdentifier=postgres
+PIDFile=/data/pgsql/postmaster.pid
+
+ExecStart=/usr/bin/pg_ctl -s -D /data/pgsql start -w -t 60
+ExecReload=/usr/bin/pg_ctl -s -D /data/pgsql reload
+ExecStop=/usr/bin/pg_ctl -s -D /data/pgsql stop -m fast
+
+# Due to PostgreSQL's use of shared memory, OOM killer is often overzealous in
+# killing Postgres
+OOMScoreAdjust=-200
+
+[Install]
+WantedBy=multi-user.target
