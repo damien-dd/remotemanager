@@ -1,0 +1,9 @@
+[Unit]
+Description=Network Time Service deamon
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/ntpd -g -n
+
+[Install]
+WantedBy=multi-user.target

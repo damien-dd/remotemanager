@@ -57,6 +57,21 @@ define NTP_INSTALL_TARGET_CMDS
 		install -m 755 -d $(TARGET_DIR)/etc/default ; \
 		install -m 644 package/ntp/ntpd.etc.default $(TARGET_DIR)/etc/default/ntpd ; \
 	fi
+
+	[ -f $(TARGET_DIR)/etc/ntp.conf ] || \
+		$(INSTALL) -D -m 644 package/ntp/ntp.conf \
+			$(TARGET_DIR)/etc/ntp.conf
+endef
+
+define NTP_INSTALL_INIT_SYSTEMD
+	[ -f $(TARGET_DIR)/etc/systemd/system/ntpd.service ] || \
+		$(INSTALL) -D -m 644 package/ntp/ntpd.service \
+			$(TARGET_DIR)/etc/systemd/system/ntpd.service
+
+	mkdir -p $(TARGET_DIR)/etc/systemd/system/multi-user.target.wants
+
+	ln -fs ../ntpd.service \
+		$(TARGET_DIR)/etc/systemd/system/multi-user.target.wants/ntpd.service
 endef
 
 NTP_POST_PATCH_HOOKS += NTP_PATCH_FIXUPS
