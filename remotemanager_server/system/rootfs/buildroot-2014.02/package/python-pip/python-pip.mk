@@ -30,7 +30,7 @@ ifneq ($(PYTHON_PIP_MODULES_LIST),)
 define PYTHON_PIP_INSTALL_MODULES
 	# Explanation of environment variables
 	# PIP_DOWNLOAD_CACHE: all downloads go into the buildroot download folder
-	# PIP_TARGET: this is where the packages end up
+	# PIP_TARGET: this is where the packages end up, scripts are installed in PIP_TARGET/../../../bin
 	# PIP_BUILD: where the packages are built - a subdirectory of the pip folder
 	($(TARGET_CONFIGURE_OPTS) \
 	PIP_DOWNLOAD_CACHE=$(BR2_DL_DIR) \

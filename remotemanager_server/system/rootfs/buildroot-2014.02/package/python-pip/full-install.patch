@@ -1,0 +1,22 @@
+diff -rupN python-pip-1.5.4.orig/pip/commands/install.py python-pip-1.5.4/pip/commands/install.py
+--- python-pip-1.5.4.orig/pip/commands/install.py	2014-02-21 14:10:07.000000000 +0200
++++ python-pip-1.5.4/pip/commands/install.py	2014-04-11 22:48:58.663785793 +0300
+@@ -304,11 +304,18 @@ class InstallCommand(Command):
+         if options.target_dir:
+             if not os.path.exists(options.target_dir):
+                 os.makedirs(options.target_dir)
++            target_script_dir = options.target_dir+'/../../../bin'
+             lib_dir = distutils_scheme('', home=temp_target_dir)['purelib']
++            script_dir = distutils_scheme('', home=temp_target_dir)['scripts']
+             for item in os.listdir(lib_dir):
+                 shutil.move(
+                     os.path.join(lib_dir, item),
+                     os.path.join(options.target_dir, item)
+                     )
++            for item in os.listdir(script_dir):
++                shutil.move(
++                    os.path.join(script_dir, item),
++                    os.path.join(target_script_dir, item)
++                    )
+             shutil.rmtree(temp_target_dir)
+         return requirement_set
