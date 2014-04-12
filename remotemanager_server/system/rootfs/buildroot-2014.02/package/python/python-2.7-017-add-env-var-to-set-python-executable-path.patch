@@ -1,0 +1,14 @@
+diff -rupN Python-2.7.3.orig/Lib/distutils/command/build_scripts.py Python-2.7.3/Lib/distutils/command/build_scripts.py
+--- Python-2.7.3.orig/Lib/distutils/command/build_scripts.py	2012-04-10 02:07:29.000000000 +0300
++++ Python-2.7.3/Lib/distutils/command/build_scripts.py	2014-04-12 18:45:59.812879699 +0300
+@@ -94,6 +94,10 @@ class build_scripts (Command):
+                          self.build_dir)
+                 if not self.dry_run:
+                     outf = open(outfile, "w")
++                    if 'PYTHON_EXECUTABLE_TARGET' in os.environ:
++                        outf.write("#!%s%s\n" %
++                                   (os.path.normpath(os.environ['PYTHON_EXECUTABLE_TARGET']),
++                                    post_interp))
+                     if not _sysconfig.is_python_build():
+                         outf.write("#!%s%s\n" %
+                                    (self.executable,
