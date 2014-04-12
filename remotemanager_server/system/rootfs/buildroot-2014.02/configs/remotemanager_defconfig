@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.02-svn21 Configuration
+# Buildroot 2014.02-svn22 Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 
@@ -563,7 +563,7 @@ BR2_DBUS_EXPAT=y
 # BR2_PACKAGE_LVM2 is not set
 # BR2_PACKAGE_MDADM is not set
 # BR2_PACKAGE_MEDIA_CTL is not set
-# BR2_PACKAGE_MEMTESTER is not set
+BR2_PACKAGE_MEMTESTER=y
 # BR2_PACKAGE_MINICOM is not set
 # BR2_PACKAGE_NANOCOM is not set
 # BR2_PACKAGE_NEARD is not set
@@ -641,8 +641,8 @@ BR2_PACKAGE_UDEV=y
 # BR2_PACKAGE_PHP is not set
 BR2_PACKAGE_PYTHON=y
 # BR2_PACKAGE_PYTHON_PY_ONLY is not set
-BR2_PACKAGE_PYTHON_PYC_ONLY=y
-# BR2_PACKAGE_PYTHON_PY_PYC is not set
+# BR2_PACKAGE_PYTHON_PYC_ONLY is not set
+BR2_PACKAGE_PYTHON_PY_PYC=y
 
 #
 # core python modules
@@ -652,8 +652,8 @@ BR2_PACKAGE_PYTHON_PYC_ONLY=y
 # The following modules are unusual or require extra libraries
 #
 BR2_PACKAGE_PYTHON_BZIP2=y
-BR2_PACKAGE_PYTHON_BSDDB=y
-BR2_PACKAGE_PYTHON_CODECSCJK=y
+# BR2_PACKAGE_PYTHON_BSDDB is not set
+# BR2_PACKAGE_PYTHON_CODECSCJK is not set
 BR2_PACKAGE_PYTHON_CURSES=y
 BR2_PACKAGE_PYTHON_PYEXPAT=y
 BR2_PACKAGE_PYTHON_READLINE=y
@@ -720,7 +720,7 @@ BR2_PACKAGE_PYTHON_SIMPLEJSON=y
 # BR2_PACKAGE_PYTHON_TORNADO is not set
 # BR2_PACKAGE_PYTHON_VERSIONTOOLS is not set
 BR2_PACKAGE_PYTHON_PIP=y
-BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL="django python-pip-packages/pytz-2014.1.tar.gz celery redis uwsgi wsgiref South django-celery dropbox boto django-dbbackup psycopg2"
+BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL="python-pip-packages/Django-1.6.2.tar.gz python-pip-packages/pytz-2014.1.tar.gz celery redis uwsgi wsgiref South django-celery dropbox boto django-dbbackup psycopg2"
 # BR2_PACKAGE_PYTHON3 is not set
 # BR2_PACKAGE_RUBY is not set
 # BR2_PACKAGE_TCL is not set
