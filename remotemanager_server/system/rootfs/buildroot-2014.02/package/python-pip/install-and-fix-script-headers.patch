@@ -1,0 +1,78 @@
+diff -rupN python-pip-1.5.4.orig/pip/_vendor/distlib/util.py python-pip-1.5.4/pip/_vendor/distlib/util.py
+--- python-pip-1.5.4.orig/pip/_vendor/distlib/util.py	2014-02-20 22:43:57.000000000 +0200
++++ python-pip-1.5.4/pip/_vendor/distlib/util.py	2014-04-12 17:48:30.524249906 +0300
+@@ -398,10 +398,10 @@ class FileOperator(object):
+             # all the files specified.
+             for f in files:
+                 if self.dry_run:
+-                    logger.info("changing mode of %s", f)
++                    logger.info("changing11 mode of %s", f)
+                 else:
+                     mode = (os.stat(f).st_mode | bits) & mask
+-                    logger.info("changing mode of %s to %o", f, mode)
++                    logger.info("changing22 mode of %s to %o", f, mode)
+                     os.chmod(f, mode)
+ 
+     set_executable_mode = lambda s, f: s.set_mode(0o555, 0o7777, f)
+diff -rupN python-pip-1.5.4.orig/pip/commands/install.py python-pip-1.5.4/pip/commands/install.py
+--- python-pip-1.5.4.orig/pip/commands/install.py	2014-02-21 14:10:07.000000000 +0200
++++ python-pip-1.5.4/pip/commands/install.py	2014-04-13 11:40:38.299621009 +0300
+@@ -10,6 +10,7 @@ from pip.basecommand import Command
+ from pip.index import PackageFinder
+ from pip.exceptions import InstallationError, CommandError, PreviousBuildDirError
+ from pip import cmdoptions
++from pip.wheel import fix_script
+ 
+ 
+ class InstallCommand(Command):
+@@ -304,11 +305,25 @@ class InstallCommand(Command):
+         if options.target_dir:
+             if not os.path.exists(options.target_dir):
+                 os.makedirs(options.target_dir)
++
+             lib_dir = distutils_scheme('', home=temp_target_dir)['purelib']
+             for item in os.listdir(lib_dir):
+                 shutil.move(
+                     os.path.join(lib_dir, item),
+                     os.path.join(options.target_dir, item)
+                     )
++
++            if 'PIP_SCRIPT_TARGET' in os.environ:
++                target_script_dir = os.environ['PIP_SCRIPT_TARGET']
++                if not os.path.exists(target_script_dir):
++                    os.makedirs(target_script_dir)
++
++                script_dir = distutils_scheme('', home=temp_target_dir)['scripts']
++                for item in os.listdir(script_dir):
++                    fix_script(os.path.join(script_dir, item))
++                    shutil.move(
++                        os.path.join(script_dir, item),
++                        os.path.join(target_script_dir, item)
++                        )
+             shutil.rmtree(temp_target_dir)
+         return requirement_set
+diff -rupN python-pip-1.5.4.orig/pip/wheel.py python-pip-1.5.4/pip/wheel.py
+--- python-pip-1.5.4.orig/pip/wheel.py	2014-02-21 14:08:56.000000000 +0200
++++ python-pip-1.5.4/pip/wheel.py	2014-04-13 11:47:35.966282385 +0300
+@@ -71,11 +71,18 @@ def fix_script(path):
+     if os.path.isfile(path):
+         script = open(path, 'rb')
+         try:
++            first_line_re = re.compile('^#!.*python[0-9.]*([ \t].*)?$')
+             firstline = script.readline()
+-            if not firstline.startswith(binary('#!python')):
++            match = first_line_re.match(str(firstline))
++            if not match:
+                 return False
+-            exename = sys.executable.encode(sys.getfilesystemencoding())
+-            firstline = binary('#!') + exename + binary(os.linesep)
++            post_interp = match.group(1) or ''
++            if 'PYTHON_EXECUTABLE_TARGET' in os.environ:
++                sys_executable = os.path.normpath(os.environ['PYTHON_EXECUTABLE_TARGET'])
++            else:
++                sys_executable = sys.executable
++            exename = sys_executable.encode(sys.getfilesystemencoding())
++            firstline = binary('#!') + exename + post_interp + binary(os.linesep)
+             rest = script.read()
+         finally:
+             script.close()
