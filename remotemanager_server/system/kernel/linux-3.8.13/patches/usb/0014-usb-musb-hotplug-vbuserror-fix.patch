@@ -1,0 +1,37 @@
+From 277befff0e9e6de8a9e6310ced8f4a40a985450e Mon Sep 17 00:00:00 2001
+From: Damien Dando <damien.d.09@gmail.com>
+Date: Thu, 20 Mar 2014 11:51:40 +0200
+Subject: [PATCH 14/14] usb-musb hotplug vbuserror fix
+
+When the MUSB is configured as host mode or OTG mode, the xceiv->state
+will be set to OTG_STATE_A_IDLE or OTG_STATE_B_IDLE unconditionally
+during init process. These init states can change to other
+states When the MUSB module detects id pin change, devices connect or
+disconnect.
+But on some platforms(omap2, omap3), the id pin change can't
+raise IRQ request to the MUSB module, so on these platforms, the init
+xceiv->state will be A_IDLE or B_IDLE. Under this condition, when we want
+the MUSB to act as a host and hotplug a usb device (without self-powered)
+in mini-B side of the cable, the MUSB will have a possibility to suffer
+power underrun under A_IDLE or B_IDLE state, So here adding these
+two states under which we can handle VBUSERROR IRQ.
+---
+ drivers/usb/musb/musb_core.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
+index 4afa92a..6adddc3 100644
+--- a/drivers/usb/musb/musb_core.c
++++ b/drivers/usb/musb/musb_core.c
+@@ -583,6 +583,8 @@ static irqreturn_t musb_stage0_irq(struct musb *musb, u8 int_usb,
+ 			 * another reset is due (at least for high speed,
+ 			 * to redo the chirp etc), it might work OK...
+ 			 */
++		case OTG_STATE_A_IDLE:
++		case OTG_STATE_B_IDLE:
+ 		case OTG_STATE_A_WAIT_BCON:
+ 		case OTG_STATE_A_WAIT_VRISE:
+ 			if (musb->vbuserr_retry) {
+-- 
+1.7.9.5
+
