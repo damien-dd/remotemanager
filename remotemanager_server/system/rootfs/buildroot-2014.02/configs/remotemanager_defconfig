@@ -237,7 +237,41 @@ BR2_ROOTFS_POST_IMAGE_SCRIPT=""
 #
 # Kernel
 #
-# BR2_LINUX_KERNEL is not set
+BR2_LINUX_KERNEL=y
+# BR2_LINUX_KERNEL_LATEST_VERSION is not set
+# BR2_LINUX_KERNEL_SAME_AS_HEADERS is not set
+BR2_LINUX_KERNEL_CUSTOM_VERSION=y
+# BR2_LINUX_KERNEL_CUSTOM_TARBALL is not set
+# BR2_LINUX_KERNEL_CUSTOM_GIT is not set
+# BR2_LINUX_KERNEL_CUSTOM_HG is not set
+# BR2_LINUX_KERNEL_CUSTOM_LOCAL is not set
+BR2_LINUX_KERNEL_CUSTOM_VERSION_VALUE="3.8.13"
+BR2_LINUX_KERNEL_VERSION="3.8.13"
+BR2_LINUX_KERNEL_PATCH="../../kernel/linux-3.8.13/patches/dma ../../kernel/linux-3.8.13/patches/rtc ../../kernel/linux-3.8.13/patches/pinctrl ../../kernel/linux-3.8.13/patches/cpufreq ../../kernel/linux-3.8.13/patches/adc ../../kernel/linux-3.8.13/patches/i2c ../../kernel/linux-3.8.13/patches/da8xx-fb ../../kernel/linux-3.8.13/patches/pwm ../../kernel/linux-3.8.13/patches/mmc ../../kernel/linux-3.8.13/patches/crypto ../../kernel/linux-3.8.13/patches/6lowpan ../../kernel/linux-3.8.13/patches/capebus ../../kernel/linux-3.8.13/patches/arm ../../kernel/linux-3.8.13/patches/omap ../../kernel/linux-3.8.13/patches/omap_sakoman ../../kernel/linux-3.8.13/patches/omap_beagle_expansion ../../kernel/linux-3.8.13/patches/omap_beagle ../../kernel/linux-3.8.13/patches/omap_panda ../../kernel/linux-3.8.13/patches/net ../../kernel/linux-3.8.13/patches/drm ../../kernel/linux-3.8.13/patches/not-capebus ../../kernel/linux-3.8.13/patches/pru ../../kernel/linux-3.8.13/patches/usb ../../kernel/linux-3.8.13/patches/PG2 ../../kernel/linux-3.8.13/patches/reboot ../../kernel/linux-3.8.13/patches/iio ../../kernel/linux-3.8.13/patches/w1 ../../kernel/linux-3.8.13/patches/gpmc ../../kernel/linux-3.8.13/patches/mxt ../../kernel/linux-3.8.13/patches/ssd130x ../../kernel/linux-3.8.13/patches/build ../../kernel/linux-3.8.13/patches/hdmi ../../kernel/linux-3.8.13/patches/audio ../../kernel/linux-3.8.13/patches/resetctrl ../../kernel/linux-3.8.13/patches/camera ../../kernel/linux-3.8.13/patches/resources ../../kernel/linux-3.8.13/patches/pmic ../../kernel/linux-3.8.13/patches/pps ../../kernel/linux-3.8.13/patches/leds ../../kernel/linux-3.8.13/patches/capes ../../kernel/linux-3.8.13/patches/proto ../../kernel/linux-3.8.13/patches/fixes ../../kernel/linux-3.8.13/patches/machinekit"
+# BR2_LINUX_KERNEL_USE_DEFCONFIG is not set
+BR2_LINUX_KERNEL_USE_CUSTOM_CONFIG=y
+BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE="../../kernel/linux-3.8.13/configs/beaglebone"
+BR2_LINUX_KERNEL_ADDITIONAL_FIRMWARE=y
+BR2_LINUX_KERNEL_ADDITIONAL_FIRMWARE_PATH="../../kernel/linux-3.8.13/firmware/am335x-pm-firmware.bin"
+BR2_LINUX_KERNEL_UBOOT_IMAGE=y
+BR2_LINUX_KERNEL_UIMAGE=y
+# BR2_LINUX_KERNEL_APPENDED_UIMAGE is not set
+# BR2_LINUX_KERNEL_ZIMAGE is not set
+# BR2_LINUX_KERNEL_APPENDED_ZIMAGE is not set
+# BR2_LINUX_KERNEL_VMLINUX is not set
+# BR2_LINUX_KERNEL_IMAGE_TARGET_CUSTOM is not set
+BR2_LINUX_KERNEL_UIMAGE_LOADADDR=""
+BR2_LINUX_KERNEL_DTS_SUPPORT=y
+BR2_LINUX_KERNEL_USE_INTREE_DTS=y
+# BR2_LINUX_KERNEL_USE_CUSTOM_DTS is not set
+BR2_LINUX_KERNEL_INTREE_DTS_NAME="am335x-boneblack"
+BR2_LINUX_KERNEL_INSTALL_TARGET=y
+
+#
+# Linux Kernel Extensions
+#
+# BR2_LINUX_KERNEL_EXT_XENOMAI is not set
+# BR2_LINUX_KERNEL_EXT_RTAI is not set
 
 #
 # Target packages
@@ -316,18 +350,12 @@ BR2_PACKAGE_BZIP2=y
 # BR2_PACKAGE_GDB is not set
 # BR2_PACKAGE_IOZONE is not set
 # BR2_PACKAGE_KEXEC is not set
-
-#
-# ktap needs a Linux kernel to be built
-#
+# BR2_PACKAGE_KTAP is not set
 # BR2_PACKAGE_LATENCYTOP is not set
 # BR2_PACKAGE_LMBENCH is not set
 # BR2_PACKAGE_LTP_TESTSUITE is not set
 # BR2_PACKAGE_LTRACE is not set
-
-#
-# lttng-modules needs a Linux kernel to be built
-#
+# BR2_PACKAGE_LTTNG_MODULES is not set
 # BR2_PACKAGE_LTTNG_TOOLS is not set
 # BR2_PACKAGE_MEMSTAT is not set
 # BR2_PACKAGE_NETPERF is not set
@@ -336,10 +364,7 @@ BR2_PACKAGE_BZIP2=y
 # oprofile needs a toolchain w/ C++
 #
 # BR2_PACKAGE_PAX_UTILS is not set
-
-#
-# perf needs a toolchain w/ largefile and a Linux kernel to be built
-#
+# BR2_PACKAGE_PERF is not set
 # BR2_PACKAGE_PV is not set
 # BR2_PACKAGE_RAMSMP is not set
 # BR2_PACKAGE_RAMSPEED is not set
@@ -441,10 +466,7 @@ BR2_PACKAGE_NTFS_3G=y
 #
 # BR2_PACKAGE_FBV is not set
 # BR2_PACKAGE_IMAGEMAGICK is not set
-
-#
-# linux-fusion needs a Linux kernel to be built
-#
+# BR2_PACKAGE_LINUX_FUSION is not set
 
 #
 # ocrad needs a toolchain w/ C++
@@ -500,10 +522,7 @@ BR2_PACKAGE_QT5_JSCORE_AVAILABLE=y
 # BR2_PACKAGE_SUNXI_BOARDS is not set
 # BR2_PACKAGE_UX500_FIRMWARE is not set
 # BR2_PACKAGE_ZD1211_FIRMWARE is not set
-
-#
-# a10disp needs a Linux kernel to be built
-#
+# BR2_PACKAGE_A10DISP is not set
 # BR2_PACKAGE_AVRDUDE is not set
 # BR2_PACKAGE_CDRKIT is not set
 # BR2_PACKAGE_CRYPTSETUP is not set
@@ -531,10 +550,7 @@ BR2_DBUS_EXPAT=y
 #
 # Freescale i.MX libraries
 #
-
-#
-# imx-lib needs an imx-specific Linux kernel to be built
-#
+# BR2_PACKAGE_IMX_LIB is not set
 # BR2_PACKAGE_FIRMWARE_IMX is not set
 # BR2_PACKAGE_GPU_VIV_BIN_MX6Q is not set
 # BR2_PACKAGE_FXLOAD is not set
@@ -576,10 +592,6 @@ BR2_PACKAGE_MEMTESTER=y
 # BR2_PACKAGE_OPENOCD is not set
 
 #
-# owl-linux needs a Linux kernel to be built
-#
-
-#
 # owl-linux is only supported on ARM9 architecture
 #
 # BR2_PACKAGE_PARTED is not set
@@ -605,10 +617,7 @@ BR2_PACKAGE_MEMTESTER=y
 # BR2_PACKAGE_SUNXI_CEDARX is not set
 # BR2_PACKAGE_SUNXI_MALI is not set
 # BR2_PACKAGE_SYSSTAT is not set
-
-#
-# ti-gfx needs an (e)glibc toolchain and a Linux kernel to be built
-#
+# BR2_PACKAGE_TI_GFX is not set
 # BR2_PACKAGE_TI_UIM is not set
 # BR2_PACKAGE_TI_UTILS is not set
 # BR2_PACKAGE_UBOOT_TOOLS is not set
@@ -720,7 +729,7 @@ BR2_PACKAGE_PYTHON_SIMPLEJSON=y
 # BR2_PACKAGE_PYTHON_TORNADO is not set
 # BR2_PACKAGE_PYTHON_VERSIONTOOLS is not set
 BR2_PACKAGE_PYTHON_PIP=y
-BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL="python-pip-packages/Django-1.6.2.tar.gz python-pip-packages/pytz-2014.1.tar.gz celery redis uwsgi wsgiref South django-celery dropbox boto django-dbbackup psycopg2"
+BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL="python-pip-packages/Flask-0.10.1.tar.gz python-pip-packages/Django-1.6.2.tar.gz python-pip-packages/pytz-2014.1.tar.gz celery redis uwsgi wsgiref South django-celery dropbox boto django-dbbackup psycopg2"
 # BR2_PACKAGE_PYTHON3 is not set
 # BR2_PACKAGE_RUBY is not set
 # BR2_PACKAGE_TCL is not set
@@ -788,10 +797,7 @@ BR2_PACKAGE_ZLIB=y
 #
 # BR2_PACKAGE_BEECRYPT is not set
 # BR2_PACKAGE_CA_CERTIFICATES is not set
-
-#
-# cryptodev needs a Linux kernel to be built
-#
+# BR2_PACKAGE_CRYPTODEV is not set
 # BR2_PACKAGE_GNUTLS is not set
 # BR2_PACKAGE_LIBASSUAN is not set
 # BR2_PACKAGE_LIBGCRYPT is not set
@@ -1016,10 +1022,7 @@ BR2_PACKAGE_EXPAT=y
 #
 # BR2_PACKAGE_LIBFSLCODEC is not set
 # BR2_PACKAGE_LIBFSLPARSER is not set
-
-#
-# libfslvpuwrap needs an imx-specific Linux kernel to be built
-#
+# BR2_PACKAGE_LIBFSLVPUWRAP is not set
 
 #
 # libmatroska needs a toolchain w/ C++
@@ -1333,10 +1336,7 @@ BR2_PACKAGE_BLUEZ_UTILS_USB=y
 # BR2_PACKAGE_HOSTAPD is not set
 # BR2_PACKAGE_HTTPING is not set
 # BR2_PACKAGE_IFTOP is not set
-
-#
-# igh-ethercat needs a Linux kernel to be built
-#
+# BR2_PACKAGE_IGH_ETHERCAT is not set
 # BR2_PACKAGE_IGMPPROXY is not set
 # BR2_PACKAGE_INADYN is not set
 
@@ -1555,10 +1555,7 @@ BR2_PACKAGE_NANO_TINY=y
 # BR2_TARGET_ROOTFS_CPIO is not set
 # BR2_TARGET_ROOTFS_CRAMFS is not set
 # BR2_TARGET_ROOTFS_EXT2 is not set
-
-#
-# initramfs needs a Linux kernel to be built
-#
+# BR2_TARGET_ROOTFS_INITRAMFS is not set
 # BR2_TARGET_ROOTFS_JFFS2 is not set
 # BR2_TARGET_ROOTFS_ROMFS is not set
 # BR2_TARGET_ROOTFS_SQUASHFS is not set
