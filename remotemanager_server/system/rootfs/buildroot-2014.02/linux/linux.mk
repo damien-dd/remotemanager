@@ -150,7 +150,7 @@ define LINUX_APPLY_PATCHES
 		if echo $$p | grep -q -E "^ftp://|^http://" ; then \
 			support/scripts/apply-patches.sh $(@D) $(DL_DIR) `basename $$p` ; \
 		elif test -d $$p ; then \
-			support/scripts/apply-patches.sh $(@D) $$p linux-\*.patch ; \
+			support/scripts/apply-patches.sh $(@D) $$p \*.patch ; \
 		else \
 			support/scripts/apply-patches.sh $(@D) `dirname $$p` `basename $$p` ; \
 		fi \
@@ -167,6 +167,8 @@ KERNEL_SOURCE_CONFIG = $(BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE)
 endif
 
 define LINUX_CONFIGURE_CMDS
+	$(if $(BR2_LINUX_KERNEL_ADDITIONAL_FIRMWARE),
+		cp $(BR2_LINUX_KERNEL_ADDITIONAL_FIRMWARE_PATH) $(@D)/firmware/)
 	$(INSTALL) -m 0644 $(KERNEL_SOURCE_CONFIG) $(KERNEL_ARCH_PATH)/configs/buildroot_defconfig
 	$(TARGET_MAKE_ENV) $(MAKE1) $(LINUX_MAKE_FLAGS) -C $(@D) buildroot_defconfig
 	rm $(KERNEL_ARCH_PATH)/configs/buildroot_defconfig

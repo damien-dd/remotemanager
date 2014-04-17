@@ -155,6 +155,19 @@ config BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE
 	help
 	  Path to the kernel configuration file
 
+
+config BR2_LINUX_KERNEL_ADDITIONAL_FIRMWARE
+	bool "Additional kernel firmwares"
+	help
+	  Add addtional firmware(s).
+
+config BR2_LINUX_KERNEL_ADDITIONAL_FIRMWARE_PATH
+	string "Firmware(s) path"
+	depends on BR2_LINUX_KERNEL_ADDITIONAL_FIRMWARE
+	help
+	  Firmware files will be added in the firmware/ directory.
+
+
 #
 # Binary format
 #
