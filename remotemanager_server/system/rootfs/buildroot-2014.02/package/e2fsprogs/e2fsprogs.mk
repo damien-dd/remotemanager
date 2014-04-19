@@ -61,6 +61,7 @@ E2FSPROGS_BINTARGETS_$(BR2_PACKAGE_E2FSPROGS_UUIDGEN) += usr/bin/uuidgen
 E2FSPROGS_TXTTARGETS_ = \
 	usr/sbin/mkfs.ext[234] \
 	usr/sbin/mkfs.ext4dev \
+	usr/sbin/fsck.auto \
 	usr/sbin/fsck.ext[234] \
 	usr/sbin/fsck.ext4dev \
 	usr/sbin/findfs \
@@ -85,6 +86,7 @@ E2FSPROGS_POST_INSTALL_TARGET_HOOKS += E2FSPROGS_TARGET_MKE2FS_SYMLINKS
 endif
 
 define E2FSPROGS_TARGET_E2FSCK_SYMLINKS
+	ln -sf e2fsck $(TARGET_DIR)/usr/sbin/fsck.auto
 	ln -sf e2fsck $(TARGET_DIR)/usr/sbin/fsck.ext2
 	ln -sf e2fsck $(TARGET_DIR)/usr/sbin/fsck.ext3
 	ln -sf e2fsck $(TARGET_DIR)/usr/sbin/fsck.ext4
