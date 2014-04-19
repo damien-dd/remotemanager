@@ -1,0 +1,11 @@
+diff -rupN systemd-44.orig/units/systemd-journald.service.in systemd-44/units/systemd-journald.service.in
+--- systemd-44.orig/units/systemd-journald.service.in	2012-02-13 17:37:02.000000000 +0200
++++ systemd-44/units/systemd-journald.service.in	2014-04-19 17:57:34.350019452 +0300
+@@ -11,6 +11,7 @@
+ Description=Journal Service
+ DefaultDependencies=no
+ Requires=systemd-journald.socket
++After=dbus.service
+ After=systemd-journald.socket
+ After=syslog.socket
+ 
