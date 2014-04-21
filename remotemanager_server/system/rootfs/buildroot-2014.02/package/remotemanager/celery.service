@@ -1,0 +1,13 @@
+[Unit]
+Description=Celery Nodes Daemon
+After=network.target
+
+[Service]
+Type=forking
+EnvironmentFile=-/etc/celery.conf
+ExecStart=/usr/bin/celery $CELERYD_MULTI start $CELERYD_NODES --workdir=${CELERYD_CHDIR} --uid=www-data --pidfile=${CELERYD_PID_FILE} --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} $CELERYD_OPTS
+ExecStop=/usr/bin/celery $CELERYD_MULTI stopwait $CELERYD_NODES --workdir=${CELERYD_CHDIR} --pidfile=${CELERYD_PID_FILE}
+ExecReload=/usr/bin/celery $CELERYD_MULTI restart $CELERYD_NODES --workdir=${CELERYD_CHDIR} --uid=www-data --pidfile=${CELERYD_PID_FILE} --logfile=${CELERYD_LOG_FILE} --loglevel=${CELERYD_LOG_LEVEL} $CELERYD_OPTS
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=Mount the data partition
+Before=postgresql-init.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/mount /data
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

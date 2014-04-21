@@ -1,0 +1,5 @@
+config BR2_PACKAGE_REMOTEMANAGER
+	bool "remotemanager"
+	depends on BR2_PACKAGE_PYTHON
+	help
+	  Remote management web service.

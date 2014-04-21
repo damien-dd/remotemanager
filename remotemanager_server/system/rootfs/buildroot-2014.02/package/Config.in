@@ -1058,4 +1058,8 @@ source "package/vim/Config.in"
 endif
 endmenu
 
+menu "Remotemanager"
+source "package/remotemanager/Config.in"
+endmenu
+
 endmenu

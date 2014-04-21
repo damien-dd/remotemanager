@@ -1,0 +1,12 @@
+[Unit]
+Description=Celery Beat Deamon
+Requires=redis.service
+After=redis.service
+
+[Service]
+Type=simple
+PIDFile = /var/run/celerybeat.pid
+ExecStart = /usr/bin/celery -A remotemanager beat --schedule=/tmp/celerybeat-schedule --workdir=/srv/remotemanager/ --uid=www-data --pidfile=/var/run/celerybeat.pid --logfile=/var/log/celerybeat.log --loglevel=INFO
+
+[Install]
+WantedBy=multi-user.target
