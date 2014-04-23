@@ -8,9 +8,11 @@ REMOTEMANAGER_VERSION = 0.1
 REMOTEMANAGER_SITE = $(TOPDIR)/../../../remotemanager
 REMOTEMANAGER_SITE_METHOD = local
 
-REMOTEMANAGER_DEPENDENCIES = python python-pip host-python-pip host-python host-remotemanager
+REMOTEMANAGER_DEPENDENCIES = python python-pip host-python-pip host-python host-remotemanager nginx
+HOST_REMOTEMANAGER_DEPENDENCIES = host-python-pip host-python
 
 REMOTEMANAGER_DESTDIR = /srv/remotemanager
+
 
 define REMOTEMANAGER_EXTRACT_CMDS
         cp -r * $(@D)
@@ -61,6 +63,10 @@ define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
 		$(INSTALL) -D -m 644 package/remotemanager/celerycam.service \
 			$(TARGET_DIR)/etc/systemd/system/celerycam.service
 
+	[ -f $(TARGET_DIR)/etc/systemd/system/celerycam.service ] || \
+		$(INSTALL) -D -m 644 package/remotemanager/emperor.uwsgi.service \
+			$(TARGET_DIR)/etc/systemd/system/emperor.uwsgi.service
+
 	[ -f $(TARGET_DIR)/etc/systemd/system/mount-data-partition.service ] || \
 		$(INSTALL) -D -m 644 package/remotemanager/mount-data-partition.service \
 			$(TARGET_DIR)/etc/systemd/system/mount-data-partition.service
@@ -76,8 +82,29 @@ define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
 	ln -fs ../celerycam.service \
 		$(TARGET_DIR)/etc/systemd/system/multi-user.target.wants/celerycam.service
 
+	ln -fs ../emperor.uwsgi.service \
+		$(TARGET_DIR)/etc/systemd/system/multi-user.target.wants/emperor.uwsgi.service
+
 	ln -fs ../mount-data-partition.service \
 		$(TARGET_DIR)/etc/systemd/system/multi-user.target.wants/mount-data-partition.service
+
+	mkdir -p $(TARGET_DIR)/etc/uwsgi/vassals
+
+	[ -f $(TARGET_DIR)/etc/uwsgi/emperor.ini ] || \
+		$(INSTALL) -D -m 644 package/remotemanager/emperor.ini \
+			$(TARGET_DIR)/etc/uwsgi/emperor.ini
+
+	ln -fs $(REMOTEMANAGER_DESTDIR)/remotemanager/uwsgi.ini \
+		$(TARGET_DIR)/etc/uwsgi/vassals/remotemanager.ini
+
+	ln -fs $(REMOTEMANAGER_DESTDIR)/recovery_interface/uwsgi.ini \
+		$(TARGET_DIR)/etc/uwsgi/vassals/recovery.ini
+
+	rm -f $(TARGET_DIR)/etc/nginx/nginx.conf
+
+	$(INSTALL) -D -m 644 package/remotemanager/nginx.conf \
+		$(TARGET_DIR)/etc/nginx/nginx.conf
+	
 endef
 
 $(eval $(generic-package))
