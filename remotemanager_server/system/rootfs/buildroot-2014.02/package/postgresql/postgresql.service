@@ -14,9 +14,11 @@ Environment=PGLOG=/var/log/postgresql.log
 SyslogIdentifier=postgres
 PIDFile=/data/pgsql/postmaster.pid
 
+ExecStartPre=/bin/rm -f /data/pgsql/postmaster.pid
 ExecStart=/usr/bin/pg_ctl -s -D /data/pgsql start -w -t 60
 ExecReload=/usr/bin/pg_ctl -s -D /data/pgsql reload
 ExecStop=/usr/bin/pg_ctl -s -D /data/pgsql stop -m fast
+ExecStopPost=/bin/rm -f /data/pgsql/postmaster.pid
 
 # Due to PostgreSQL's use of shared memory, OOM killer is often overzealous in
 # killing Postgres
