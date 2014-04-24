@@ -21,7 +21,7 @@ endef
 
 PYTHON_PIP_MODULES_LIST=$(call qstrip, $(BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL))
 
-ifneq ($(PYTHON_PIP_MODULES_TARGET_LIST),)
+ifneq ($(PYTHON_PIP_MODULES_LIST),)
 define PYTHON_PIP_INSTALL_TARGET_MODULES
 	# Explanation of environment variables
 	# PIP_DOWNLOAD_CACHE: all downloads go into the buildroot download folder
@@ -36,7 +36,7 @@ define PYTHON_PIP_INSTALL_TARGET_MODULES
 	CC="$(TARGET_CC)"			\
 	CFLAGS="$(TARGET_CFLAGS)" 	\
 	LDSHARED="$(TARGET_CC) -shared" \
-	LDFLAGS="$(TARGET_LDFLAGS)" 	\
+	LDFLAGS="-L$(TARGET_DIR)/lib -L$(TARGET_DIR)/usr/lib $(TARGET_LDFLAGS)" 	\
 	$(HOST_DIR)/usr/bin/pip install \
 	$(PYTHON_PIP_MODULES_LIST));
 endef
@@ -56,7 +56,7 @@ define PYTHON_PIP_INSTALL_MODULES
 	PIP_DOWNLOAD_CACHE=$(BR2_DL_DIR) \
 	PIP_TARGET=$(HOST_DIR)/usr/lib/python$(PYTHON_VERSION_MAJOR)/site-packages \
 	PIP_SCRIPT_TARGET=$(HOST_DIR)/usr/bin \
-	PIP_BUILD=$(BUILD_DIR)/python-pip-$(PYTHON_PIP_VERSION)/packages \
+	PIP_BUILD=$(BUILD_DIR)/host-python-pip-$(PYTHON_PIP_VERSION)/packages \
 	$(HOST_DIR)/usr/bin/pip install \
 	$(PYTHON_PIP_MODULES_LIST));
 endef
