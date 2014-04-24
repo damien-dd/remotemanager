@@ -51,6 +51,10 @@ define HOST_REMOTEMANAGER_INSTALL_CMDS
 endef
 
 define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
+	[ -f $(TARGET_DIR)/etc/celery.conf ] || \
+		$(INSTALL) -D -m 644 package/remotemanager/celery.conf \
+			$(TARGET_DIR)/etc/celery.conf
+
 	[ -f $(TARGET_DIR)/etc/systemd/system/celery.service ] || \
 		$(INSTALL) -D -m 644 package/remotemanager/celery.service \
 			$(TARGET_DIR)/etc/systemd/system/celery.service
@@ -63,7 +67,7 @@ define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
 		$(INSTALL) -D -m 644 package/remotemanager/celerycam.service \
 			$(TARGET_DIR)/etc/systemd/system/celerycam.service
 
-	[ -f $(TARGET_DIR)/etc/systemd/system/celerycam.service ] || \
+	[ -f $(TARGET_DIR)/etc/systemd/system/emperor.uwsgi.service ] || \
 		$(INSTALL) -D -m 644 package/remotemanager/emperor.uwsgi.service \
 			$(TARGET_DIR)/etc/systemd/system/emperor.uwsgi.service
 
