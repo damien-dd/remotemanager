@@ -98,7 +98,7 @@ define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
 		$(INSTALL) -D -m 644 package/remotemanager/emperor.ini \
 			$(TARGET_DIR)/etc/uwsgi/emperor.ini
 
-	ln -fs $(REMOTEMANAGER_DESTDIR)/remotemanager/uwsgi.ini \
+	ln -fs $(REMOTEMANAGER_DESTDIR)/uwsgi.ini \
 		$(TARGET_DIR)/etc/uwsgi/vassals/remotemanager.ini
 
 	ln -fs $(REMOTEMANAGER_DESTDIR)/recovery_interface/uwsgi.ini \
