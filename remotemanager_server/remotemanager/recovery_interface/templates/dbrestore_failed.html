@@ -1,0 +1,8 @@
+{% extends "dbrestore.html" %}
+{% block content %}{{ super() }}
+
+<p>Une error est survenue lors de la restauration!</p>
+<p>{{error_msg|nl2br}}</p>
+
+
+{% endblock %}

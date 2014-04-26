@@ -1,0 +1,35 @@
+{% extends "dbrestore.html" %}
+
+{% block head %}{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+{% endblock %}
+
+{% block content %}{{ super() }}
+<h3>Confirmation</h3>
+
+<p>Toutes les données seront écrasées et remplacées, voulez vous vraiment restaurer la base de donnée?
+<form id="restore" action="." method="POST">
+	<input type="submit" value="Oui">
+</form>
+<form action="/dbrestore/" method="LINK">
+	<input type="submit" value="Non">
+</form>
+</p>
+
+<p id="messages">
+</p>
+
+<script>
+$('#restore').submit(function(ev) {
+	$('input[type=submit]').click(function(event){
+		event.preventDefault();
+		$('#messages').append("<br />Soyez patient!");
+	});
+
+	$('#messages').text("Restauration en cours, veuillez patienter...");
+	/* Validations go here */
+	this.submit(); // If all the validations succeeded
+});
+</script>
+
+{% endblock %}

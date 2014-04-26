@@ -1,0 +1,27 @@
+{% extends "dbbackup.html" %}
+{% block content %}{{ super() }}
+
+<p>Liste des sauvegardes:</p>
+
+<table>
+<thead>
+	<tr>
+		<th>Nom de la sauvegarde</th>
+		<th>Taille</th>
+		<th>Date</th>
+	</tr>
+</thead>
+
+<tbody>
+</tbody>
+{% for filename, filesize, filedate in fileslist %}
+	<tr>
+		<td><a href="/dbbackup/file/{{filename}}">{{filename}}</a></td>
+		<td>{{filesize}}</td>
+		<td>{{filedate}}</td>
+	</tr>
+{% endfor %}
+</table>
+<p></p>
+<p><a href="/dbbackup/create/">Créer une sauvegarde</a></p>
+{% endblock %}

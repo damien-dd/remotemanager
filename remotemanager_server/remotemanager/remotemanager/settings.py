@@ -163,6 +163,7 @@ DBBACKUP_STORAGE = 'dbbackup.storage.filesystem_storage'
 DBBACKUP_FILESYSTEM_DIRECTORY = '/data/dbbackup'
 
 DBBACKUP_POSTGRESQL_RESTORE_COMMANDS = [
+    ['psql', '--username={adminuser}', '--dbname=postgres', '--command', 'SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity where pg_stat_activity.datname = \'{databasename}\''], # close all active sessions on the database (otherwise dropdb will fails)
     ['dropdb', '--username={adminuser}', '--host={host}', '--port={port}', '--if-exists', '{databasename}'],
     ['dropuser', '--username={adminuser}', '--host={host}', '--port={port}', '--if-exists', '{username}'],
     ['createuser', '--username={adminuser}', '--host={host}', '--port={port}', '{username}'],

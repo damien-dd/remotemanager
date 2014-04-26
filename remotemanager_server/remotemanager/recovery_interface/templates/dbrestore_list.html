@@ -1,0 +1,26 @@
+{% extends "dbrestore.html" %}
+{% block content %}{{ super() }}
+<p>Selectionnez la sauvegarde à restaurer:</p>
+
+<table>
+<thead>
+	<tr>
+		<th>Nom de la sauvegarde</th>
+		<th>Taille</th>
+		<th>Date</th>
+	</tr>
+</thead>
+
+<tbody>
+</tbody>
+{% for filename, filesize, filedate in fileslist %}
+	<tr>
+		<td><a href="/dbrestore/{{filename}}/">{{filename}}</a></td>
+		<td>{{filesize}}</td>
+		<td>{{filedate}}</td>
+	</tr>
+{% endfor %}
+</table>
+<p></p>
+<p><a href="/dbrestore/upload/">Charger une autre sauvegarde</a></p>
+{% endblock %}

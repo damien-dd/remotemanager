@@ -3,17 +3,32 @@
 
 <head>
 	<title>Remote Manager - Console de restauration</title>
-	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+	<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='style.css') }}">
+	{% block head %}{% endblock %}
 </head>
 
 <body>
+	<div id="page-wrap">
+
 	<header>
 	<h1>Remote Manager - Console de restauration</h1>
+	<p></p>
+	<nav>
+			<ul class="group">
+				<li><a href="/dbbackup/">Sauvegarder</a></li>
+				<li><a href="/dbrestore/">Restaurer</a></li>
+			</ul>
+		</nav>
 	</header>
 
-	<section>
+	<section id="main-content">
+	<div id="guts">
 	{% block content %}{% endblock %}
+	</div>
 	</section>
+
+	</div>
 
 	<footer>Remote Management system - &copy;2013 Damien Dando</footer>
 

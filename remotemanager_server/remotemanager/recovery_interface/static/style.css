@@ -1,0 +1,62 @@
+
+* { margin: 0; padding: 0; }
+html { overflow-y: scroll; min-width: 700px;}
+body { font: 12px/1.4 Helvetica, Arial, Sans-Serif; background: #333; color: #333; }
+.group:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
+.group { display: inline-block; clear: both; }
+/* start commented backslash hack \*/ * html .group { height: 1%; } .group { display: block; } /* close commented backslash hack */
+
+article, aside, figure, footer, header, hgroup, menu, nav, section { display: block; }
+a:focus { outline: 0; }
+
+#page-wrap { 
+	width: auto; margin: 40px 20px 10px 20px; background: #ddd; 
+	padding: 0;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+}
+
+#main-content { padding: 14px; }
+
+header h1 { font: bold 32px Helvetica, Arial, Sans-Serif; letter-spacing: -1px; padding: 14px 14px 0 14px; color: #333; text-shadow: 1px 1px 1px white; }
+header p { text-align: right; margin: 0 15px 10px 0; }
+
+p { margin: 0 15px 15px 15px; }
+ 
+nav ul { 
+    list-style: none; background: #855315; padding: 5px 20px; width: auto;
+}
+nav ul li { display: inline; }
+nav ul li a {
+	display: block;
+	float: left;
+	border-top: 1px solid #f8d296;
+	background: #a98243;
+	background: -webkit-gradient(linear, left top, left bottom, from(#d7ab65), to(#a98243));
+	background: -moz-linear-gradient(top,  #d7ab65,  #a98243);
+	height: 17px;
+	padding: 0 10px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	font: bold 11px/16px "Lucida Grande", "Verdana", sans-serif;
+	color: rgba(255,255,255,.85);
+	text-decoration: none; 
+	margin: 0 5px 0 0;
+}
+nav ul li a:hover {
+	border-top: 1px solid #b48a47;
+	background: #7a5b28;
+	background: -webkit-gradient(linear, left top, left bottom, from(#9f793d), to(#7a5b28));
+	background: -moz-linear-gradient(top,  #9f793d,  #7a5b28);
+	color: rgba(255,255,255,.85); 
+}	
+nav ul li a:active, nav ul li a.current {
+	border-top-color: #795824;
+	background: #5e441b;
+	position: relative;
+	top: 1px; 
+}
+
+footer { color: #999; margin: 0 auto; width: auto; text-align: center;}

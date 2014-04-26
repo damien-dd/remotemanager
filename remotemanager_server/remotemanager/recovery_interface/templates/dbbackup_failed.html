@@ -1,0 +1,8 @@
+{% extends "dbbackup.html" %}
+{% block content %}{{ super() }}
+
+<p>Une erreur est suvenue lors de la création de la sauvegarde!</p>
+<p>{{error_msg|nl2br}}</p>
+
+
+{% endblock %}

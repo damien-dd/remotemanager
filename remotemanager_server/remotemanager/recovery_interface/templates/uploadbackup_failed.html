@@ -1,0 +1,7 @@
+{% extends "uploadbackup.html" %}
+{% block content %}{{ super() }}
+
+<p>Erreur lors du chargement de la sauvegarde <em>{{filename}}</em> !</p>
+<p>{{error_msg}}</p>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "dbbackup.html" %}
+
+{% block head %}{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+{% endblock %}
+
+{% block content %}{{ super() }}
+<h3>Confirmation</h3>
+
+<p>Cette opération peut prendre plusieurs minutes, voulez vous créer une sauvegarde maintenant?
+
+<form id= "backup" action="." method="POST">
+	<input type="submit" value="Oui">
+</form>
+<form action="/dbbackup/" method="LINK">
+	<input type="submit" value="Non">
+</form>
+</p>
+
+<p id="messages">
+</p>
+
+<script>
+$('#backup').submit(function(ev) {
+	$('input[type=submit]').click(function(event){
+		event.preventDefault();
+		$('#messages').append("<br />Soyez patient!");
+	});
+
+	$('#messages').text("Sauvegarde en cours, veuillez patienter...");
+	/* Validations go here */
+	this.submit(); // If all the validations succeeded
+});
+</script>
+
+{% endblock %}
