@@ -78,6 +78,22 @@ define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
 		$(INSTALL) -D -m 644 package/remotemanager/mount-data-partition.service \
 			$(TARGET_DIR)/etc/systemd/system/mount-data-partition.service
 
+	ln -fs /tmp/ssh_host_key $(TARGET_DIR)/etc/ssh_host_key
+	ln -fs /tmp/ssh_host_key.pub $(TARGET_DIR)/etc/ssh_host_key.pub
+
+	ln -fs /tmp/ssh_host_rsa_key $(TARGET_DIR)/etc/ssh_host_rsa_key
+	ln -fs /tmp/ssh_host_rsa_key.pub $(TARGET_DIR)/etc/ssh_host_rsa_key.pub
+
+	ln -fs /data/ssh_host_dsa_key $(TARGET_DIR)/etc/ssh_host_dsa_key
+	ln -fs /data/ssh_host_dsa_key.pub $(TARGET_DIR)/etc/ssh_host_dsa_key.pub
+
+	ln -fs /data/ssh_host_ecdsa_key $(TARGET_DIR)/etc/ssh_host_ecdsa_key
+	ln -fs /data/ssh_host_ecdsa_key.pub $(TARGET_DIR)/etc/ssh_host_ecdsa_key.pub
+
+	ln -fs /data/ssh_host_ed25519_key $(TARGET_DIR)/etc/ssh_host_ed25519_key
+	ln -fs /data/ssh_host_ed25519_key.pub $(TARGET_DIR)/etc/ssh_host_ed25519_key.pub
+
+
 	mkdir -p $(TARGET_DIR)/etc/systemd/system/multi-user.target.wants
 
 	ln -fs ../celery.service \
@@ -111,7 +127,6 @@ define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
 
 	$(INSTALL) -D -m 644 package/remotemanager/nginx.conf \
 		$(TARGET_DIR)/etc/nginx/nginx.conf
-	
 endef
 
 $(eval $(generic-package))

@@ -1,10 +1,15 @@
 [Unit]
 Description=Mount the data partition
 Before=postgresql-init.service
+Before=sshd.service
 
 [Service]
 Type=oneshot
 ExecStart=/bin/mount /data
+ExecStartPost=/bin/ln -s /data/ssh_host_key /tmp/ssh_host_key
+ExecStartPost=/bin/ln -s /data/ssh_host_key.pub /tmp/ssh_host_key.pub
+ExecStartPost=/bin/ln -s /data/ssh_host_rsa_key /tmp/ssh_host_rsa_key
+ExecStartPost=/bin/ln -s /data/ssh_host_rsa_key.pub /tmp/ssh_host_rsa_key.pub
 RemainAfterExit=yes
 
 [Install]
