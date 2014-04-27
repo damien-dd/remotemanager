@@ -44,6 +44,12 @@ define REMOTEMANAGER_INSTALL_TARGET_CMDS
 		$(HOST_DIR)$(REMOTEMANAGER_DESTDIR)/remotemanager/settings_cross_compile.py \
 		$(HOST_DIR) $(TARGET_DIR)
 	$(HOST_DIR)/usr/bin/python $(HOST_DIR)$(REMOTEMANAGER_DESTDIR)/manage.py collectstatic --settings=remotemanager.settings_cross_compile --noinput
+
+ifeq ($(BR2_PACKAGE_REMOTEMANAGER_ETHERNET_INTERFACE),y)
+	$(INSTALL) -D -m 744 package/remotemanager/eth0-configure.sh \
+		$(TARGET_DIR)/home/eth0-configure.sh
+endif
+
 endef
 
 define HOST_REMOTEMANAGER_INSTALL_CMDS
@@ -54,6 +60,7 @@ define HOST_REMOTEMANAGER_INSTALL_CMDS
 endef
 
 define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
+
 	[ -f $(TARGET_DIR)/etc/celery.conf ] || \
 		$(INSTALL) -D -m 644 package/remotemanager/celery.conf \
 			$(TARGET_DIR)/etc/celery.conf
@@ -127,6 +134,16 @@ define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
 
 	$(INSTALL) -D -m 644 package/remotemanager/nginx.conf \
 		$(TARGET_DIR)/etc/nginx/nginx.conf
+
+ifeq ($(BR2_PACKAGE_REMOTEMANAGER_ETHERNET_INTERFACE),y)
+	[ -f $(TARGET_DIR)/etc/systemd/system/network.service ] || \
+		$(INSTALL) -D -m 644 package/remotemanager/network.service \
+			$(TARGET_DIR)/etc/systemd/system/network.service
+
+	ln -fs ../network.service \
+		$(TARGET_DIR)/etc/systemd/system/multi-user.target.wants/network.service
+endif
+
 endef
 
 $(eval $(generic-package))

@@ -1,0 +1,10 @@
+[Unit]
+Description=Configure ethernet interface
+After=syslog.target network.target
+
+[Service]
+ExecStart=/home/eth0-configure.sh
+ExecStop=/bin/kill $MAINPID
+
+[Install]
+WantedBy=multi-user.target
