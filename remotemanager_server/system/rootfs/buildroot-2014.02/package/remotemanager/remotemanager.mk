@@ -31,6 +31,9 @@ define REMOTEMANAGER_INSTALL_TARGET_CMDS
 	cp -r $(@D)/* $(TARGET_DIR)$(REMOTEMANAGER_DESTDIR)
 	$(INSTALL) -D -m 755 $(@D)/manage.py \
 		$(TARGET_DIR)$(REMOTEMANAGER_DESTDIR)/manage.py
+
+	$(INSTALL) -D -m 755 $(@D)/recovery_interface/scripts/initdb.sh \
+		$(TARGET_DIR)$(REMOTEMANAGER_DESTDIR)/recovery_interface/scripts/initdb.sh
 	
 	$(INSTALL) -D -m 644 package/remotemanager/django-settings-collectstatic-host-to-target.py \
 		$(HOST_DIR)$(REMOTEMANAGER_DESTDIR)/django-settings-collectstatic-host-to-target.py

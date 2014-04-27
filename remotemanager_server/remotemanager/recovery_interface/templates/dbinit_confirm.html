@@ -1,0 +1,45 @@
+{% extends "dbinit.html" %}
+
+{% block head %}{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+{% endblock %}
+
+{% block content %}{{ super() }}
+
+<p>Toutes les données seront supprimées. Cette opération peut prendre plusieurs minutes. Pour continuer entrez le nouveau mot de passe root:
+
+<form id= "init" action="." method="POST">
+<table>
+<tr>
+	<td>Mot de passe root</td>
+	<td><input name="password" type="password"></td>
+</tr>
+<tr>
+	<td>Confirmez le mot de passe</td>
+	<td><input name="password_repeat" type="password"></td>
+</tr>
+<tr>
+	<td></td>
+	<td><input type="submit" value="Remise à zéro"></td>
+</tr>
+</table>
+</form>
+</p>
+
+<p id="messages">
+</p>
+
+<script>
+$('#init').submit(function(ev) {
+	$('input[type=submit]').click(function(event){
+		event.preventDefault();
+		$('#messages').append("<br />Soyez patient!");
+	});
+
+	$('#messages').text("Sauvegarde en cours, veuillez patienter...");
+	/* Validations go here */
+	this.submit(); // If all the validations succeeded
+});
+</script>
+
+{% endblock %}

@@ -1,5 +1,13 @@
 {% extends "dbrestore.html" %}
 {% block content %}{{ super() }}
+
+{% if fileslist == None %}
+<p>Impossible d'accéder à la partition de donnée.</p>
+{% else %}
+
+{% if fileslist|length == 0 %}
+<p>Il n'y a actuellement aucune sauvegarde.</p>
+{% else %}
 <p>Selectionnez la sauvegarde à restaurer:</p>
 
 <table>
@@ -21,6 +29,9 @@
 	</tr>
 {% endfor %}
 </table>
+{% endif %}
+
 <p></p>
 <p><a href="/dbrestore/upload/">Charger une autre sauvegarde</a></p>
+{% endif %}
 {% endblock %}

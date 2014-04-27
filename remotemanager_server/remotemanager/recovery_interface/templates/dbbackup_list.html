@@ -1,6 +1,13 @@
 {% extends "dbbackup.html" %}
 {% block content %}{{ super() }}
 
+{% if fileslist == None %}
+<p>Impossible d'accéder à la partition de donnée.</p>
+{% else %}
+
+{% if fileslist|length == 0 %}
+<p>Il n'y a actuellement aucune sauvegarde.</p>
+{% else %}
 <p>Liste des sauvegardes:</p>
 
 <table>
@@ -22,6 +29,11 @@
 	</tr>
 {% endfor %}
 </table>
+
+{% endif %}
+
 <p></p>
 <p><a href="/dbbackup/create/">Créer une sauvegarde</a></p>
+
+{% endif %}
 {% endblock %}

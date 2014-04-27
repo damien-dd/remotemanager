@@ -1,0 +1,7 @@
+{% extends "dbinit.html" %}
+{% block content %}{{ super() }}
+
+<p>Une erreur est suvenue lors de la remise à zéro de la base de donnée!</p>
+<p>{{error_msg|nl2br}}</p>
+
+{% endblock %}
