@@ -26,6 +26,15 @@ define REMOTEMANAGER_BUILD_CMDS
 	echo "nothing to build"
 endef
 
+
+ifeq ($(BR2_PACKAGE_REMOTEMANAGER_ETHERNET_INTERFACE),y)
+define REMOTEMANAGER_ETHERNET_INTERFACE_INSTALL_TARGET_CMDS
+	$(INSTALL) -D -m 744 package/remotemanager/eth0-configure.sh \
+		$(TARGET_DIR)/home/eth0-configure.sh
+endef
+endif
+
+
 define REMOTEMANAGER_INSTALL_TARGET_CMDS
 	mkdir -p $(TARGET_DIR)$(REMOTEMANAGER_DESTDIR)
 	cp -r $(@D)/* $(TARGET_DIR)$(REMOTEMANAGER_DESTDIR)
@@ -45,11 +54,7 @@ define REMOTEMANAGER_INSTALL_TARGET_CMDS
 		$(HOST_DIR) $(TARGET_DIR)
 	$(HOST_DIR)/usr/bin/python $(HOST_DIR)$(REMOTEMANAGER_DESTDIR)/manage.py collectstatic --settings=remotemanager.settings_cross_compile --noinput
 
-ifeq ($(BR2_PACKAGE_REMOTEMANAGER_ETHERNET_INTERFACE),y)
-	$(INSTALL) -D -m 744 package/remotemanager/eth0-configure.sh \
-		$(TARGET_DIR)/home/eth0-configure.sh
-endif
-
+	$(REMOTEMANAGER_ETHERNET_INTERFACE_INSTALL_TARGET_CMDS)
 endef
 
 define HOST_REMOTEMANAGER_INSTALL_CMDS
@@ -58,6 +63,17 @@ define HOST_REMOTEMANAGER_INSTALL_CMDS
 	$(INSTALL) -D -m 755 $(@D)/manage.py \
 		$(HOST_DIR)$(REMOTEMANAGER_DESTDIR)/manage.py
 endef
+
+ifeq ($(BR2_PACKAGE_REMOTEMANAGER_ETHERNET_INTERFACE),y)
+define REMOTEMANAGER_ETHERNET_INTERFACE_INSTALL_INIT_SYSTEMD
+	[ -f $(TARGET_DIR)/etc/systemd/system/network.service ] || \
+		$(INSTALL) -D -m 644 package/remotemanager/network.service \
+			$(TARGET_DIR)/etc/systemd/system/network.service
+
+	ln -fs ../network.service \
+		$(TARGET_DIR)/etc/systemd/system/multi-user.target.wants/network.service
+endef
+endif
 
 define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
 
@@ -135,14 +151,7 @@ define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
 	$(INSTALL) -D -m 644 package/remotemanager/nginx.conf \
 		$(TARGET_DIR)/etc/nginx/nginx.conf
 
-ifeq ($(BR2_PACKAGE_REMOTEMANAGER_ETHERNET_INTERFACE),y)
-	[ -f $(TARGET_DIR)/etc/systemd/system/network.service ] || \
-		$(INSTALL) -D -m 644 package/remotemanager/network.service \
-			$(TARGET_DIR)/etc/systemd/system/network.service
-
-	ln -fs ../network.service \
-		$(TARGET_DIR)/etc/systemd/system/multi-user.target.wants/network.service
-endif
+	$(REMOTEMANAGER_ETHERNET_INTERFACE_INSTALL_INIT_SYSTEMD)
 
 endef
 
