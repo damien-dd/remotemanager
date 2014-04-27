@@ -1,7 +1,8 @@
 import os
 import sys
+import inspect
 
-sys.path.append(os.path.join(os.getcwd(), '../..'))
+sys.path.append(os.path.join(os.path.abspath(__file__).rsplit('/', 1)[0], '../..'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'remotemanager.settings')
 
 from django.contrib.auth.models import User

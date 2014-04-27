@@ -50,9 +50,3 @@ if [ $? -ne 0 ]; then
 	echo 'Error: Cannot create django root superuser'
 	exit 1
 fi
-
-PYTHONPATH=/srv/remotemanager /usr/bin/python changepassword.py root root
-if [ $? -ne 0 ]; then
-	echo 'Error: Cannot set the password for the django root superuser'
-	exit 1
-fi
