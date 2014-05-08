@@ -78,6 +78,12 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
+/usr/bin/python /srv/remotemanager/manage.py migrate main_app
+if [ $? -ne 0 ]; then
+	echo 'Error: migrate main_app command failed'
+	exit 1
+fi
+
 /usr/bin/django-admin.py createsuperuser --pythonpath=/srv/remotemanager --settings=remotemanager.settings --username=root --noinput --email=root@example.com
 if [ $? -ne 0 ]; then
 	echo 'Error: Cannot create django root superuser'
