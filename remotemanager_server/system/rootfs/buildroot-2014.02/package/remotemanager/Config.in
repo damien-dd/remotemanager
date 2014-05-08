@@ -11,4 +11,8 @@ config BR2_PACKAGE_REMOTEMANAGER_ETHERNET_INTERFACE
 	help
 	  Monitor the state of the ethernet link and call ifup/ifdown when the link goes up/down
 
+config BR2_PACKAGE_REMOTEMANAGER_RFCOMM_WATCHDOG
+	bool "rfcomm watchdog"
+	help
+	  Reboot the system if an rfcomm interface gets locked
 endif

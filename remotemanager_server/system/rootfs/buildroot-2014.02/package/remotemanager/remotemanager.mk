@@ -88,6 +88,17 @@ define REMOTEMANAGER_ETHERNET_INTERFACE_INSTALL_INIT_SYSTEMD
 endef
 endif
 
+ifeq ($(BR2_PACKAGE_REMOTEMANAGER_RFCOMM_WATCHDOG),y)
+define REMOTEMANAGER_RFCOMM_WATCHDOG_INSTALL_INIT_SYSTEMD
+	[ -f $(TARGET_DIR)/etc/systemd/system/rfcommwatchdog.service ] || \
+		$(INSTALL) -D -m 644 package/remotemanager/rfcommwatchdog.service \
+			$(TARGET_DIR)/etc/systemd/system/rfcommwatchdog.service
+
+	ln -fs ../rfcommwatchdog.service \
+		$(TARGET_DIR)/etc/systemd/system/multi-user.target.wants/rfcommwatchdog.service
+endef
+endif
+
 define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
 
 	[ -f $(TARGET_DIR)/etc/celery.conf ] || \
@@ -166,6 +177,7 @@ define REMOTEMANAGER_INSTALL_INIT_SYSTEMD
 
 	$(REMOTEMANAGER_ETHERNET_INTERFACE_INSTALL_INIT_SYSTEMD)
 
+	$(REMOTEMANAGER_RFCOMM_WATCHDOG_INSTALL_INIT_SYSTEMD)
 endef
 
 $(eval $(generic-package))

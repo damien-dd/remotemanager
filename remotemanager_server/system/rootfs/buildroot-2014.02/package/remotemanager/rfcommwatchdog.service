@@ -1,0 +1,8 @@
+[Unit]
+Description=rfcomm watchdog
+
+[Service]
+ExecStart=/usr/bin/python  /srv/remotemanager/rfcomm_watchdog.py /data/rfcomm-watchdog.log
+
+[Install]
+WantedBy=multi-user.target
