@@ -8,7 +8,7 @@ REMOTEMANAGER_VERSION = 0.1
 REMOTEMANAGER_SITE = $(TOPDIR)/../../../remotemanager
 REMOTEMANAGER_SITE_METHOD = local
 
-REMOTEMANAGER_DEPENDENCIES = python python-pip host-python-pip host-python host-remotemanager nginx
+REMOTEMANAGER_DEPENDENCIES = python python-pip host-python-pip host-python host-remotemanager nginx sudo
 HOST_REMOTEMANAGER_DEPENDENCIES = host-python-pip host-python
 
 REMOTEMANAGER_DESTDIR = /srv/remotemanager
@@ -43,6 +43,19 @@ define REMOTEMANAGER_INSTALL_TARGET_CMDS
 
 	$(INSTALL) -D -m 755 $(@D)/recovery_interface/scripts/initdb.sh \
 		$(TARGET_DIR)$(REMOTEMANAGER_DESTDIR)/recovery_interface/scripts/initdb.sh
+
+	chmod 640 $(TARGET_DIR)/etc/sudoers
+
+	grep -q 'hciconfig' $(TARGET_DIR)/etc/sudoers || \
+		echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/hciconfig' >> $(TARGET_DIR)/etc/sudoers
+
+	grep -q 'rfcomm' $(TARGET_DIR)/etc/sudoers || \
+		echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/rfcomm' >> $(TARGET_DIR)/etc/sudoers
+
+	grep -q 'initdb.sh' $(TARGET_DIR)/etc/sudoers || \
+		echo 'www-data ALL=(ALL) NOPASSWD: /srv/remotemanager/recovery_interface/scripts/initdb.sh' >> $(TARGET_DIR)/etc/sudoers
+
+	chmod 440 $(TARGET_DIR)/etc/sudoers
 	
 	$(INSTALL) -D -m 644 package/remotemanager/django-settings-collectstatic-host-to-target.py \
 		$(HOST_DIR)$(REMOTEMANAGER_DESTDIR)/django-settings-collectstatic-host-to-target.py
