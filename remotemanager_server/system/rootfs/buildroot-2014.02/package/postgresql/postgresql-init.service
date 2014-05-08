@@ -4,11 +4,10 @@ ConditionPathExists=|!/data/pgsql/PG_VERSION
 
 [Service]
 Type=oneshot
-User=postgres
-Group=postgres
 
 ExecStartPre=/bin/mkdir -p /data/pgsql
-ExecStart=/usr/bin/pg_ctl initdb -D /data/pgsql
+ExecStartPre=/bin/chown postgres:postgres /data/pgsql
+ExecStart=/bin/su - postgres -c "/usr/bin/pg_ctl initdb -D /data/pgsql"
 RemainAfterExit=yes
 
 [Install]
