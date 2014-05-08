@@ -23,7 +23,8 @@ $(window).unload(function(){});
 </tr>
 <tr>
 	<td></td>
-	<td><input type="submit" value="Remise à zéro"></td>
+	<td><input type="checkbox" name="option" value="reformat">Reformatter la partition<br>
+	<input type="submit" value="Remise à zéro"></td>
 </tr>
 </table>
 </form>
@@ -39,7 +40,7 @@ $('#init').submit(function(ev) {
 		$('#messages').append("<br />Soyez patient!");
 	});
 
-	$('#messages').text("Sauvegarde en cours, veuillez patienter...");
+	$('#messages').text("Remise à zéro en cours, veuillez patienter...");
 	/* Validations go here */
 	this.submit(); // If all the validations succeeded
 });

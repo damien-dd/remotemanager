@@ -62,15 +62,23 @@ def dbinit_action():
 	if request.method == 'POST':
 		post_data = dict(request.form)
 		password = post_data['password'][0]
+		if 'option' in post_data and post_data['option'][0] == 'reformat':
+			reformat = True
+		else:
+			reformat = False
+		
 		if password != post_data['password_repeat'][0]:
 			return render_template('dbinit_failed.html', uptime=get_uptime_str(), error_msg='Les mots de passes ne correspondent pas!')
 		if str(password) == '':
 			return render_template('dbinit_failed.html', uptime=get_uptime_str(), error_msg='Vous devez saisir un mot de passe!')
 		try:
-			subprocess.check_output(['sudo', 'scripts/initdb.sh'])
-			subprocess.check_output(['python', 'scripts/changepassword.py', 'root', password])
+			cmd = ['sudo', 'scripts/initdb.sh']
+			if reformat:
+				cmd.append('-reformat')
+			subprocess.check_output(cmd)
+			subprocess.check_output(['python', 'scripts/changepassword.py', 'root', str(password)])
 		except subprocess.CalledProcessError, err:
-			error_msg = 'initdb.sh script failed: %s' % err.output
+			error_msg = '%s script failed: %s' % (err.cmd, err.output)
 			return render_template('dbinit_failed.html', uptime=get_uptime_str(), error_msg=error_msg)
 		return render_template('dbinit_success.html', uptime=get_uptime_str())		
 	else:
