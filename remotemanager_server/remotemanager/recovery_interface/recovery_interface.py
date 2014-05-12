@@ -25,14 +25,9 @@ def nl2br(eval_ctx, value):
 	return result
 
 
-def get_uptime_str():
-	uptime_delta = timedelta(seconds=uptime.uptime())
-	uptime_str = '%s%s%s%s' % (\
-		('%dj. ' % uptime_delta.days) if uptime_delta.days > 0 else '',
-		('%dh. ' % (uptime_delta.seconds/(60*60))) if uptime_delta.seconds >= 60*60 else '',
-		('%dmin. ' % (uptime_delta.seconds%(60*60)/60)) if uptime_delta.seconds >= 60 else '',
-		'%dsec.' % (uptime_delta.seconds%60))
-	return uptime_str
+@app.route('/uptime/')
+def get_uptime():
+	return '%d' % uptime.uptime()
 
 def get_backupfiles_list():
 	fileslist = []
@@ -54,7 +49,7 @@ def get_backupfiles_list():
 
 @app.route('/')
 def index():
-	return render_template('main.html', uptime=get_uptime_str())
+	return render_template('main.html')
 
 
 @app.route('/dbinit/', methods=['GET', 'POST'])
@@ -68,9 +63,9 @@ def dbinit_action():
 			reformat = False
 		
 		if password != post_data['password_repeat'][0]:
-			return render_template('dbinit_failed.html', uptime=get_uptime_str(), error_msg='Les mots de passes ne correspondent pas!')
+			return render_template('dbinit_failed.html', error_msg='Les mots de passes ne correspondent pas!')
 		if str(password) == '':
-			return render_template('dbinit_failed.html', uptime=get_uptime_str(), error_msg='Vous devez saisir un mot de passe!')
+			return render_template('dbinit_failed.html', error_msg='Vous devez saisir un mot de passe!')
 		try:
 			cmd = ['sudo', 'scripts/initdb.sh']
 			if reformat:
@@ -79,15 +74,15 @@ def dbinit_action():
 			subprocess.check_output(['python', 'scripts/changepassword.py', 'root', str(password)])
 		except subprocess.CalledProcessError, err:
 			error_msg = '%s script failed: %s' % (err.cmd, err.output)
-			return render_template('dbinit_failed.html', uptime=get_uptime_str(), error_msg=error_msg)
-		return render_template('dbinit_success.html', uptime=get_uptime_str())		
+			return render_template('dbinit_failed.html', error_msg=error_msg)
+		return render_template('dbinit_success.html')		
 	else:
-		return render_template('dbinit_confirm.html', uptime=get_uptime_str())
+		return render_template('dbinit_confirm.html')
 
 
 @app.route('/dbbackup/')
 def dbbackup():
-	return render_template('dbbackup_list.html', uptime=get_uptime_str(), fileslist=get_backupfiles_list())
+	return render_template('dbbackup_list.html', fileslist=get_backupfiles_list())
 
 @app.route('/dbbackup/create/', methods=['GET', 'POST'])
 def dbbackup_action():
@@ -96,17 +91,17 @@ def dbbackup_action():
 		returncode = p.wait()
 		if returncode == 0:
 			filename = p.stdout.read().split('Backup tempfile created: ', 1)[-1].split(' ', 1)[0]
-			return render_template('dbbackup_success.html', uptime=get_uptime_str(), filename=filename)
+			return render_template('dbbackup_success.html', filename=filename)
 		else:
 			error_msg = '%s\n%s' % (p.stdout.read(), p.stderr.read())
-			return render_template('dbbackup_failed.html', uptime=get_uptime_str(), error_msg=error_msg)
+			return render_template('dbbackup_failed.html', error_msg=error_msg)
 		
 	else:
-		return render_template('dbbackup_confirm.html', uptime=get_uptime_str())
+		return render_template('dbbackup_confirm.html')
 
 @app.route('/dbrestore/')
 def dbrestore():
-	return render_template('dbrestore_list.html', uptime=get_uptime_str(), fileslist=get_backupfiles_list())
+	return render_template('dbrestore_list.html', fileslist=get_backupfiles_list())
 
 @app.route('/dbrestore/<filename>/', methods=['GET', 'POST'])
 def dbrestore_action(filename):
@@ -117,12 +112,12 @@ def dbrestore_action(filename):
 		p = subprocess.Popen(['python', '/srv/remotemanager/manage.py', 'dbrestore', '-f', filepath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		returncode = p.wait()
 		if returncode == 0:
-			return render_template('dbrestore_success.html', uptime=get_uptime_str(), filename=filename)
+			return render_template('dbrestore_success.html', filename=filename)
 		else:
 			error_msg = '%s\n%s' % (p.stdout.read(), p.stderr.read())
-			return render_template('dbrestore_failed.html', uptime=get_uptime_str(), error_msg=error_msg)
+			return render_template('dbrestore_failed.html', error_msg=error_msg)
 	else:
-		return render_template('dbrestore_confirm.html', uptime=get_uptime_str(), filename=filename)
+		return render_template('dbrestore_confirm.html', filename=filename)
 
 
 @app.route('/dbrestore/upload/', methods=['GET', 'POST'])
@@ -134,17 +129,17 @@ def upload_file():
 		if f:
 			filename = secure_filename(f.filename)
 			if re.match(RE_DBBACKUP_FILENAME, filename) is None:
-				return render_template('uploadbackup_failed.html', uptime=get_uptime_str(), filename=filename, error_msg='Nom de fichier de sauvegarde invalide!')
+				return render_template('uploadbackup_failed.html', filename=filename, error_msg='Nom de fichier de sauvegarde invalide!')
 			filepath = '/data/dbbackup/%s' % filename
 			if not os.path.isfile(filepath):
 				f.save(filepath)
-				return render_template('uploadbackup_success.html', uptime=get_uptime_str(), filename=filename)
+				return render_template('uploadbackup_success.html', filename=filename)
 			else:
-				return render_template('uploadbackup_failed.html', uptime=get_uptime_str(), filename=filename, error_msg='Une sauvegarde du meme nom existe deja!')
+				return render_template('uploadbackup_failed.html', filename=filename, error_msg='Une sauvegarde du meme nom existe deja!')
 		else:
-			return render_template('uploadbackup_form.html', uptime=get_uptime_str())
+			return render_template('uploadbackup_form.html')
 	else:
-		return render_template('uploadbackup_form.html', uptime=get_uptime_str())
+		return render_template('uploadbackup_form.html')
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', debug = True)

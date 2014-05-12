@@ -5,6 +5,54 @@
 	<title>Remote Manager - Console de restauration</title>
 	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
 	<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='style.css') }}">
+	<script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='jquery.timer.js') }}"></script>
+	<script>
+	$(function() {
+		// Current timer position in milliseconds
+		var currentUpTime = 0;
+	
+		// Start the timer
+		$.getJSON('/uptime/', 
+		function(data) {
+			var timer = $.timer(update_uptime, 1000);
+			currentUpTime = parseInt(data);
+			update_uptime();
+			timer.play();
+		})
+		.error(function(jqXHR, textStatus, errorThrown) {
+			$('#uptime').text("??");
+		});
+
+		// Output time and increment
+		function update_uptime() {
+			var currentUpTime_str = "", remaining_sec;
+			remaining_sec=currentUpTime;
+
+			if (remaining_sec >= 24*60*60) {
+				currentUpTime_str += remaining_sec/(24*60*60) >> 0;
+				currentUpTime_str += "j. "
+				remaining_sec = remaining_sec % (24*60*60);
+			}
+			if (remaining_sec >= 60*60) {
+				currentUpTime_str += remaining_sec/(60*60) >> 0;
+				currentUpTime_str += "h. "
+				remaining_sec = remaining_sec % (60*60);
+			}
+			if (remaining_sec >= 60) {
+				currentUpTime_str += remaining_sec/(60) >> 0;
+				currentUpTime_str += "m. "
+				remaining_sec = remaining_sec % 60;
+			}
+			if (remaining_sec > 0) {
+				currentUpTime_str += remaining_sec;
+				currentUpTime_str += "s. "
+			}
+			$('#uptime').text(currentUpTime_str);
+			currentUpTime += 1;
+		};
+	});
+	</script>
 	{% block head %}{% endblock %}
 </head>
 
@@ -13,7 +61,7 @@
 
 	<header>
 	<h1>Remote Manager - Console de restauration</h1>
-	<p>Système en marche depuis {{uptime}}</p>
+	<p>Système en marche depuis <span id="uptime"></span></p>
 	<nav>
 			<ul class="group">
 				<li><a href="/dbinit/">Remise à zéro</a></li>
