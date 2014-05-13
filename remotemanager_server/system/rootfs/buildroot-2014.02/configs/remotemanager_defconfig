@@ -749,7 +749,7 @@ BR2_PACKAGE_PYTHON_SIMPLEJSON=y
 # BR2_PACKAGE_PYTHON_TORNADO is not set
 # BR2_PACKAGE_PYTHON_VERSIONTOOLS is not set
 BR2_PACKAGE_PYTHON_PIP=y
-BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL="python-pip-packages/uptime-3.0.1.tar.gz python-pip-packages/Flask-0.10.1.tar.gz python-pip-packages/Django-1.6.2.tar.gz python-pip-packages/pytz-2014.1.tar.gz celery redis uwsgi wsgiref South django-celery dropbox boto django-dbbackup psycopg2"
+BR2_PACKAGE_PYTHON_PIP_MODULES_ADDITIONAL="pip-package/uptime-3.0.1.tar.gz pip-package/Flask-0.10.1.tar.gz pip-package/Django-1.6.4.tar.gz pip-package/pytz-2014.1.tar.gz celery redis uwsgi wsgiref South django-celery dropbox boto django-dbbackup psycopg2"
 # BR2_PACKAGE_PYTHON3 is not set
 # BR2_PACKAGE_RUBY is not set
 # BR2_PACKAGE_TCL is not set
