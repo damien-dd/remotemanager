@@ -141,5 +141,39 @@ def upload_file():
 	else:
 		return render_template('uploadbackup_form.html')
 
+
+@app.route('/sslcertificate/upload/', methods=['GET', 'POST'])
+def upload_sslcertificate():
+	if request.method == 'POST':
+	        f = request.files['file']
+		if f:
+			post_data = dict(request.form)
+			if 'option' in post_data and post_data['option'][0] == 'overwrite':
+				overwrite = True
+			else:
+				overwrite = False
+
+			filename = secure_filename(f.filename)
+			
+			if not (filename.endswith('.crt') or filename.endswith('.key')):
+				return render_template('uploadsslcertificate_failed.html', filename=filename, error_msg='Format de certicat invalide! Les formats de fichier accepte sont *.crt/*.key')
+			if filename.endswith('.crt'):
+				filepath = '/etc/ssl/certs/remotemanager.crt'
+			elif filename.endswith('.key'):
+				filepath = '/etc/ssl/private/remotemanager.key'
+
+			if not os.path.isfile(filepath) or overwrite:
+				filepath_tmp = os.path.join('/tmp', os.path.basename(filepath))
+				f.save(filepath_tmp)
+				subprocess.check_output(['sudo', 'scripts/copyfile.sh', '-f', filepath_tmp, filepath])
+				subprocess.check_output(['rm', filepath_tmp])
+				return render_template('uploadsslcertificate_success.html', filename=filename)
+			elif not overwrite:
+				return render_template('uploadsslcertificate_failed.html', filename=filename, error_msg='Le fichier existe deja!')
+		else:
+			return render_template('uploadsslcertificate_form.html')
+	else:
+		return render_template('uploadsslcertificate_form.html')
+
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', debug = True)

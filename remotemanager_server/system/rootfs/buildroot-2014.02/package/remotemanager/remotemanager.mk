@@ -44,6 +44,9 @@ define REMOTEMANAGER_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 755 $(@D)/recovery_interface/scripts/initdb.sh \
 		$(TARGET_DIR)$(REMOTEMANAGER_DESTDIR)/recovery_interface/scripts/initdb.sh
 
+	$(INSTALL) -D -m 755 $(@D)/recovery_interface/scripts/copyfile.sh \
+		$(TARGET_DIR)$(REMOTEMANAGER_DESTDIR)/recovery_interface/scripts/copyfile.sh
+
 	chmod 640 $(TARGET_DIR)/etc/sudoers
 
 	grep -q 'hciconfig' $(TARGET_DIR)/etc/sudoers || \
@@ -54,6 +57,9 @@ define REMOTEMANAGER_INSTALL_TARGET_CMDS
 
 	grep -q 'initdb.sh' $(TARGET_DIR)/etc/sudoers || \
 		echo 'www-data ALL=(ALL) NOPASSWD: /srv/remotemanager/recovery_interface/scripts/initdb.sh' >> $(TARGET_DIR)/etc/sudoers
+
+	grep -q 'copyfile.sh' $(TARGET_DIR)/etc/sudoers || \
+		echo 'www-data ALL=(ALL) NOPASSWD: /srv/remotemanager/recovery_interface/scripts/copyfile.sh' >> $(TARGET_DIR)/etc/sudoers
 
 	chmod 440 $(TARGET_DIR)/etc/sudoers
 	

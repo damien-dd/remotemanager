@@ -1,0 +1,35 @@
+{% extends "uploadsslcertificate.html" %}
+
+{% block head %}{{ super() }}
+<script type="text/javascript">
+$(window).unload(function(){});
+</script>
+{% endblock %}
+
+{% block content %}{{ super() }}
+<p>Sélectionner le fichier de sauvegarde à charger:
+<form id="upload" action="" method=post enctype=multipart/form-data>
+	<input type=file name=file>
+	<input type=submit value="Charger"><br>
+	<input type="checkbox" name="option" value="overwrite">Ecraser fichier existant
+</form>
+</p>
+
+
+<p id="messages">
+</p>
+
+<script>
+$('#upload').submit(function(ev) {
+	$('input[type=submit]').click(function(event){
+		event.preventDefault();
+		$('#messages').append("<br />Soyez patient!");
+	});
+
+	$('#messages').text("Chargement de la sauvegarde en cours, veuillez patienter...");
+	/* Validations go here */
+	this.submit(); // If all the validations succeeded
+});
+</script>
+
+{% endblock %}

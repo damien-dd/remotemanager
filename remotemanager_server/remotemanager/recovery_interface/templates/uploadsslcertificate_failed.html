@@ -1,0 +1,7 @@
+{% extends "uploadsslcertificate.html" %}
+{% block content %}{{ super() }}
+
+<p>Erreur lors de la copie du fichier <em>{{filename}}</em> !</p>
+<p>{{error_msg}}</p>
+
+{% endblock %}
