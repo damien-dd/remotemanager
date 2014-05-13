@@ -1,0 +1,11 @@
+[Unit]
+Description=noip daemon
+After=network.target
+
+[Service]
+Type=forking
+ExecStartPre=/bin/cp /etc/no-ip2.conf /tmp/no-ip2.conf
+ExecStart=/usr/sbin/noip2 -c /tmp/no-ip2.conf
+
+[Install]
+WantedBy=multi-user.target
