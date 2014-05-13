@@ -15,4 +15,25 @@ config BR2_PACKAGE_REMOTEMANAGER_RFCOMM_WATCHDOG
 	bool "rfcomm watchdog"
 	help
 	  Reboot the system if an rfcomm interface gets locked
+
+config BR2_PACKAGE_REMOTEMANAGER_PREINSTALL_SSL_CERTIFICATE
+	bool "Pre-install SSL certificate"
+	help
+	  Pre-install SSL certificate for the webserver.
+
+
+if BR2_PACKAGE_REMOTEMANAGER_PREINSTALL_SSL_CERTIFICATE
+
+config BR2_PACKAGE_REMOTEMANAGER_PREINSTALL_CRT
+	string "CRT file"
+	help
+	  CRT certificate file (*.crt)
+
+config BR2_PACKAGE_REMOTEMANAGER_PREINSTALL_KEY
+	string "KEY file"
+	help
+	  KEY certificate file (*.key)
+
+endif
+
 endif
