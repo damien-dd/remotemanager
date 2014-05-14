@@ -10,6 +10,8 @@ ExecStartPost=/bin/ln -s /data/ssh_host_key /tmp/ssh_host_key
 ExecStartPost=/bin/ln -s /data/ssh_host_key.pub /tmp/ssh_host_key.pub
 ExecStartPost=/bin/ln -s /data/ssh_host_rsa_key /tmp/ssh_host_rsa_key
 ExecStartPost=/bin/ln -s /data/ssh_host_rsa_key.pub /tmp/ssh_host_rsa_key.pub
+ExecStartPost=/bin/mkdir -p /data/dbbackup
+ExecStartPost=/bin/chown www-data:www-data /data/dbbackup
 RemainAfterExit=yes
 
 [Install]
