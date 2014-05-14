@@ -39,7 +39,7 @@ define BR2_PACKAGE_REMOTEMANAGER_PREINSTALL_SSL_CERTIFICATE_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 600 $(BR2_PACKAGE_REMOTEMANAGER_PREINSTALL_CRT) \
 		$(TARGET_DIR)/etc/ssl/certs/remotemanager.crt
 	$(INSTALL) -D -m 600 $(BR2_PACKAGE_REMOTEMANAGER_PREINSTALL_KEY) \
-		$(TARGET_DIR)/etc/ssl/certs/remotemanager.crt
+		$(TARGET_DIR)/etc/ssl/private/remotemanager.key
 endef
 endif
 
