@@ -326,7 +326,7 @@ BR2_PACKAGE_BUSYBOX_SHOW_OTHERS=y
 # Compressors and decompressors
 #
 BR2_PACKAGE_BZIP2=y
-# BR2_PACKAGE_GZIP is not set
+BR2_PACKAGE_GZIP=y
 # BR2_PACKAGE_INFOZIP is not set
 # BR2_PACKAGE_LZOP is not set
 # BR2_PACKAGE_XZ is not set
