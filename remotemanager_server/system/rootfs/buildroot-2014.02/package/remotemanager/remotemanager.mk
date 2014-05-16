@@ -62,7 +62,7 @@ define REMOTEMANAGER_INSTALL_TARGET_CMDS
 		echo 'www-data ALL=(ALL) NOPASSWD: /sbin/reboot' >> $(TARGET_DIR)/etc/sudoers
 
 	grep -q 'hciconfig' $(TARGET_DIR)/etc/sudoers || \
-		echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/hciconfig' >> $(TARGET_DIR)/etc/sudoers
+		echo 'www-data ALL=(ALL) NOPASSWD: /usr/sbin/hciconfig' >> $(TARGET_DIR)/etc/sudoers
 
 	grep -q 'rfcomm' $(TARGET_DIR)/etc/sudoers || \
 		echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/rfcomm' >> $(TARGET_DIR)/etc/sudoers
