@@ -25,6 +25,14 @@ def nl2br(eval_ctx, value):
 	return result
 
 
+@app.route('/reboot/', methods=['GET', 'POST'])
+def reboot_action():
+	if request.method == 'POST':
+			subprocess.check_output(['sudo', '/sbin/reboot'])
+	else:
+		return render_template('reboot_confirm.html')
+
+
 @app.route('/uptime/')
 def get_uptime():
 	return '%d' % uptime.uptime()
