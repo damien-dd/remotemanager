@@ -68,10 +68,18 @@ define NTP_INSTALL_INIT_SYSTEMD
 		$(INSTALL) -D -m 644 package/ntp/ntpd.service \
 			$(TARGET_DIR)/etc/systemd/system/ntpd.service
 
+	[ -f $(TARGET_DIR)/etc/systemd/system/ntpdate.service ] || \
+		$(INSTALL) -D -m 644 package/ntp/ntpdate.service \
+			$(TARGET_DIR)/etc/systemd/system/ntpdate.service
+
+	[ -f $(TARGET_DIR)/etc/systemd/system/ntpdate.timer ] || \
+		$(INSTALL) -D -m 644 package/ntp/ntpdate.timer \
+			$(TARGET_DIR)/etc/systemd/system/ntpdate.timer
+
 	mkdir -p $(TARGET_DIR)/etc/systemd/system/multi-user.target.wants
 
-	ln -fs ../ntpd.service \
-		$(TARGET_DIR)/etc/systemd/system/multi-user.target.wants/ntpd.service
+	ln -fs ../ntpdate.timer \
+		$(TARGET_DIR)/etc/systemd/system/multi-user.target.wants/ntpdate.timer
 endef
 
 NTP_POST_PATCH_HOOKS += NTP_PATCH_FIXUPS
