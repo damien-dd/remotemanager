@@ -61,19 +61,19 @@ define REMOTEMANAGER_INSTALL_TARGET_CMDS
 
 	chmod 640 $(TARGET_DIR)/etc/sudoers
 
-	grep -q 'reboot' $(TARGET_DIR)/etc/sudoers || \
+	grep -q 'www-data.*NOPASSWD.*reboot' $(TARGET_DIR)/etc/sudoers || \
 		echo 'www-data ALL=(ALL) NOPASSWD: /sbin/reboot' >> $(TARGET_DIR)/etc/sudoers
 
-	grep -q 'hciconfig' $(TARGET_DIR)/etc/sudoers || \
+	grep -q 'www-data.*NOPASSWD.*hciconfig' $(TARGET_DIR)/etc/sudoers || \
 		echo 'www-data ALL=(ALL) NOPASSWD: /usr/sbin/hciconfig' >> $(TARGET_DIR)/etc/sudoers
 
-	grep -q 'rfcomm' $(TARGET_DIR)/etc/sudoers || \
+	grep -q 'www-data.*NOPASSWD.*rfcomm' $(TARGET_DIR)/etc/sudoers || \
 		echo 'www-data ALL=(ALL) NOPASSWD: /usr/bin/rfcomm' >> $(TARGET_DIR)/etc/sudoers
 
-	grep -q 'initdb.sh' $(TARGET_DIR)/etc/sudoers || \
+	grep -q 'www-data.*NOPASSWD.*initdb.sh' $(TARGET_DIR)/etc/sudoers || \
 		echo 'www-data ALL=(ALL) NOPASSWD: /srv/remotemanager/recovery_interface/scripts/initdb.sh' >> $(TARGET_DIR)/etc/sudoers
 
-	grep -q 'copyfile.sh' $(TARGET_DIR)/etc/sudoers || \
+	grep -q 'www-data.*NOPASSWD.*copyfile.sh' $(TARGET_DIR)/etc/sudoers || \
 		echo 'www-data ALL=(ALL) NOPASSWD: /srv/remotemanager/recovery_interface/scripts/copyfile.sh' >> $(TARGET_DIR)/etc/sudoers
 
 	chmod 440 $(TARGET_DIR)/etc/sudoers
