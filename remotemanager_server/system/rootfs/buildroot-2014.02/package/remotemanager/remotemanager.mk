@@ -56,6 +56,9 @@ define REMOTEMANAGER_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 755 $(@D)/recovery_interface/scripts/copyfile.sh \
 		$(TARGET_DIR)$(REMOTEMANAGER_DESTDIR)/recovery_interface/scripts/copyfile.sh
 
+	grep -q '^dialout.*www-data' $(TARGET_DIR)/etc/group || \
+		sed -i "/^dialout:/s/$$/www-data/" $(TARGET_DIR)/etc/group
+
 	chmod 640 $(TARGET_DIR)/etc/sudoers
 
 	grep -q 'reboot' $(TARGET_DIR)/etc/sudoers || \
