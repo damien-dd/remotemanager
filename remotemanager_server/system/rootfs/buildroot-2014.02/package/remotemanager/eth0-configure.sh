@@ -35,7 +35,7 @@ do
 			if [ $ifupRetval -ne 0 ]
 			then
 				/bin/echo 'ifup previously failed, retry...'
-				/sbin/ifup etho
+				/sbin/ifup eth0
 				ifupRetval=$?
 			fi
 		fi
