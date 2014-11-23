@@ -8,6 +8,7 @@ currentState="down"
 previousState="down"
 transitionUp=false
 transitionDown=false
+ifupRetval=1
 
 /sbin/ifconfig eth0 up
 
@@ -29,6 +30,14 @@ do
 		then
 			/bin/echo 'eth0 interface went up'
 			/sbin/ifup eth0
+			ifupRetval=$?
+		else
+			if [ $ifupRetval -ne 0 ]
+			then
+				/bin/echo 'ifup previously failed, retry...'
+				/sbin/ifup etho
+				ifupRetval=$?
+			fi
 		fi
 	else
 		if [ $previousState == "up" ]
