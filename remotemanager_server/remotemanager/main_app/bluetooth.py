@@ -15,8 +15,8 @@ def get_status():
 		return None
 
 
-def get_rfcomm_status(bluetooth_device):
-	dev = str(bluetooth_device.remotedevice_dev)
+def get_rfcomm_status(remotedevice):
+	dev = str(remotedevice.remotedevice_dev)
 	rfcomm_interfaces = subprocess.check_output('/usr/bin/rfcomm').strip().split('\n')
 	for rfcomm_interface in rfcomm_interfaces:
 		if ':' in rfcomm_interface:
@@ -30,10 +30,13 @@ def get_rfcomm_status(bluetooth_device):
 
 	return (None, None)
 
-def bind_device(bluetooth_device):
-	dev = str(bluetooth_device.remotedevice_dev)
-	channel = str(bluetooth_device.bluetoothremotedevice_channel)
-	mac = str(bluetooth_device.bluetoothremotedevice_mac)
+def bind_device(remotedevice):
+
+	if remotedevice.remotedevice_mode != 'BT':
+		return None
+
+	dev = str(remotedevice.remotedevice_dev)
+	mac = str(remotedevice.remotedevice_serial)
 
 	try:
 		subprocess.check_output(['sudo', '/usr/bin/rfcomm', 'release', dev], stderr=subprocess.STDOUT)
@@ -41,7 +44,7 @@ def bind_device(bluetooth_device):
 		pass
 
 	try:
-		output=subprocess.check_output(['sudo', '/usr/bin/rfcomm', 'bind', dev, mac, channel], stderr=subprocess.STDOUT)
+		output=subprocess.check_output(['sudo', '/usr/bin/rfcomm', 'bind', dev, mac, '1'], stderr=subprocess.STDOUT)
 		if output == '':
 			return True
 		else:

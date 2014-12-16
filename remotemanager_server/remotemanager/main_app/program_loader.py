@@ -1,6 +1,6 @@
 import subprocess
 
-from main_app.models import RemoteDevice, BluetoothRemoteDevice
+from main_app.models import RemoteDevice
 from main_app import bluetooth
 
 MAX_PROGRAM_SIZE = 32256
@@ -37,14 +37,11 @@ def verify_program_size(program_path):
 def load_program(device, program_path):
 	dev = str(device.remotedevice_dev)
 
-	try:
-		bt_device = device.bluetoothremotedevice
-		if not bluetooth.enable():
-			return 'Cannot enable bluetooth'
-		if not bluetooth.bind_device(bt_device):
-			return 'Cannot bind bluetooth device'
-	except BluetoothRemoteDevice.DoesNotExist:
-		pass
+	if not bluetooth.enable():
+		return 'Cannot enable bluetooth'
+	if not bluetooth.bind_device(device):
+		return 'Cannot bind bluetooth device'
+	
 	
 	try:
 		output = subprocess.check_output(['sudo', '/home/root/avrdude-5.11.1/avrdude','-F','-p', 'atmega328p', '-c', 'arduino', '-b', '115200', '-P', dev, '-U', 'flash:w:%s' % program_path], stderr=subprocess.STDOUT)
@@ -52,10 +49,6 @@ def load_program(device, program_path):
 	except subprocess.CalledProcessError:
 		output = '\'/home/root/avrdude-5.11.1/avrdude -F -p atmega328p -c arduino -b 115200 -P /dev/rfcomm2 -U flash:w:/home/root/Blink.cpp.hex\' command failed'
 
-	try:
-		bt_device = device.bluetoothremotedevice
-		bluetooth.enable(False)
-	except BluetoothRemoteDevice.DoesNotExist:
-		pass
+	bluetooth.enable(False)
 
 	return output

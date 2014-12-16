@@ -15,7 +15,7 @@ import time
 from datetime import date
 
 
-from main_app.models import BluetoothRemoteDevice, RemoteDevice, Serie, DataField, TimelineChart, SeriePlot
+from main_app.models import RemoteDevice, Serie, DataField, TimelineChart, SeriePlot
 from main_app import bluetooth
 from main_app import realtime_cmd
 from main_app.program_loader import handle_uploaded_file

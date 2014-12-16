@@ -25,42 +25,32 @@ def validate_bt_channel(channel):
 
 
 class RemoteDevice(models.Model):
+	MODES = (
+		('BT', 'Bluetooth'),
+		('USB', 'USB'),)
+
 	remotedevice_name = models.CharField(max_length=30, unique=True, verbose_name='Nom du peripherique')
+	remotedevice_mode = models.CharField(max_length=3, choices=MODES, default=MODES[0][0], verbose_name='Mode')
+	remotedevice_serial = models.CharField(max_length=30, verbose_name='Adresse MAC / N. serie')
 	remotedevice_dev = models.CharField(max_length=20, unique=True, verbose_name='Lien vers l\'interface', help_text='Format: <em>/dev/xxx</em>')
 
 	def __unicode__(self):
 		return self.remotedevice_name
 
 	def enable(self, enable=True):
-		try:
-			bt_device = self.bluetoothremotedevice
+		if self.remotedevice_mode == 'BT':
 			if not bluetooth.enable(enable):
 				raise Exception('Cannot enable bluetooth')
-			rfcomm_mac, rfcomm_status = bluetooth.get_rfcomm_status(bt_device)
+			rfcomm_mac, rfcomm_status = bluetooth.get_rfcomm_status(self)
 			if enable:
 				if rfcomm_status not in ['closed', None]:
 					raise Exception('Device is currently in use')
-				if bt_device.bluetoothremotedevice_mac.upper() != rfcomm_mac and not bluetooth.bind_device(bt_device):
+				if self.remotedevice_serial.upper() != rfcomm_mac and not bluetooth.bind_device(self):
 					try:
 						bluetooth.enable(False)
 					except Exception:
 						pass
 					raise Exception('Cannot bind bluetooth device')
-		except BluetoothRemoteDevice.DoesNotExist:
-			pass
-
-
-
-class USBRemoteDevice(RemoteDevice):
-	def __unicode__(self):
-		return self.remotedevice_name
-
-class BluetoothRemoteDevice(RemoteDevice):
-	bluetoothremotedevice_mac = models.CharField(max_length=17, unique=True, verbose_name='Adresse MAC', help_text='Format: <em>1A:2B:3C:4D:5E:6F</em>', validators=[validate_mac])
-	bluetoothremotedevice_channel = models.IntegerField(default=1, verbose_name='Canal Bluetooth', validators=[validate_bt_channel])
-
-	def __unicode__(self):
-		return self.remotedevice_name
 
 
 class Serie(models.Model):

@@ -2,7 +2,7 @@ import serial
 import re
 
 from main_app import bluetooth
-from main_app.models import BluetoothRemoteDevice, RemoteDevice
+from main_app.models import RemoteDevice
 
 
 TEMPERATURES_POS = {
@@ -20,10 +20,7 @@ def get_vbat():
 	dev = str(device.remotedevice_dev)
 
 	try:
-		bt_device = device.bluetoothremotedevice
-		bt_device.enable(True)
-	except BluetoothRemoteDevice.DoesNotExist:
-		pass
+		device.enable(True)
 	except Exception, err:
 		return err
 
@@ -42,9 +39,8 @@ def get_vbat():
 	res = res.strip().split('\r\n')
 
 	try:
-		bt_device = device.bluetoothremotedevice
-		bluetooth.enable(False)
-	except BluetoothRemoteDevice.DoesNotExist:
+		device.enable(False)
+	except Exception:
 		pass
 	
 	voltagesList = []
@@ -62,10 +58,7 @@ def get_temp():
 	dev = str(device.remotedevice_dev)
 
 	try:
-		bt_device = device.bluetoothremotedevice
-		bt_device.enable(True)
-	except BluetoothRemoteDevice.DoesNotExist:
-		pass
+		device.enable(True)
 	except Exception, err:
 		return err
 
@@ -76,9 +69,8 @@ def get_temp():
 	ser.close()
 
 	try:
-		bt_device = device.bluetoothremotedevice
-		bluetooth.enable(False)
-	except BluetoothRemoteDevice.DoesNotExist:
+		device.enable(False)
+	except Exception:
 		pass
 
 	if res == '':
