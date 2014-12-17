@@ -9,6 +9,38 @@ body { font: 12px/1.4 Helvetica, Arial, Sans-Serif; background: #333; color: #33
 article, aside, figure, footer, header, hgroup, menu, nav, section { display: block; }
 a:focus { outline: 0; }
 
+.icon { width:16px; height:16px; padding:2px; line-height:20px; }
+.bgicon { padding-left:20px; background-repeat:no-repeat; line-height:20px; }
+
+
+.list{
+	font-family:"Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size:12px;width:auto;text-align:left;border-collapse:collapse;border:1px solid #69c;margin:20px;
+}
+
+.list th {
+	background:#c0cafd;
+	font-weight:normal;
+	font-size:14px;
+	color:#039;
+	padding:15px 10px 10px;
+}
+.list tbody {
+	background:#e8edff;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+.list td {
+	color:#669;
+	border-top:1px dashed #fff;
+	padding:10px;
+}
+.list tbody tr:hover td {
+	color:#339;
+	background:#e0eafd;
+}
+
 #page-wrap { 
 	width: auto; margin: 40px 20px 10px 20px; background: #ddd; 
 	padding: 0;

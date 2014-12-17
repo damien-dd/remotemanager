@@ -3,6 +3,7 @@ import re
 
 from main_app import bluetooth
 from main_app.models import RemoteDevice
+from main_app.device_handler import DeviceHandler
 
 
 TEMPERATURES_POS = {
@@ -17,18 +18,13 @@ TEMPERATURES_POS = {
 def get_vbat():
 
 	device = RemoteDevice.objects.get(remotedevice_name='BatteryVoltageMonitor')
-	dev = str(device.remotedevice_dev)
+	device_handler = DeviceHandler(device)
 
-	try:
-		device.enable(True)
-	except Exception, err:
-		return err
-
-	ser = serial.Serial(dev, 115200, timeout=3)
-	ser.write('R')
 	
-	res = ser.read((3+2)*13)
-	ser.close()
+	device_handler.send_command('READ_ALL')
+	
+	res = device_handler.read_response((3+2)*13, timeout=3)
+	device_handler.close()
 
 	if res == '':
 		return 'No response from remote device'
@@ -37,11 +33,6 @@ def get_vbat():
 		return 'Invalid response from remote device: %s' % repr(res)
 
 	res = res.strip().split('\r\n')
-
-	try:
-		device.enable(False)
-	except Exception:
-		pass
 	
 	voltagesList = []
 	for voltage in res[:-1]:
@@ -55,23 +46,13 @@ def get_vbat():
 def get_temp():
 
 	device = RemoteDevice.objects.get(remotedevice_name='DataLoggerTemperature')
-	dev = str(device.remotedevice_dev)
+	device_handler = DeviceHandler(device)
 
-	try:
-		device.enable(True)
-	except Exception, err:
-		return err
-
-	ser = serial.Serial(dev, 115200, timeout=3)
-	ser.write('READ_ALL\r')
+	device_handler.send_command('READ_ALL')
 	
-	res = ser.read(1000)
-	ser.close()
-
-	try:
-		device.enable(False)
-	except Exception:
-		pass
+	res = device_handler.read_response(1000, timeout=3)
+	
+	device_handler.close()
 
 	if res == '':
 		return 'No response from remote device'

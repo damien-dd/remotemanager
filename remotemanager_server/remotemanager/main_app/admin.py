@@ -24,6 +24,9 @@ class MyRemoteDeviceAdminForm(forms.ModelForm):
 class RemoteDeviceAdmin(admin.ModelAdmin):
 	list_display = ('remotedevice_name', 'remotedevice_serial', 'remotedevice_dev', 'remotedevice_mode', )
 	radio_fields = {'remotedevice_mode': admin.HORIZONTAL}
+
+	fields = ('remotedevice_name', 'remotedevice_mode', 'remotedevice_serial', 'remotedevice_dev', )
+
 	form = MyRemoteDeviceAdminForm
 
 admin.site.register(RemoteDevice, RemoteDeviceAdmin)

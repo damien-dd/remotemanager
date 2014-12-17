@@ -5,6 +5,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import simplejson
 from django.db import connection
+from django.utils import timezone
 import subprocess
 import serial
 import datetime
@@ -12,7 +13,8 @@ import calendar
 import re
 import pytz
 import time
-from datetime import date
+from datetime import date, timedelta
+import uptime
 
 
 from main_app.models import RemoteDevice, Serie, DataField, TimelineChart, SeriePlot
@@ -30,7 +32,8 @@ def logout_view(request):
 
 @login_required
 def index(request):
-	return render(request, 'base.html')
+	remotedevices = RemoteDevice.objects.all().order_by('remotedevice_name')
+	return render_to_response('home.html', {'remotedevices': remotedevices, 'uptime': (timezone.now()-timedelta(seconds=uptime.uptime()))}, context_instance=RequestContext(request))
 
 @login_required
 def bluetooth_status(request):

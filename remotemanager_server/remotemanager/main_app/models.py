@@ -1,6 +1,7 @@
 from django.db.models import Count
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 import re
 import serial
 import datetime
@@ -8,7 +9,7 @@ import pytz
 import time
 
 from main_app import bluetooth
-from main_app.device_handler import DeviceHandler
+from main_app.device_handler import DeviceHandler, BluetoothHostError, RemoteDeviceCurrentlyInUseError
 
 
 def validate_mac(mac):
@@ -34,23 +35,39 @@ class RemoteDevice(models.Model):
 	remotedevice_serial = models.CharField(max_length=30, verbose_name='Adresse MAC / N. serie')
 	remotedevice_dev = models.CharField(max_length=20, unique=True, verbose_name='Lien vers l\'interface', help_text='Format: <em>/dev/xxx</em>')
 
+	remotedevice_last_connection_attempt = models.DateTimeField(null=True, blank=True, default=None)
+	remotedevice_last_connection_status = models.CharField(max_length=10, blank=True, default = '')
+	remotedevice_last_status_request = models.DateTimeField(null=True, blank=True, default=None)
+	remotedevice_last_status = models.CharField(max_length=4, blank=True, default = '', verbose_name='Status')
+
 	def __unicode__(self):
 		return self.remotedevice_name
 
 	def enable(self, enable=True):
+		if enable:
+			self.remotedevice_last_connection_attempt = timezone.now()
+			self.remotedevice_last_connection_status = ''
+
 		if self.remotedevice_mode == 'BT':
 			if not bluetooth.enable(enable):
-				raise Exception('Cannot enable bluetooth')
-			rfcomm_mac, rfcomm_status = bluetooth.get_rfcomm_status(self)
+				if enable:
+					self.remotedevice_last_connection_status = 'BT_EN_ERR'
+					self.save()
+					raise BluetoothHostError('Cannot enable bluetooth')
 			if enable:
+				rfcomm_mac, rfcomm_status = bluetooth.get_rfcomm_status(self)
 				if rfcomm_status not in ['closed', None]:
-					raise Exception('Device is currently in use')
+					raise RemoteDeviceCurrentlyInUseError('Device is currently in use')
 				if self.remotedevice_serial.upper() != rfcomm_mac and not bluetooth.bind_device(self):
+					self.remotedevice_last_connection_status = 'BT_BIND_ERR'
+					self.save()
+
 					try:
 						bluetooth.enable(False)
 					except Exception:
 						pass
-					raise Exception('Cannot bind bluetooth device')
+					
+					raise BluetoothHostError('Cannot bind bluetooth device')
 
 
 class Serie(models.Model):
@@ -82,7 +99,7 @@ class Serie(models.Model):
 		output = {}
 		
 		if device_handler is None:
-			device_handler = DeviceHandler(self.serie_remotedevice)
+			device_handler = DeviceHandler(self.serie_remotedevice, request_status=True)
 
 		file_list_header, file_list_index = self.serie_last_update.split(',')
 		cmd = 'GET_DATA_FILES_LIST:%s%s,%03d,%03d' % (str(self.serie_tag), str(file_list_header), int(file_list_index), nb_file_max)
