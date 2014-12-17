@@ -9,7 +9,6 @@
 		<thead>
 			<tr>
 				<th>Nom du RemoteDevice</th>
-				<th>Mode</th>
 				<th>Derniere connection</th>
 				<th>Derniere requete de status</th>
 			</tr>
@@ -18,8 +17,7 @@
 		<tbody>
 		{% for remotedevice in remotedevices %}
 			<tr>
-				<td>{{remotedevice.remotedevice_name}}</a></td>
-				<td>{% if remotedevice.remotedevice_mode == 'BT' %}{% icon 'bluetooth' %}{% elif remotedevice.remotedevice_mode == 'USB' %}{% icon 'usb' %}{% endif %}</td>
+				<td>{% if remotedevice.remotedevice_mode == 'BT' %}{% icon 'bluetooth' %}{% elif remotedevice.remotedevice_mode == 'USB' %}{% icon 'usb' %}{% endif %} {{remotedevice.remotedevice_name}}</a></td>
 				<td>{% if remotedevice.remotedevice_last_connection_attempt %}{{remotedevice.remotedevice_last_connection_attempt|timesince}} {% if remotedevice.remotedevice_last_connection_status == 'OK' %}{% icon 'tick' %}{% elif remotedevice.remotedevice_last_connection_status == '' %}{% icon 'unknown' %}{% else %}{% icon 'cross' %}{% endif %}{% else %}-{% endif %}</td>
 				<td>{% if remotedevice.remotedevice_last_status_request %}{{remotedevice.remotedevice_last_status_request|timesince}} {% if remotedevice.remotedevice_last_status == 'e0' %}{% icon 'accept' %}{% elif remotedevice.remotedevice_last_status == '' %}{% icon 'unknown' %}{% else %}{% icon 'error' %}{% endif %}{% else %}-{% endif %}</td>
 			</tr>
