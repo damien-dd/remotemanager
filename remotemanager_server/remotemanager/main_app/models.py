@@ -33,6 +33,7 @@ class RemoteDevice(models.Model):
 	remotedevice_last_connection_status = models.CharField(max_length=10, blank=True, default = '')
 	remotedevice_last_status_request = models.DateTimeField(null=True, blank=True, default=None)
 	remotedevice_last_status = models.CharField(max_length=4, blank=True, default = '', verbose_name='Status')
+	remotedevice_last_time_offset = models.IntegerField(null=True, blank=True, default=None)
 
 	def __unicode__(self):
 		return self.remotedevice_name

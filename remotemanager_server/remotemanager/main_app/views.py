@@ -33,7 +33,7 @@ def logout_view(request):
 @login_required
 def index(request):
 	remotedevices = RemoteDevice.objects.all().order_by('remotedevice_name')
-	return render_to_response('home.html', {'remotedevices': remotedevices, 'uptime': (timezone.now()-timedelta(seconds=uptime.uptime()))}, context_instance=RequestContext(request))
+	return render_to_response('home.html', {'remotedevices': remotedevices, 'system_uptime': calendar.timegm(time.gmtime()), 'uptime': (timezone.now()-timedelta(seconds=uptime.uptime()))}, context_instance=RequestContext(request))
 
 @login_required
 def bluetooth_status(request):

@@ -2,29 +2,63 @@
 {% load i18n %}
 {% load icons %}
 
+{% block head %}
+	<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.timer.js"></script>
+	<script>
+	$(function() {
+		// Current timer position in milliseconds
+		var systemUpTime = {{system_uptime}}000;
+		{% for remotedevice in remotedevices %}{% if remotedevice.remotedevice_last_time_offset != None %}
+			var device{{remotedevice.id}}UpTime = {{remotedevice.remotedevice_last_time_offset}}000+systemUpTime;
+		{% endif %}{% endfor %}
+
+		var timer = $.timer(update_uptime, 1000);
+		update_uptime();
+		timer.play();
+		
+		// Output time and increment
+		function update_uptime() {
+			var d;
+			systemUpTime += 1000;
+			d = new Date(systemUpTime);
+			$('#systemClock').text(d.toUTCString());
+
+			{% for remotedevice in remotedevices %}{% if remotedevice.remotedevice_last_time_offset != None %}
+				device{{remotedevice.id}}UpTime += 1000;
+				d = new Date(device{{remotedevice.id}}UpTime);
+				$('#device{{remotedevice.id}}Clock').text(d.toUTCString());
+			{% endif %}{% endfor %}
+		};
+	});
+	</script>
+{% endblock %}
+
 {% block content %}
 
 <h2>{% trans 'System status' %}</h2>
-
 	<table class="list">
 		<thead>
 			<tr>
 				<th>{% trans 'RemoteDevice name' %}</th>
 				<th>{% trans 'Last connection' %}</th>
 				<th>{% trans 'Last status request' %}</th>
+				<th>{% trans 'Clock' %}</th>
 			</tr>
 		</thead>
 
 		<tbody>
 		{% for remotedevice in remotedevices %}
 			<tr>
-				<td>{% if remotedevice.remotedevice_mode == 'BT' %}{% icon 'bluetooth' %}{% elif remotedevice.remotedevice_mode == 'USB' %}{% icon 'usb' %}{% endif %} {{remotedevice.remotedevice_name}}</a></td>
+				<td>{% if remotedevice.remotedevice_mode == 'BT' %}{% icon 'bluetooth' %}{% elif remotedevice.remotedevice_mode == 'USB' %}{% icon 'usb' %}{% endif %} {{remotedevice.remotedevice_name}}</td>
 				<td>{% if remotedevice.remotedevice_last_connection_attempt %}{{remotedevice.remotedevice_last_connection_attempt|timesince}} {% if remotedevice.remotedevice_last_connection_status == 'OK' %}{% icon 'tick' %}{% elif remotedevice.remotedevice_last_connection_status == '' %}{% icon 'unknown' %}{% else %}{% icon 'cross' %}{% endif %}{% else %}-{% endif %}</td>
 				<td>{% if remotedevice.remotedevice_last_status_request %}{{remotedevice.remotedevice_last_status_request|timesince}} {% if remotedevice.remotedevice_last_status == 'e0' %}{% icon 'accept' %}{% elif remotedevice.remotedevice_last_status == '' %}{% icon 'unknown' %}{% else %}{% icon 'error' %}{% endif %}{% else %}-{% endif %}</td>
+				<td id="device{{remotedevice.id}}Clock">{% icon 'unknown' %}</td>
 			</tr>
 		{% endfor %}
 		</tbody>
 	</table>
 
+<p>{% trans 'System clock' %}: <span id="systemClock"></span></p>
 <p>{% trans 'Last system reboot' %}: {{uptime|timesince}}</p>
 {% endblock %}
