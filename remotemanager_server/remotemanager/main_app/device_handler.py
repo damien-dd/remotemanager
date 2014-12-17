@@ -2,6 +2,7 @@ import serial
 import time
 
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 READING_TIMEOUT = 0.1
 MAX_RESPONSE_SIZE = 5000
@@ -45,7 +46,7 @@ class DeviceHandler:
 			self.device.remotedevice_last_connection_status = 'OPEN_ERR'
 			self.close()
 			self.device.save()
-			raise RemoteDeviceOpenError('Unable to connect to the device')
+			raise RemoteDeviceOpenError(_('Unable to connect to the device'))
 
 		self.device.save()
 
@@ -66,7 +67,7 @@ class DeviceHandler:
 			self.serial.write(command+'\r')
 		except Exception:
 			self.close()
-			raise RemoteDeviceWriteError('Unable to send command to the device')
+			raise RemoteDeviceWriteError(_('Unable to send command to the device'))
 
 	def read_response(self, length=MAX_RESPONSE_SIZE, timeout=1):
 		eleapsed_time=0
@@ -76,7 +77,7 @@ class DeviceHandler:
 				response += self.serial.read(length - len(response))
 			except Exception:
 				self.close()
-				raise RemoteDeviceReadError('Unable to read response from the device')
+				raise RemoteDeviceReadError(_('Unable to read response from the device'))
 			eleapsed_time += READING_TIMEOUT
 		return response
 

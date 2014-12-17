@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load icons %}
 
 {% block content %}
 
-<h2>Statut</h2>
+<h2>{% trans 'System status' %}</h2>
 
 	<table class="list">
 		<thead>
 			<tr>
-				<th>Nom du RemoteDevice</th>
-				<th>Derniere connection</th>
-				<th>Derniere requete de status</th>
+				<th>{% trans 'RemoteDevice name' %}</th>
+				<th>{% trans 'Last connection' %}</th>
+				<th>{% trans 'Last status request' %}</th>
 			</tr>
 		</thead>
 
@@ -25,5 +26,5 @@
 		</tbody>
 	</table>
 
-<p>Systeme en marche depuis {{uptime|timesince}}</p>
+<p>{% trans 'Last system reboot' %}: {{uptime|timesince}}</p>
 {% endblock %}

@@ -1,6 +1,8 @@
-from main_app.models import RemoteDevice
-from django import forms
 import datetime
+from django import forms
+from django.utils.translation import ugettext_lazy as _
+
+from main_app.models import RemoteDevice
 
 class ProgramLoaderForm(forms.Form):
 	device = forms.ModelChoiceField(queryset = RemoteDevice.objects.all())
@@ -13,10 +15,10 @@ class DataHistoryForm(forms.Form):
 	MONTHLY = 'month'
 	YEARLY = 'year'
 	TIMESTEPS = (
-		(HOURLY, 'Horaire'),
-		(DAILY, 'Journalier'),
-		(MONTHLY, 'Mensuel'),
-		(YEARLY, 'Annuel'),
+		(HOURLY, _('Hourly')),
+		(DAILY, _('Daily')),
+		(MONTHLY, _('Monthly')),
+		(YEARLY, _('Yearly')),
 	)
 	TIMEZONE_CHOICES = (
                 ('UTC','UTC'),
@@ -29,7 +31,11 @@ class DataHistoryForm(forms.Form):
                 ('GMT-13','GMT-13'), ('GMT-14','GMT-14'),
         )
 
-	timestep = forms.ChoiceField(choices=TIMESTEPS, label='Pas')
-	timezone = forms.ChoiceField(choices=TIMEZONE_CHOICES, label='Fuseau horaire')
+	timestep = forms.ChoiceField(choices=TIMESTEPS, label=_('Timestep'))
+	timezone = forms.ChoiceField(choices=TIMEZONE_CHOICES, label=_('Timezone'))
 	from_date = forms.DateField(initial=datetime.date.today)
 	to_date = forms.DateField(initial=datetime.date.today)
+
+	def __init__(self, *args, **kwargs):
+		super(DataHistoryForm, self).__init__(*args, **kwargs)
+		self.initial['timestep'] = 'day'

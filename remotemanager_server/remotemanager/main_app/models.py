@@ -1,12 +1,14 @@
-from django.db.models import Count
-from django.db import models
-from django.core.exceptions import ValidationError
-from django.utils import timezone
 import re
 import serial
 import datetime
 import pytz
 import time
+from django.db.models import Count
+from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
+from colorfield.fields import ColorField
 
 from main_app import bluetooth
 from main_app.device_handler import DeviceHandler, BluetoothHostError, RemoteDeviceCurrentlyInUseError
@@ -14,15 +16,7 @@ from main_app.device_handler import DeviceHandler, BluetoothHostError, RemoteDev
 
 def validate_mac(mac):
 	if re.match('^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$', mac) is None:
-		raise ValidationError(u'%s n\'est pas une adresse MAC valide' % mac)
-
-def validate_color(color):
-	if re.match('^[0-9A-Fa-f]{6}$', color) is None:
-		raise ValidationError(u'%s n\'est pas une couleur valide' % color)
-
-def validate_bt_channel(channel):
-	if channel < 1 or channel > 7:
-		raise ValidationError(u'%d n\'est pas un canal Bluetooth valide' % channel)
+		raise ValidationError(unicode(mac)+_(' is not a valid MAC address'))
 
 
 class RemoteDevice(models.Model):
@@ -30,7 +24,7 @@ class RemoteDevice(models.Model):
 		('BT', 'Bluetooth'),
 		('USB', 'USB'),)
 
-	remotedevice_name = models.CharField(max_length=30, unique=True, verbose_name='Nom du peripherique')
+	remotedevice_name = models.CharField(max_length=30, unique=True, verbose_name=_('Device name'))
 	remotedevice_mode = models.CharField(max_length=3, choices=MODES, default=MODES[0][0], verbose_name='Mode')
 	remotedevice_serial = models.CharField(max_length=30, verbose_name='Adresse MAC / N. serie')
 	remotedevice_dev = models.CharField(max_length=20, unique=True, verbose_name='Lien vers l\'interface', help_text='Format: <em>/dev/xxx</em>')
@@ -53,11 +47,11 @@ class RemoteDevice(models.Model):
 				if enable:
 					self.remotedevice_last_connection_status = 'BT_EN_ERR'
 					self.save()
-					raise BluetoothHostError('Cannot enable bluetooth')
+					raise BluetoothHostError(_('Cannot enable bluetooth'))
 			if enable:
 				rfcomm_mac, rfcomm_status = bluetooth.get_rfcomm_status(self)
 				if rfcomm_status not in ['closed', None]:
-					raise RemoteDeviceCurrentlyInUseError('Device is currently in use')
+					raise RemoteDeviceCurrentlyInUseError(_('Device is currently in use'))
 				if self.remotedevice_serial.upper() != rfcomm_mac and not bluetooth.bind_device(self):
 					self.remotedevice_last_connection_status = 'BT_BIND_ERR'
 					self.save()
@@ -67,15 +61,15 @@ class RemoteDevice(models.Model):
 					except Exception:
 						pass
 					
-					raise BluetoothHostError('Cannot bind bluetooth device')
+					raise BluetoothHostError(_('Cannot bind bluetooth device'))
 
 
 class Serie(models.Model):
 	SUM = 'SUM'
 	AVERAGE = 'AVG'
 	SERIE_TYPES = (
-		(SUM, 'Somme'),
-		(AVERAGE, 'Moyenne'),
+		(SUM, _('Sum')),
+		(AVERAGE, _('Average')),
 	)
 
 	serie_name = models.CharField(max_length=30)
@@ -181,9 +175,9 @@ class Serie(models.Model):
 				output['datafields_added']=len(new_datafields_list)
 				output['datafields_updated']= datafield_updated
 			else:
-				raise Exception('Invalid response from the remote device: %s' % repr(resp))
+				raise Exception(_('Invalid response from the remote device: ')+ repr(resp))
 		except serial.SerialException, err:
-			raise Exception('Communication error with the remote device')
+			raise Exception(_('Communication error with the remote device'))
 
 		return output
 
@@ -249,7 +243,7 @@ class TimelineChart(models.Model):
 class SeriePlot(models.Model):
 	serieplot_serie = models.ForeignKey(Serie, verbose_name='Serie')
 	serieplot_timelinechart = models.ForeignKey(TimelineChart)
-	serieplot_color = models.CharField(max_length=6, verbose_name='Couleur', help_text='Format: <em>RRGGBB</em>, example: <em>2f7ed8</em>', validators=[validate_color])
+	serieplot_color = ColorField(verbose_name=_('Color'))
 	serieplot_rank = models.IntegerField(default=1)
 
 	

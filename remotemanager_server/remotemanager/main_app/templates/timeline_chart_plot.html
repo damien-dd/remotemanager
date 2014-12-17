@@ -1,4 +1,5 @@
 {% extends 'timeline_chart.html' %}
+{% load i18n %}
 
 {% block head %}
 {{ block.super }}
@@ -10,7 +11,7 @@ $(function() {
 	var seriesOption = [], nbSeries = 0, empty=true;
 
 	var msg = document.createElement('p');
-	msg.appendChild(document.createTextNode("Chargement..."));
+	msg.appendChild(document.createTextNode("{% trans 'Loading...' %}"));
 	document.getElementById("container").appendChild(msg);
 
 	{% for serieplot in serieplots %}
@@ -26,7 +27,7 @@ function(data) {
 					data[j][1]  // the value
 				]);
 				if(data[j][2] > 0) {
-					var text = 'Données manquantes: <br />';
+					var text = "{% trans 'Missing data' %}: <br />";
 					var days=0, hours=0, minutes; 
 					if (data[j][2] > 1440) {
 						days = data[j][2]/1440 | 0;
@@ -57,7 +58,7 @@ function(data) {
 				name: '{{serieplot.serieplot_serie.serie_name}}',
 				data: serieValues,
 				id: '{{serieplot.serieplot_serie.serie_name}}',
-				color: '#{{serieplot.serieplot_color|safe}}',
+				color: '{{serieplot.serieplot_color|safe}}',
 				tooltip: {
 					valueSuffix: '{{serieplot.serieplot_serie.serie_unit}}',
 					valueDecimals: {{serieplot.serieplot_serie.serie_values_decimals}}
@@ -65,8 +66,8 @@ function(data) {
 			};
 			seriesOption[{{forloop.counter0}}*2+1]={
 				type: 'flags',
-				name: '{{serieplot.serieplot_serie.serie_name}} (log manquant)',
-				color: '#{{serieplot.serieplot_color|safe}}',
+				name: '{{serieplot.serieplot_serie.serie_name}} ({% trans 'Missing data' %})',
+				color: '{{serieplot.serieplot_color|safe}}',
 				data: serieMissingPoints,
 				onSeries: '{{serieplot.serieplot_serie.serie_name}}',
 				linkedTo: '{{serieplot.serieplot_serie.serie_name}}',
@@ -85,7 +86,7 @@ function(data) {
 			if (nbSeries == {{serieplots|length}}) {
 				if (empty == true) {
 						var msg = document.createElement('p');
-						msg.appendChild(document.createTextNode("Pas de donnees sur la periode selectionnee."));
+						msg.appendChild(document.createTextNode("{% trans 'No data on the selected period.' %}"));
 						document.getElementById("container").appendChild(msg);
 				}
 				else {
@@ -96,7 +97,7 @@ function(data) {
 		})
 		.error(function(jqXHR, textStatus, errorThrown) {
 			var errorMsg = document.createElement('p');
-			errorMsg.appendChild(document.createTextNode("Erreur lors du chargement des donnees\"{{serieplot.serieplot_serie.serie_name}}\":"+textStatus));
+			errorMsg.appendChild(document.createTextNode("{% trans 'Error when loading data from' %} \"{{serieplot.serieplot_serie.serie_name}}\":"+textStatus));
 			document.getElementById("container").appendChild(errorMsg);
 		});
 	{% endfor %}

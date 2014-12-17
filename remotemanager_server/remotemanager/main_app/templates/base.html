@@ -1,3 +1,5 @@
+{% load i18n %}
+{% load icons %}
 <!DOCTYPE html>
 <html>
 
@@ -14,16 +16,30 @@
 	<div id="page-wrap">
 
         <header>
+		<div class="langselect-container">
+		{% get_language_info for LANGUAGE_CODE as lang %}
+		<form class="langselect" name="setLangFrench" action="/i18n/setlang/" method="POST">{% csrf_token %}
+		<input name="next" type="hidden" value="/" />
+		<input type="hidden" name="language" value="fr" />
+		<a href="#" onclick="document.setLangFrench.submit();return false;">{% if lang.code == 'fr' %}{% icon 'fr' classes='icon-link icon-selected' %}{% else %}{% icon 'fr' classes='icon-link icon-unselected' %}{% endif %}</a>
+		</form>
+		<form class="langselect" name="setLangEnglish" action="/i18n/setlang/" method="POST">{% csrf_token %}
+		<input name="next" type="hidden" value="/" />
+		<input type="hidden" name="language" value="en" />
+		<a href="#" onclick="document.setLangEnglish.submit();return false;">{% if lang.code == 'en' %}{% icon 'en' classes='icon-link icon-selected' %}{% else %}{% icon 'en' classes='icon-link icon-unselected' %}{% endif %}</a>
+		</form>
+		</div>
+
 		<h1>Remote Manager</h1>
 		{% if user.is_authenticated %}
-		<p>Connecté en tant que <em>{{ user.username }}</em>. <a href="/logout/">Se déconnecter</a></p>
-
+		<p>{% icon 'user' %} <em>{{ user.username }}</em>, <a href="/logout/">{% trans 'Log out' %}</a></p>
+		
 		<nav>
 			<ul class="group">
 				
-				<li><a href="/">Statut</a></li>
-				<li><a href="/charts/timeline/">Statistiques</a></li>
-				<li><a href="/rtcmd/">Commandes temps-réel</a></li>
+				<li><a href="/">{% trans 'System status' %}</a></li>
+				<li><a href="/charts/timeline/">{% trans 'Statistics' %}</a></li>
+				<li><a href="/rtcmd/">{% trans 'Real-time commands' %}</a></li>
 				<li><a href="/loader/">Program loader</a></li>
 				
 			</ul>

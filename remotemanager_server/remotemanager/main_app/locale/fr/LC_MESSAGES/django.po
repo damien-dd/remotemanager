@@ -1,0 +1,190 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-17 21:51+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: device_handler.py:49
+msgid "Unable to connect to the device"
+msgstr "Impossible de se connecter au périphérique"
+
+#: device_handler.py:70
+msgid "Unable to send command to the device"
+msgstr "Impossible d'envoyer une commande au périphérique"
+
+#: device_handler.py:80
+msgid "Unable to read response from the device"
+msgstr "Impossible de lire la réponse du périphérique"
+
+#: forms.py:18
+msgid "Hourly"
+msgstr "Horaire"
+
+#: forms.py:19
+msgid "Daily"
+msgstr "Journalier"
+
+#: forms.py:20
+msgid "Monthly"
+msgstr "Mensuel"
+
+#: forms.py:21
+msgid "Yearly"
+msgstr "Annuel"
+
+#: forms.py:34
+msgid "Timestep"
+msgstr "Pas"
+
+#: forms.py:35
+msgid "Timezone"
+msgstr "Fuseau horaire"
+
+#: models.py:19
+msgid " is not a valid MAC address"
+msgstr " n'est pas une adresse MAC valide"
+
+#: models.py:27
+msgid "Device name"
+msgstr "Nom du périphérique"
+
+#: models.py:50
+msgid "Cannot enable bluetooth"
+msgstr "Impossible d'activer le bluetooth"
+
+#: models.py:54
+msgid "Device is currently in use"
+msgstr "Le périphérique est actuellement en cours d'utilisation"
+
+#: models.py:64
+msgid "Cannot bind bluetooth device"
+msgstr "Impossible de lier le périphérique bluetooth"
+
+#: models.py:71
+msgid "Sum"
+msgstr "Somme"
+
+#: models.py:72
+msgid "Average"
+msgstr "Moyenne"
+
+#: models.py:178
+msgid "Invalid response from the remote device: "
+msgstr "Réponse du périphérique distant invalide: "
+
+#: models.py:180
+msgid "Communication error with the remote device"
+msgstr "Erreur de communication avec le périphérique distant"
+
+#: models.py:246
+msgid "Color"
+msgstr "Couleur"
+
+#: templates/base.html:35
+msgid "Log out"
+msgstr ""
+
+#: templates/base.html:40 templates/home.html:7
+msgid "System status"
+msgstr "Statut système"
+
+#: templates/base.html:41
+msgid "Statistics"
+msgstr "Statistiques"
+
+#: templates/base.html:42 templates/realtime_cmd.html:5
+msgid "Real-time commands"
+msgstr "Commandes temps-réel"
+
+#: templates/home.html:12
+msgid "RemoteDevice name"
+msgstr "Nom du périphérique distant"
+
+#: templates/home.html:13
+msgid "Last connection"
+msgstr "Dernière connexion"
+
+#: templates/home.html:14
+msgid "Last status request"
+msgstr "Dernière requête de status"
+
+#: templates/home.html:29
+msgid "Last system reboot"
+msgstr "Dernier redémarrage du système"
+
+#: templates/login.html:5 templates/login.html.py:24
+msgid "Log in"
+msgstr ""
+
+#: templates/login.html:8
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+"Le nom d'utilisateur et le mot de passe ne correspondent pas. Essayez à "
+"nouveau."
+
+#: templates/realtime_cmd.html:6
+msgid "Measure battery voltages"
+msgstr "Mesurer les tensions des batteries"
+
+#: templates/realtime_cmd.html:8
+msgid "Measure temperature"
+msgstr "Mesurer les températures"
+
+#: templates/realtime_cmd_vbat_chart.html:19
+msgid "Battery voltages"
+msgstr "Tensions batteries"
+
+#: templates/realtime_cmd_vbat_chart.html:48
+#: templates/realtime_cmd_vbat_chart.html:52
+msgid "Voltage"
+msgstr "Tension"
+
+#: templates/realtime_cmd_vbat_chart.html:63
+msgid "Current battery voltages"
+msgstr "Tension batterie actuelle"
+
+#: templates/realtime_cmd_vbat_chart.html:65
+msgid "Total voltage"
+msgstr "Tension totale"
+
+#: templates/timeline_chart.html:5
+msgid "Data history"
+msgstr "Historique des données"
+
+#: templates/timeline_chart_form.html:8
+msgid "Display"
+msgstr "Afficher"
+
+#: templates/timeline_chart_plot.html:14
+msgid "Loading..."
+msgstr "Chargement..."
+
+#: templates/timeline_chart_plot.html:30 templates/timeline_chart_plot.html:69
+msgid "Missing data"
+msgstr "Données manquantes"
+
+#: templates/timeline_chart_plot.html:89
+msgid "No data on the selected period."
+msgstr "Pas de données sur la période sélectionnée."
+
+#: templates/timeline_chart_plot.html:100
+msgid "Error when loading data from"
+msgstr "Erreur lors du chargement des données de"
+
+#: templates/timeline_charts.html:5
+msgid "Graphs"
+msgstr "Graphiques"

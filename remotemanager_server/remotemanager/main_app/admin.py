@@ -12,7 +12,6 @@ class MyRemoteDeviceAdminForm(forms.ModelForm):
 		model = RemoteDevice
 
 	def clean(self):
-		#cleaned_data=super(MyRemoteDeviceAdminForm, self).clean()
 		# do something that validates your data
 		if self.cleaned_data['remotedevice_mode'] == 'BT' and re.match('^/dev/rfcomm\d$', self.cleaned_data['remotedevice_dev']) is None:
 			raise ValidationError('Le lien vers l\'interface bluetooth doit etre de la forme /dev/rfcommX')
@@ -33,7 +32,7 @@ admin.site.register(RemoteDevice, RemoteDeviceAdmin)
 
 class SeriePlotInline(admin.TabularInline):
 	model = SeriePlot
-	extra = 1
+	extra = 0
 
 
 class TimelineChartAdmin(admin.ModelAdmin):

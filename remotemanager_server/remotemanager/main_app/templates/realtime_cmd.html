@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
-<h2>Commandes temps réel</h2>
-<a href="/rtcmd/get/vbat/">Mesurer tensions batteries</a>
+<h2>{% trans 'Real-time commands' %}</h2>
+<a href="/rtcmd/get/vbat/">{% trans 'Measure battery voltages' %}</a>
 <br />
-<a href="/rtcmd/get/temp/">Mesurer températures</a>
+<a href="/rtcmd/get/temp/">{% trans 'Measure temperature' %}</a>
 {% endblock %}
