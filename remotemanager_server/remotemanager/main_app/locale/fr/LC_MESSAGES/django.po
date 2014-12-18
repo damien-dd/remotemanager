@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-17 21:51+0400\n"
+"POT-Creation-Date: 2014-12-18 19:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: device_handler.py:49
-msgid "Unable to connect to the device"
-msgstr "Impossible de se connecter au périphérique"
-
-#: device_handler.py:70
+#: device_handler.py:120
 msgid "Unable to send command to the device"
 msgstr "Impossible d'envoyer une commande au périphérique"
 
-#: device_handler.py:80
+#: device_handler.py:130
 msgid "Unable to read response from the device"
 msgstr "Impossible de lire la réponse du périphérique"
 
@@ -62,35 +58,65 @@ msgstr " n'est pas une adresse MAC valide"
 msgid "Device name"
 msgstr "Nom du périphérique"
 
-#: models.py:50
-msgid "Cannot enable bluetooth"
-msgstr "Impossible d'activer le bluetooth"
-
-#: models.py:54
+#: models.py:55
 msgid "Device is currently in use"
 msgstr "Le périphérique est actuellement en cours d'utilisation"
 
-#: models.py:64
+#: models.py:69
+msgid "Connection status unknown"
+msgstr "Statut de connection inconnu"
+
+#: models.py:70
+msgid "Connection has been successfully established"
+msgstr "La connexion a été établie avec succès"
+
+#: models.py:71
+msgid "Cannot enable bluetooth"
+msgstr "Impossible d'activer le bluetooth"
+
+#: models.py:72
 msgid "Cannot bind bluetooth device"
 msgstr "Impossible de lier le périphérique bluetooth"
 
-#: models.py:71
+#: models.py:73
+msgid "Unable to connect to the device"
+msgstr "Impossible de se connecter au périphérique"
+
+#: models.py:86
+msgid "RTC has not been read"
+msgstr "L'horloge RTC n'a pas été lue"
+
+#: models.py:88
+msgid "RTC offset cannot be determined because the system clock was not set"
+msgstr ""
+"Le décalage de l'horloge n'a pu être déterminé car l'horloge système n'était "
+"pas à l'heure"
+
+#: models.py:90
+msgid "Error when reading RTC on the remote device"
+msgstr "Erreur lors de la lecture de l'horloge du périphérique distant"
+
+#: models.py:92
+msgid "RTC offset has been determined successfully"
+msgstr "Le décalage de l'horloge a été déterminé avec succès"
+
+#: models.py:110
 msgid "Sum"
 msgstr "Somme"
 
-#: models.py:72
+#: models.py:111
 msgid "Average"
 msgstr "Moyenne"
 
-#: models.py:178
+#: models.py:217
 msgid "Invalid response from the remote device: "
 msgstr "Réponse du périphérique distant invalide: "
 
-#: models.py:180
+#: models.py:219
 msgid "Communication error with the remote device"
 msgstr "Erreur de communication avec le périphérique distant"
 
-#: models.py:246
+#: models.py:285
 msgid "Color"
 msgstr "Couleur"
 
@@ -98,7 +124,7 @@ msgstr "Couleur"
 msgid "Log out"
 msgstr ""
 
-#: templates/base.html:40 templates/home.html:7
+#: templates/base.html:40 templates/home.html:44
 msgid "System status"
 msgstr "Statut système"
 
@@ -110,19 +136,27 @@ msgstr "Statistiques"
 msgid "Real-time commands"
 msgstr "Commandes temps-réel"
 
-#: templates/home.html:12
+#: templates/home.html:48
 msgid "RemoteDevice name"
 msgstr "Nom du périphérique distant"
 
-#: templates/home.html:13
+#: templates/home.html:49
 msgid "Last connection"
 msgstr "Dernière connexion"
 
-#: templates/home.html:14
+#: templates/home.html:50
 msgid "Last status request"
 msgstr "Dernière requête de status"
 
-#: templates/home.html:29
+#: templates/home.html:51
+msgid "Clock"
+msgstr "Horloge"
+
+#: templates/home.html:66
+msgid "System clock"
+msgstr "Horloge système"
+
+#: templates/home.html:67
 msgid "Last system reboot"
 msgstr "Dernier redémarrage du système"
 

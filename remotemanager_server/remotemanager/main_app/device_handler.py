@@ -51,7 +51,7 @@ class DeviceHandler:
 			self.device.remotedevice_last_connection_status = 'OPEN_ERR'
 			self.close()
 			self.device.save()
-			raise RemoteDeviceOpenError(_('Unable to connect to the device'))
+			raise RemoteDeviceOpenError(self.device.get_last_connection_status_msg())
 
 		self.device.save()
 

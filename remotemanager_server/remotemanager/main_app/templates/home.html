@@ -9,7 +9,7 @@
 	$(function() {
 		// Current timer position in milliseconds
 		var systemUpTime = {{system_uptime}}000;
-		{% for remotedevice in remotedevices %}{% if remotedevice.remotedevice_last_time_offset != None and remotedevice.remotedevice_last_time_offset != 2147483647 %}
+		{% for remotedevice in remotedevices %}{% if remotedevice.is_last_rtc_offset_valid %}
 			var device{{remotedevice.id}}UpTime = {{remotedevice.remotedevice_last_time_offset}}000+systemUpTime;
 		{% endif %}{% endfor %}
 
@@ -30,7 +30,7 @@
 			systemUpTime += 1000;
 			$('#systemClock').text(date2string(new Date(systemUpTime)));
 
-			{% for remotedevice in remotedevices %}{% if remotedevice.remotedevice_last_time_offset != None and remotedevice.remotedevice_last_time_offset != 2147483647 %}
+			{% for remotedevice in remotedevices %}{% if remotedevice.is_last_rtc_offset_valid %}
 				device{{remotedevice.id}}UpTime += 1000;
 				$('#device{{remotedevice.id}}Clock').text(date2string(new Date(device{{remotedevice.id}}UpTime)));
 			{% endif %}{% endfor %}
@@ -53,13 +53,12 @@
 		</thead>
 
 		<tbody>
-		{% for remotedevice in remotedevices %}
-			<tr>
+		{% for remotedevice in remotedevices %}<tr>
 				<td>{% if remotedevice.remotedevice_mode == 'BT' %}{% icon 'bluetooth' %}{% elif remotedevice.remotedevice_mode == 'USB' %}{% icon 'usb' %}{% endif %} {{remotedevice.remotedevice_name}}</td>
-				<td>{% if remotedevice.remotedevice_last_connection_attempt %}{{remotedevice.remotedevice_last_connection_attempt|timesince}} {% if remotedevice.remotedevice_last_connection_status == 'OK' %}{% icon 'tick' %}{% elif remotedevice.remotedevice_last_connection_status == '' %}{% icon 'unknown' %}{% else %}<img {% iconsrc 'cross' %} title="{{remotedevice.remotedevice_last_connection_status}}" class="icon">{% endif %}{% else %}-{% endif %}</td>
-				<td>{% if remotedevice.remotedevice_last_status_request %}{{remotedevice.remotedevice_last_status_request|timesince}} {% if remotedevice.remotedevice_last_status == 'e0' %}{% icon 'accept' %}{% elif remotedevice.remotedevice_last_status == '' %}{% icon 'unknown' %}{% else %}<img {% iconsrc 'error' %} title="{{remotedevice.remotedevice_last_status}}" class="icon">{% endif %}{% else %}-{% endif %}</td>
-				<td id="device{{remotedevice.id}}Clock">{% if remotedevice.remotedevice_last_time_offset == 2147483647 %}<img {% iconsrc 'clock_question' %} title="Could not calculate offset because system clock was not set" class="icon">{% elif remotedevice.remotedevice_last_time_offset == -2147483648 %}<img {% iconsrc 'clock_error' %} title="Cannot read clock on the remote device" class="icon">{% else %}{% icon 'unknown' %}{% endif %}</td>
-			</tr>
+				<td>{% if remotedevice.remotedevice_last_connection_attempt %}{{remotedevice.remotedevice_last_connection_attempt|timesince}} <img class="icon" title="{{remotedevice.get_last_connection_status_msg}}" {% if remotedevice.remotedevice_last_connection_status == 'OK' %}{% iconsrc 'tick' %}{% elif remotedevice.remotedevice_last_connection_status == '' %}{% iconsrc 'unknown' %}{% else %}{% iconsrc 'cross' %}{% endif %}/>{% else %}-{% endif %}</td>
+				<td>{% if remotedevice.remotedevice_last_status_request %}{{remotedevice.remotedevice_last_status_request|timesince}} <img class="icon" title="{{remotedevice.remotedevice_last_status}}" {% if remotedevice.remotedevice_last_status == 'e0' %}{% iconsrc 'accept' %}{% elif remotedevice.remotedevice_last_status == '' %}{% iconsrc 'unknown' %}{% else %}{% iconsrc 'error' %}{% endif %}/>{% else %}-{% endif %}</td>
+				<td id="device{{remotedevice.id}}Clock">{% if remotedevice.is_last_rtc_offset_valid %}{{remotedevice.remotedevice_last_time_offset}}s.{% else %}<img class="icon" title="{{remotedevice.get_last_rtc_info_msg}}" {% if remotedevice.remotedevice_last_time_offset == None %}{% iconsrc 'unknown' %}{% elif remotedevice.remotedevice_last_time_offset == 2147483647 %}{% iconsrc 'clock_question' %}{% elif remotedevice.remotedevice_last_time_offset == -2147483648 %}{% iconsrc 'clock_error' %}{% endif %}/>{% endif %}</td>
+		</tr>
 		{% endfor %}
 		</tbody>
 	</table>

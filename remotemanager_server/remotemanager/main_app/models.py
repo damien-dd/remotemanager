@@ -48,7 +48,7 @@ class RemoteDevice(models.Model):
 				if enable:
 					self.remotedevice_last_connection_status = 'BT_EN_ERR'
 					self.save()
-					raise BluetoothHostError(_('Cannot enable bluetooth'))
+					raise BluetoothHostError(self.get_last_connection_status_msg())
 			if enable:
 				rfcomm_mac, rfcomm_status = bluetooth.get_rfcomm_status(self)
 				if rfcomm_status not in ['closed', None]:
@@ -62,7 +62,37 @@ class RemoteDevice(models.Model):
 					except Exception:
 						pass
 					
-					raise BluetoothHostError(_('Cannot bind bluetooth device'))
+					raise BluetoothHostError(self.get_last_connection_status_msg())
+
+	def get_last_connection_status_msg(self):
+		CONNECTION_STATUS_CODES = {
+			'': _('Connection status unknown'),
+			'OK': _('Connection has been successfully established'),
+			'BT_EN_ERR': _('Cannot enable bluetooth'),
+			'BT_BIND_ERR': _('Cannot bind bluetooth device'),
+			'OPEN_ERR': _('Unable to connect to the device')
+		}
+
+		if self.remotedevice_last_connection_status in CONNECTION_STATUS_CODES:
+			return CONNECTION_STATUS_CODES[self.remotedevice_last_connection_status]
+		else:
+			return self.remotedevice_last_connection_status
+
+	def get_last_status_msg(self): # TO DO
+		return self.remotedevice_last_status
+
+	def get_last_rtc_info_msg(self):
+		if self.remotedevice_last_time_offset == None:
+			return _('RTC has not been read')
+		if self.remotedevice_last_time_offset == 2147483647:
+			return _('RTC offset cannot be determined because the system clock was not set')
+		elif self.remotedevice_last_time_offset == -2147483648:
+			return _('Error when reading RTC on the remote device')
+		else:
+			return _('RTC offset has been determined successfully')
+
+	def is_last_rtc_offset_valid(self):
+		return self.remotedevice_last_time_offset not in [None, 2147483647, -2147483648]
 
 
 
