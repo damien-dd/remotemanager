@@ -9,25 +9,30 @@
 	$(function() {
 		// Current timer position in milliseconds
 		var systemUpTime = {{system_uptime}}000;
-		{% for remotedevice in remotedevices %}{% if remotedevice.remotedevice_last_time_offset != None %}
+		{% for remotedevice in remotedevices %}{% if remotedevice.remotedevice_last_time_offset != None and remotedevice.remotedevice_last_time_offset != 2147483647 %}
 			var device{{remotedevice.id}}UpTime = {{remotedevice.remotedevice_last_time_offset}}000+systemUpTime;
 		{% endif %}{% endfor %}
 
 		var timer = $.timer(update_uptime, 1000);
 		update_uptime();
 		timer.play();
+
+		function zfill(num, len) {return (Array(len).join("0") + num).slice(-len);};
+		function date2string(d) {
+			var date_str = zfill(d.getUTCDate(),2)+"/"+zfill(d.getUTCMonth()+1,2)+"/"+d.getUTCFullYear();
+			var time_str = zfill(d.getUTCHours(),2)+":"+zfill(d.getUTCMinutes(),2)+":"+zfill(d.getUTCSeconds(),2);
+			return date_str+" "+time_str;
+		};
 		
 		// Output time and increment
 		function update_uptime() {
-			var d;
+		
 			systemUpTime += 1000;
-			d = new Date(systemUpTime);
-			$('#systemClock').text(d.toUTCString());
+			$('#systemClock').text(date2string(new Date(systemUpTime)));
 
-			{% for remotedevice in remotedevices %}{% if remotedevice.remotedevice_last_time_offset != None %}
+			{% for remotedevice in remotedevices %}{% if remotedevice.remotedevice_last_time_offset != None and remotedevice.remotedevice_last_time_offset != 2147483647 %}
 				device{{remotedevice.id}}UpTime += 1000;
-				d = new Date(device{{remotedevice.id}}UpTime);
-				$('#device{{remotedevice.id}}Clock').text(d.toUTCString());
+				$('#device{{remotedevice.id}}Clock').text(date2string(new Date(device{{remotedevice.id}}UpTime)));
 			{% endif %}{% endfor %}
 		};
 	});
@@ -51,9 +56,9 @@
 		{% for remotedevice in remotedevices %}
 			<tr>
 				<td>{% if remotedevice.remotedevice_mode == 'BT' %}{% icon 'bluetooth' %}{% elif remotedevice.remotedevice_mode == 'USB' %}{% icon 'usb' %}{% endif %} {{remotedevice.remotedevice_name}}</td>
-				<td>{% if remotedevice.remotedevice_last_connection_attempt %}{{remotedevice.remotedevice_last_connection_attempt|timesince}} {% if remotedevice.remotedevice_last_connection_status == 'OK' %}{% icon 'tick' %}{% elif remotedevice.remotedevice_last_connection_status == '' %}{% icon 'unknown' %}{% else %}{% icon 'cross' %}{% endif %}{% else %}-{% endif %}</td>
-				<td>{% if remotedevice.remotedevice_last_status_request %}{{remotedevice.remotedevice_last_status_request|timesince}} {% if remotedevice.remotedevice_last_status == 'e0' %}{% icon 'accept' %}{% elif remotedevice.remotedevice_last_status == '' %}{% icon 'unknown' %}{% else %}{% icon 'error' %}{% endif %}{% else %}-{% endif %}</td>
-				<td id="device{{remotedevice.id}}Clock">{% icon 'unknown' %}</td>
+				<td>{% if remotedevice.remotedevice_last_connection_attempt %}{{remotedevice.remotedevice_last_connection_attempt|timesince}} {% if remotedevice.remotedevice_last_connection_status == 'OK' %}{% icon 'tick' %}{% elif remotedevice.remotedevice_last_connection_status == '' %}{% icon 'unknown' %}{% else %}<img {% iconsrc 'cross' %} title="{{remotedevice.remotedevice_last_connection_status}}" class="icon">{% endif %}{% else %}-{% endif %}</td>
+				<td>{% if remotedevice.remotedevice_last_status_request %}{{remotedevice.remotedevice_last_status_request|timesince}} {% if remotedevice.remotedevice_last_status == 'e0' %}{% icon 'accept' %}{% elif remotedevice.remotedevice_last_status == '' %}{% icon 'unknown' %}{% else %}<img {% iconsrc 'error' %} title="{{remotedevice.remotedevice_last_status}}" class="icon">{% endif %}{% else %}-{% endif %}</td>
+				<td id="device{{remotedevice.id}}Clock">{% if remotedevice.remotedevice_last_time_offset == 2147483647 %}<img {% iconsrc 'clock_question' %} title="Could not calculate offset because system clock was not set" class="icon">{% elif remotedevice.remotedevice_last_time_offset == -2147483648 %}<img {% iconsrc 'clock_error' %} title="Cannot read clock on the remote device" class="icon">{% else %}{% icon 'unknown' %}{% endif %}</td>
 			</tr>
 		{% endfor %}
 		</tbody>

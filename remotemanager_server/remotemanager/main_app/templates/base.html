@@ -21,12 +21,12 @@
 		<form class="langselect" name="setLangFrench" action="/i18n/setlang/" method="POST">{% csrf_token %}
 		<input name="next" type="hidden" value="/" />
 		<input type="hidden" name="language" value="fr" />
-		<a href="#" onclick="document.setLangFrench.submit();return false;">{% if lang.code == 'fr' %}{% icon 'fr' classes='icon-link icon-selected' %}{% else %}{% icon 'fr' classes='icon-link icon-unselected' %}{% endif %}</a>
+		<a href="#" onclick="document.setLangFrench.submit();return false;"><img {% iconsrc 'fr' %} class="icon icon-link{% if lang.code == 'fr' %} icon-selected{% else %} icon-unselected{% endif %}"></a>
 		</form>
 		<form class="langselect" name="setLangEnglish" action="/i18n/setlang/" method="POST">{% csrf_token %}
 		<input name="next" type="hidden" value="/" />
 		<input type="hidden" name="language" value="en" />
-		<a href="#" onclick="document.setLangEnglish.submit();return false;">{% if lang.code == 'en' %}{% icon 'en' classes='icon-link icon-selected' %}{% else %}{% icon 'en' classes='icon-link icon-unselected' %}{% endif %}</a>
+		<a href="#" onclick="document.setLangEnglish.submit();return false;"><img {% iconsrc 'en' %} class="icon icon-link{% if lang.code == 'en' %} icon-selected{% else %} icon-unselected{% endif %}"></a>
 		</form>
 		</div>
 

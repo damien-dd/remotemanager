@@ -65,6 +65,14 @@ class RemoteDevice(models.Model):
 					raise BluetoothHostError(_('Cannot bind bluetooth device'))
 
 
+
+class ClockDriftLog(models.Model):
+	clockdriftlog_remotedevice = models.ForeignKey(RemoteDevice)
+	clockdriftlog_syst_time = models.DateTimeField()
+	clockdriftlog_rtc_offset_before_sync = models.IntegerField()
+	clockdriftlog_rtc_offset_after_sync = models.IntegerField(null=True)
+
+
 class Serie(models.Model):
 	SUM = 'SUM'
 	AVERAGE = 'AVG'
@@ -247,6 +255,5 @@ class SeriePlot(models.Model):
 	serieplot_color = ColorField(verbose_name=_('Color'))
 	serieplot_rank = models.IntegerField(default=1)
 
-	
-	
-	
+
+

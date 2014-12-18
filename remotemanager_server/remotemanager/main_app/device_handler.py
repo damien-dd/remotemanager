@@ -3,6 +3,7 @@ import time
 import re
 import datetime
 import calendar
+import pytz
 
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -58,29 +59,57 @@ class DeviceHandler:
 			self.request_status()
 			
 
+	def get_rtc_offset(self):
+		# check if system clock has been set (if not it will most show 01/01/2000 + uptime)
+		if calendar.timegm(time.gmtime()) > calendar.timegm(datetime.datetime(2014,1,1).timetuple()):
+			self.send_command('GET_TIME')
+			datetime_str = self.read_response(length=19, end_with='\r\n', timeout=3).strip()
+			if re.match('^\d{1,2}/\d{1,2}/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}$', datetime_str):
+				date_str, time_str = datetime_str.split(' ')
+				day_str, month_str, year_str = date_str.split('/')
+				hours_str, minutes_str, seconds_str = time_str.split(':')
+				try:
+					remotedevice_clock = datetime.datetime(2000+int(year_str), int(month_str), int(day_str), int(hours_str), int(minutes_str), int(seconds_str))
+					time_offset = calendar.timegm(remotedevice_clock.timetuple()) - calendar.timegm(time.gmtime())
+					if time_offset > -2147483648 and time_offset < 2147483647:
+						return time_offset
+					else:
+						raise ValueError('Clock offset out of range')
+				except ValueError:
+					return None
+			elif datetime_str == 'E20': # cannot read the RTC on the remote device
+				return -2147483648
+			else:
+				return None
+		else: # system clock has not been set, cannot compute time offset
+			return 2147483647
+
+
 	def request_status(self):
 		self.send_command('STATUS')
 		status = self.read_response(length=3, timeout=2)
 		self.device.remotedevice_last_status_request = timezone.now()
 		self.device.remotedevice_last_status = status
-		self.send_command('GET_TIME')
-		datetime_str = self.read_response(length=19, end_with='\r\n', timeout=3).strip()
-		if re.match('^\d{1,2}/\d{1,2}/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}$', datetime_str):
-			date_str, time_str = datetime_str.split(' ')
-			day_str, month_str, year_str = date_str.split('/')
-			hours_str, minutes_str, seconds_str = time_str.split(':')
-			try:
-				remotedevice_clock = datetime.datetime(2000+int(year_str), int(month_str), int(day_str), int(hours_str), int(minutes_str), int(seconds_str))
-				time_offset = calendar.timegm(remotedevice_clock.timetuple()) - calendar.timegm(time.gmtime())
-				if time_offset > -2147483648 and time_offset < 2147483647:
-					self.device.remotedevice_last_time_offset = time_offset
-				else:
-					raise ValueError('Clock offset out of range')
-			except ValueError:
-				self.device.remotedevice_last_time_offset = None
-		else:
-			self.device.remotedevice_last_time_offset = None
+		rtc_offset = self.get_rtc_offset()
+		self.device.remotedevice_last_time_offset = rtc_offset
 		self.device.save()
+		
+		if rtc_offset > -2147483648 and rtc_offset < 2147483647:
+			from main_app.models import ClockDriftLog
+			if abs(rtc_offset) > 30:
+				system_time = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+				clkdriftlog = ClockDriftLog(
+					clockdriftlog_remotedevice=self.device,
+					clockdriftlog_syst_time=system_time,
+					clockdriftlog_rtc_offset_before_sync=rtc_offset)
+				
+				self.send_command('SET_TIME:'+system_time.strftime('%d/%m/%y %H:%M:%S'))
+				rtc_offset = self.get_rtc_offset()
+				clkdriftlog.clockdriftlog_rtc_offset_after_sync = rtc_offset
+				clkdriftlog.save()
+
+				self.device.remotedevice_last_time_offset = rtc_offset
+				self.device.save()
 
 
 	def send_command(self, command):
