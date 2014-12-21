@@ -520,6 +520,21 @@ void handle_serial()
       else
         Serial.print(F("E10"));
     }
+    else if(!strncmp_P(cmd, PSTR("RM_DATA_FILE:"), 13) && cmdLength==13+8)
+    {
+      if(SD.begin(chipSelect))
+      {
+        cmd[13+8]='.';
+        cmd[13+8+1]='l';
+        cmd[13+8+2]='o';
+        cmd[13+8+3]='g';
+        cmd[13+8+4]=0;
+        if(SD.remove(cmd+13))
+          Serial.print(F("OK!"));
+        else
+          Serial.print(F("E11"));
+      }
+    }
     else
       Serial.print(F("E03"));
   }
