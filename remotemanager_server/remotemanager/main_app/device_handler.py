@@ -87,7 +87,7 @@ class DeviceHandler:
 
 	def request_status(self):
 		self.send_command('STATUS')
-		status = self.read_response(length=3, timeout=2)
+		status = self.read_response(length=5, end_with='\r\n', timeout=2).strip()
 		self.device.remotedevice_last_status_request = timezone.now()
 		self.device.remotedevice_last_status = status
 		rtc_offset = self.get_rtc_offset()
