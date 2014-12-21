@@ -33,8 +33,8 @@ class DataHistoryForm(forms.Form):
 
 	timestep = forms.ChoiceField(choices=TIMESTEPS, label=_('Timestep'))
 	timezone = forms.ChoiceField(choices=TIMEZONE_CHOICES, label=_('Timezone'))
-	from_date = forms.DateField(initial=datetime.date.today)
-	to_date = forms.DateField(initial=datetime.date.today)
+	#from_date = forms.DateField(initial=datetime.date.today, input_formats=['%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y'])
+	#to_date = forms.DateField(initial=datetime.date.today, input_formats=['%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y'])
 
 	def __init__(self, *args, **kwargs):
 		super(DataHistoryForm, self).__init__(*args, **kwargs)

@@ -143,7 +143,7 @@ def timeline_chart(request, timelinechart_id):
 		form = DataHistoryForm(request.POST, request.FILES)
 		if form.is_valid():
 			serieplots = SeriePlot.objects.filter(serieplot_timelinechart__id=int(timelinechart_id)).order_by('serieplot_rank')
-			return render_to_response('timeline_chart_plot.html', {'serieplots': serieplots, 'timestep': form.cleaned_data['timestep'], 'timezone': form.data['timezone'], 'from_date': form.cleaned_data['from_date'], 'to_date': form.cleaned_data['to_date']}, context_instance=RequestContext(request))
+			return render_to_response('timeline_chart_plot.html', {'serieplots': serieplots, 'timestep': form.cleaned_data['timestep'], 'timezone': form.data['timezone'], 'from_date': date(2014,01,01), 'to_date': date(2014,01,01)}, context_instance=RequestContext(request))
 	else:
 		form = DataHistoryForm()
 
