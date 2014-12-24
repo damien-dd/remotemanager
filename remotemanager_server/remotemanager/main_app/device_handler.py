@@ -4,9 +4,12 @@ import re
 import datetime
 import calendar
 import pytz
+import subprocess
 
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
+from main_app import bluetooth
 
 READING_TIMEOUT = 0.1
 MAX_RESPONSE_SIZE = 5000
@@ -42,13 +45,27 @@ class DeviceHandler:
 		self.device = device
 		self.device.enable()
 		time.sleep(0.5)
-				
-		try:
+
+		dev_connected=False
+		p=subprocess.Popen(['/usr/bin/rfcomm', 'connect', str(device.remotedevice_dev), str(device.remotedevice_serial), '1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+		wait_time = 0
+		while p.poll() == None and not dev_connected and wait_time < 10:
+			rfcomm_mac, rfcomm_status = bluetooth.get_rfcomm_status(device)
+			if rfcomm_status == 'connected' and str(device.remotedevice_serial).upper() == rfcomm_mac:
+				dev_connected=True
+			time.sleep(0.2)
+			wait_time += 0.2
+
+		if dev_connected:
 			self.serial = serial.Serial(str(device.remotedevice_dev), 115200, timeout=READING_TIMEOUT)
+			p.terminate()
 			self.serial.flushInput()
 			self.device.remotedevice_last_connection_status = 'OK'
-		except Exception:
-			self.device.remotedevice_last_connection_status = 'OPEN_ERR'
+		else:
+			if p.poll() != None:
+				self.device.remotedevice_last_connection_status = 'OPEN_ERR'
+			else:
+				self.device.remotedevice_last_connection_status = 'TIMEOUT'
 			self.close()
 			self.device.save()
 			raise RemoteDeviceOpenError(self.device.get_last_connection_status_msg())

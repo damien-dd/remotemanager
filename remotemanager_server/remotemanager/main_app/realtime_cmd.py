@@ -50,7 +50,7 @@ def get_temp():
 
 	device_handler.send_command('READ_ALL')
 	
-	res = device_handler.read_response(1000, timeout=3)
+	res = device_handler.read_response(1000, end_with='\r\n\r\n', timeout=3)
 	
 	device_handler.close()
 

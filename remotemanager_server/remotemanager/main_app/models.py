@@ -51,25 +51,16 @@ class RemoteDevice(models.Model):
 					raise BluetoothHostError(self.get_last_connection_status_msg())
 			if enable:
 				rfcomm_mac, rfcomm_status = bluetooth.get_rfcomm_status(self)
-				if rfcomm_status not in ['closed', None]:
-					raise RemoteDeviceCurrentlyInUseError(_('Device is currently in use'))
-				if self.remotedevice_serial.upper() != rfcomm_mac and not bluetooth.bind_device(self):
-					self.remotedevice_last_connection_status = 'BT_BIND_ERR'
-					self.save()
+				if rfcomm_status not in ['clean', 'closed', None]:
+					raise RemoteDeviceCurrentlyInUseError(_('Device is currently in use')+repr(rfcomm_status))
 
-					try:
-						bluetooth.enable(False)
-					except Exception:
-						pass
-					
-					raise BluetoothHostError(self.get_last_connection_status_msg())
 
 	def get_last_connection_status_msg(self):
 		CONNECTION_STATUS_CODES = {
 			'': _('Connection status unknown'),
 			'OK': _('Connection has been successfully established'),
 			'BT_EN_ERR': _('Cannot enable bluetooth'),
-			'BT_BIND_ERR': _('Cannot bind bluetooth device'),
+			'TIMEOUT': _('Bluetooth connection timeout'),
 			'OPEN_ERR': _('Unable to connect to the device')
 		}
 
