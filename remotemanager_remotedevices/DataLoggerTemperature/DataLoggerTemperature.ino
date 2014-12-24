@@ -363,13 +363,12 @@ void handle_serial()
     cmdLength = Serial.readBytesUntil('\r', cmd, MAX_CMD_LENGTH);
     
     if(cmdLength == 0)
-      Serial.print(F("E01"));
+      Serial.println(F("E01"));
     else if(cmdLength == MAX_CMD_LENGTH)
-      Serial.print(F("E02"));
+      Serial.println(F("E02"));
     else if(cmdLength == 4 && !strncmp_P(cmd, PSTR("PING"), cmdLength))
     {
-      
-      Serial.print("p");
+      Serial.println("p");
     }
     else if(cmdLength == 8 && !strncmp_P(cmd, PSTR("READ_ALL"), cmdLength))
     {
@@ -420,12 +419,12 @@ void handle_serial()
         Serial.println(F("OFF"));
       else
         Serial.println(F("ON"));
-        
+      Serial.print(F("\r\n"));
     }
     else if(cmdLength == 6 && !strncmp_P(cmd, PSTR("STATUS"), cmdLength))
     {
       Serial.print("e");
-      Serial.print(err_flags|ovf_flags, HEX);
+      Serial.println(err_flags|ovf_flags, HEX);
     }
     else if(cmdLength == 8 && !strncmp_P(cmd, PSTR("GET_TIME"), cmdLength))
     {
@@ -450,7 +449,7 @@ void handle_serial()
         Serial.println(clock.second);
       }
       else
-        Serial.print(F("E20"));
+        Serial.println(F("E20"));
     }
     else if(cmdLength == 9+8+1+8 && !strncmp_P(cmd, PSTR("SET_TIME:"), 9) &&
             cmd[11] == '/' && cmd[14] == '/' && cmd[17] == ' ' &&
@@ -478,7 +477,7 @@ void handle_serial()
         clock.setTime();
       }
       else
-        Serial.print(F("E04"));
+        Serial.println(F("E04"));
     }
     else if(cmdLength == 13 && !strncmp_P(cmd, PSTR("SHOW_COUNTERS"), cmdLength))
     {
@@ -488,6 +487,7 @@ void handle_serial()
       Serial.println(cnt_total);
       Serial.print(F("Temperature:"));
       Serial.println(temp);
+      Serial.print(F("\r\n"));
     }
     else if(cmdLength == 12 && !strncmp_P(cmd, PSTR("READ_ERR_CNT"), cmdLength))
     {
@@ -505,6 +505,7 @@ void handle_serial()
       Serial.println(sensor3ErrCounter);
       Serial.print(F("Success:"));
       Serial.println(nbSavePoints_ok);
+      Serial.print(F("\r\n"));
     }
     else if(cmdLength == 20+8+4+4 && !strncmp_P(cmd, PSTR("GET_DATA_FILES_LIST:"), 20))
     {
@@ -570,10 +571,10 @@ void handle_serial()
           dataFile.close();
         }
         else
-          Serial.print(F("E11"));
+          Serial.println(F("E11"));
       }
       else
-        Serial.print(F("E10"));
+        Serial.println(F("E10"));
     }
     else if((!strncmp_P(cmd, PSTR("GET_DATA_RAW:"), 13) && cmdLength==13+8+3 && cmd[13+8]==',') || (!strncmp_P(cmd, PSTR("GET_DATA_SUM:"), 13) && cmdLength==13+8) || (!strncmp_P(cmd, PSTR("GET_DATA_AVG:"), 13) && cmdLength==13+8))
     {
@@ -704,10 +705,10 @@ void handle_serial()
           dataFile.close();
         }
         else
-          Serial.print(F("E11"));
+          Serial.println(F("E11"));
       }
       else
-        Serial.print(F("E10"));
+        Serial.println(F("E10"));
     }
     else if(!strncmp_P(cmd, PSTR("RM_DATA_FILE:"), 13) && cmdLength==13+8)
     {
@@ -719,13 +720,13 @@ void handle_serial()
         cmd[13+8+3]='g';
         cmd[13+8+4]=0;
         if(SD.remove(cmd+13))
-          Serial.print(F("OK!"));
+          Serial.println(F("OK!"));
         else
-          Serial.print(F("E11"));
+          Serial.println(F("E11"));
       }
     }
     else
-      Serial.print(F("E03"));
+      Serial.println(F("E03"));
   }
 }
 
