@@ -710,7 +710,7 @@ void handle_serial()
       else
         Serial.println(F("E10"));
     }
-    else if(!strncmp_P(cmd, PSTR("RM_DATA_FILE:"), 13) && cmdLength==13+8)
+    /*else if(!strncmp_P(cmd, PSTR("RM_DATA_FILE:"), 13) && cmdLength==13+8)
     {
       if(SD.begin(chipSelect))
       {
@@ -724,7 +724,7 @@ void handle_serial()
         else
           Serial.println(F("E11"));
       }
-    }
+    }*/
     else
       Serial.println(F("E03"));
   }
