@@ -117,6 +117,14 @@ volatile int16_t temperatureS2=-1;
 volatile int16_t temperatureS3=-1;
 
 
+uint8_t isDigit(uint8_t car)
+{
+  if(car >= '0' && car <= '9')
+    return 1;
+  else
+    return 0;
+}
+
 uint8_t int2hexDigit(uint8_t v)
 {
   if(v >= 0 && v <= 9)
@@ -137,17 +145,26 @@ void timerIsr()
   timeout--;
   
   if (sensorIn.getResolutionByIndex(0) != TEMPERATURE_PRECISION)
+  {
     initTemperatureSensor(&sensorIn);
+    temperatureIn=-1;
+  }
   else
     temperatureIn=sensorIn.getTempRawByIndex(0)+64*16;
   
   if (sensorOut.getResolutionByIndex(0) != TEMPERATURE_PRECISION)
+  {
     initTemperatureSensor(&sensorOut);
+    temperatureOut=-1;
+  }
   else
     temperatureOut=sensorOut.getTempRawByIndex(0)+64*16;
     
   if (sensor.getResolutionByIndex(0) != TEMPERATURE_PRECISION)
+  {
     initTemperatureSensor(&sensor);
+    temperature=-1;
+  }
   else
     temperature=sensor.getTempRawByIndex(0)+64*16;
     
@@ -595,7 +612,7 @@ void handle_serial()
                 begin_at = 0;
                 end_at = (2+3+4*60)*24;
               }
-              else if(str[1] >= '0' && str[1] <= '9' && str[2] >= '0' && str[2] <= '9')
+              else if(isDigit(str[1]) && isDigit(str[2]))
               {
                 begin_at = strtoul(str+1, NULL, DEC)*(2+3+4*60);
                 end_at = begin_at + 2+3+4*60;
@@ -633,9 +650,9 @@ void handle_serial()
                 }
                 str[3] = 0;
                 
-                if(((str[0]>='0' && str[0]<='9') || (str[0]>='A' && str[0]<='F')) &&
-                   ((str[1]>='0' && str[1]<='9') || (str[1]>='A' && str[1]<='F')) &&
-                   ((str[2]>='0' && str[2]<='9') || (str[2]>='A' && str[2]<='F')))
+                if((isDigit(str[0]) || (str[0]>='A' && str[0]<='F')) &&
+                   (isDigit(str[1]) || (str[1]>='A' && str[1]<='F')) &&
+                   (isDigit(str[2]) || (str[2]>='A' && str[2]<='F')))
                 {
                   cnt++;
                   sum += strtoul(str, NULL, HEX);
@@ -691,6 +708,21 @@ void handle_serial()
       }
       else
         Serial.print(F("E10"));
+    }
+    else if(!strncmp_P(cmd, PSTR("RM_DATA_FILE:"), 13) && cmdLength==13+8)
+    {
+      if(SD.begin(chipSelect))
+      {
+        cmd[13+8]='.';
+        cmd[13+8+1]='l';
+        cmd[13+8+2]='o';
+        cmd[13+8+3]='g';
+        cmd[13+8+4]=0;
+        if(SD.remove(cmd+13))
+          Serial.print(F("OK!"));
+        else
+          Serial.print(F("E11"));
+      }
     }
     else
       Serial.print(F("E03"));
