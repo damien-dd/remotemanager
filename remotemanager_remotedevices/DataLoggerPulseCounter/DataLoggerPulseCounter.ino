@@ -547,6 +547,7 @@ void loop()
       
       
       filename[0]='A';
+      filename[1]='_';
       if(cnt_a_clear)
         err_flags |= addDataPoint(filename, 0);
       else
