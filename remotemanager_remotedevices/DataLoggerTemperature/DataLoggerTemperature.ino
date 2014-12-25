@@ -141,32 +141,70 @@ void timerIsr()
 {
   static uint32_t temp_sum=0, tempIn_sum=0, tempOut_sum=0, tempS1_sum=0, tempS2_sum=0, tempS3_sum=0;
   static uint8_t temp_nb=0, tempIn_nb=0, tempOut_nb=0, tempS1_nb=0, tempS2_nb=0, tempS3_nb=0;
+  static unsigned int last_cnt_inc=0;
+  int16_t var;
   
   timeout--;
   
   if (sensorIn.getResolutionByIndex(0) != TEMPERATURE_PRECISION)
   {
     initTemperatureSensor(&sensorIn);
-    temperatureIn=-1;
+    var=-1;
   }
   else
-    temperatureIn=sensorIn.getTempRawByIndex(0)+64*16;
+    var=sensorIn.getTempRawByIndex(0)+64*16;
+  if(var < 0)
+  {
+    if(temperatureIn < 0)
+    {
+      if(temperatureIn > -32000)
+        temperatureIn-=1;
+    }
+    else
+      temperatureIn=-1;
+  }
+  else
+    temperatureIn=var;
   
   if (sensorOut.getResolutionByIndex(0) != TEMPERATURE_PRECISION)
   {
     initTemperatureSensor(&sensorOut);
-    temperatureOut=-1;
+    var=-1;
   }
   else
-    temperatureOut=sensorOut.getTempRawByIndex(0)+64*16;
+    var=sensorOut.getTempRawByIndex(0)+64*16;
+  if(var < 0)
+  {
+    if(temperatureOut < 0)
+    {
+      if(temperatureOut > -32000)
+        temperatureOut-=1;
+    }
+    else
+      temperatureOut=-1;
+  }
+  else
+    temperatureOut=var;
     
   if (sensor.getResolutionByIndex(0) != TEMPERATURE_PRECISION)
   {
     initTemperatureSensor(&sensor);
-    temperature=-1;
+    var=-1;
   }
   else
-    temperature=sensor.getTempRawByIndex(0)+64*16;
+    var=sensor.getTempRawByIndex(0)+64*16;
+  if(var < 0)
+  {
+    if(temperature < 0)
+    {
+      if(temperature > -32000)
+        temperature-=1;
+    }
+    else
+      temperature=-1;
+  }
+  else
+    temperature=var;
     
   temperatureS1 = ((uint32_t)analogRead(A0)*6355)/1024 - 4233 + 640; //6303*(1800k+15k)/1800k=6355
   temperatureS2 = ((uint32_t)analogRead(A1)*6355)/1024 - 4233 + 640; //6303*(1800k+15k)/1800k=6355
@@ -181,14 +219,26 @@ void timerIsr()
   
   if(cnt_clear)
   {
-    cnt_total+=cnt;
+    if(cnt != 0xFFFF)
+      cnt_total+=cnt;
     cnt=0;
     cnt_clear=0;
   }
     
-  if(temperatureIn > 0 && temperatureOut > 0 && temperatureOut > temperatureIn && !digitalRead(CIRCULATOR_DETECTION_PIN))
+  if(!digitalRead(CIRCULATOR_DETECTION_PIN))
   {
-    cnt+=(uint32_t)(((uint32_t)(((uint32_t)((uint32_t)318 * (uint16_t)( (temperatureOut-64*16) + (temperatureIn-64*16) ) ) + (uint32_t)5689744) )/8) * (uint16_t)(temperatureOut-temperatureIn)) >> 20;
+    if(temperatureIn > 0 && temperatureOut > 0 && temperatureOut > temperatureIn)
+      last_cnt_inc=(uint32_t)(((uint32_t)(((uint32_t)((uint32_t)318 * (uint16_t)( (temperatureOut-64*16) + (temperatureIn-64*16) ) ) + (uint32_t)5689744) )/8) * (uint16_t)(temperatureOut-temperatureIn)) >> 20;
+    else if(temperatureIn < -5 || temperatureOut < -5) //failed to read temperatureIn and/or temperatureOut for the last 5times
+      last_cnt_inc=0xFFFF;
+    
+    if(last_cnt_inc == 0xFFFF)
+      cnt=0xFFFF;
+    else if(cnt < 0xFFFE - last_cnt_inc)
+      cnt+=last_cnt_inc;
+    else
+      cnt=0xFFFE;
+    
   }
   
   if(temp_clear)
@@ -485,8 +535,6 @@ void handle_serial()
       Serial.println(cnt);
       Serial.print(F("CNT total:"));
       Serial.println(cnt_total);
-      Serial.print(F("Temperature:"));
-      Serial.println(temp);
       Serial.print(F("\r\n"));
     }
     else if(cmdLength == 12 && !strncmp_P(cmd, PSTR("READ_ERR_CNT"), cmdLength))
@@ -811,9 +859,7 @@ void loop()
       
       
       filename[0]='P';
-      if(cnt_clear)
-        err_flags |= addDataPoint(filename, 0);
-      else
+      if(!cnt_clear && cnt != 0xFFFF)
         err_flags |= addDataPoint(filename, cnt/16);
       
       cnt_clear=1;
