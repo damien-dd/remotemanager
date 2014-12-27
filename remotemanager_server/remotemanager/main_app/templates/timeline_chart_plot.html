@@ -62,7 +62,9 @@ function(data) {
 				tooltip: {
 					valueSuffix: '{{serieplot.serieplot_serie.serie_unit}}',
 					valueDecimals: {{serieplot.serieplot_serie.serie_values_decimals}}
-				}
+				},
+				stacking: 'normal',
+				stack: {{serieplot.serieplot_rank}}
 			};
 			seriesOption[{{forloop.counter0}}*2+1]={
 				type: 'flags',
