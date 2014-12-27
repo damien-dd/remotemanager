@@ -288,7 +288,7 @@ void handle_serial()
         clock.setTime();
       }
       else
-        Serial.print(F("E04"));
+        Serial.println(F("E04"));
     }
     else if(cmdLength == 8 && !strncmp_P(cmd, PSTR("READ_ALL"), cmdLength))
     {
@@ -302,8 +302,9 @@ void handle_serial()
         cnt_clear_mutex = cnt_in_clear;
         cnt_total = cnt_in_total + cnt_in;
       }while(cnt_clear_mutex != cnt_in_clear);
-      Serial.print(F("IN:"));
-      Serial.println(cnt_total);
+      Serial.print(F("IN: "));
+      Serial.print(cnt_total);
+      Serial.println(F("Wh"));
       
       // values of cnt_out_total and cnt_out can change at any time as they are updated from an interrupt
       // if cnt_out_clear has not change during reading of cnt_out_total and cnt_out values, the result is consistent
@@ -312,13 +313,15 @@ void handle_serial()
         cnt_clear_mutex = cnt_out_clear;
         cnt_total = cnt_out_total + cnt_out;
       }while(cnt_clear_mutex != cnt_out_clear);
-      Serial.print(F("OUT:"));
-      Serial.println(cnt_total);
+      Serial.print(F("OUT: "));
+      Serial.print(cnt_total);
+      Serial.println(F("Wh"));
       
       voltage_flags|=READ_FLAG; //mutex
       Serial.print(F("Vbat:"));
       Serial.println(voltage);
       voltage_flags&=~READ_FLAG;
+      Serial.print(F("\r\n"));
     }
     else if(cmdLength == 12 && !strncmp_P(cmd, PSTR("READ_ERR_CNT"), cmdLength))
     {
@@ -330,6 +333,7 @@ void handle_serial()
       Serial.println(rtcErrCounter);
       Serial.print(F("Success:"));
       Serial.println(nbSavePoints_ok);
+      Serial.print(F("\r\n"));
     }
     else if(cmdLength == 20+8+4+4 && !strncmp_P(cmd, PSTR("GET_DATA_FILES_LIST:"), 20))
     {
@@ -395,10 +399,10 @@ void handle_serial()
           dataFile.close();
         }
         else
-          Serial.print(F("E11"));
+          Serial.println(F("E11"));
       }
       else
-        Serial.print(F("E10"));
+        Serial.println(F("E10"));
     }
     else if((!strncmp_P(cmd, PSTR("GET_DATA_RAW:"), 13) && cmdLength==13+8+3 && cmd[13+8]==',') || (!strncmp_P(cmd, PSTR("GET_DATA_SUM:"), 13) && cmdLength==13+8) || (!strncmp_P(cmd, PSTR("GET_DATA_AVG:"), 13) && cmdLength==13+8))
     {
@@ -529,10 +533,10 @@ void handle_serial()
           dataFile.close();
         }
         else
-          Serial.print(F("E11"));
+          Serial.println(F("E11"));
       }
       else
-        Serial.print(F("E10"));
+        Serial.println(F("E10"));
     }
     else if(!strncmp_P(cmd, PSTR("RM_DATA_FILE:"), 13) && cmdLength==13+8)
     {
@@ -544,13 +548,13 @@ void handle_serial()
         cmd[13+8+3]='g';
         cmd[13+8+4]=0;
         if(SD.remove(cmd+13))
-          Serial.print(F("OK!"));
+          Serial.println(F("OK!"));
         else
-          Serial.print(F("E11"));
+          Serial.println(F("E11"));
       }
     }
     else
-      Serial.print(F("E03"));
+      Serial.println(F("E03"));
   }
 }
 
