@@ -292,14 +292,28 @@ void handle_serial()
     }
     else if(cmdLength == 8 && !strncmp_P(cmd, PSTR("READ_ALL"), cmdLength))
     {
+      byte cnt_clear_mutex;
+      unsigned long cnt_total;
+      
+      // values of cnt_in_total and cnt_in can change at any time as they are updated from an interrupt
+      // if cnt_in_clear has not change during reading of cnt_in_total and cnt_in values, the result is consistent
+      do
+      {
+        cnt_clear_mutex = cnt_in_clear;
+        cnt_total = cnt_in_total + cnt_in;
+      }while(cnt_clear_mutex != cnt_in_clear);
       Serial.print(F("IN:"));
-      Serial.println(cnt_in);
+      Serial.println(cnt_total);
+      
+      // values of cnt_out_total and cnt_out can change at any time as they are updated from an interrupt
+      // if cnt_out_clear has not change during reading of cnt_out_total and cnt_out values, the result is consistent
+      do
+      {
+        cnt_clear_mutex = cnt_out_clear;
+        cnt_total = cnt_out_total + cnt_out;
+      }while(cnt_clear_mutex != cnt_out_clear);
       Serial.print(F("OUT:"));
-      Serial.println(cnt_out);
-      Serial.print(F("IN total:"));
-      Serial.println(cnt_in_total);
-      Serial.print(F("OUT total:"));
-      Serial.println(cnt_out_total);
+      Serial.println(cnt_total);
       
       voltage_flags|=READ_FLAG; //mutex
       Serial.print(F("Vbat:"));
