@@ -19293,6 +19293,14 @@ seriesTypes.flags = extendClass(seriesTypes.column, {
 			while (i-- && points[cursor]) {
 				point = points[cursor];
 				leftPoint = onData[i];
+
+				point.plotX=leftPoint.plotX;
+				if (leftPoint.series.pointXOffset !== UNDEFINED) {
+					point.plotX+=leftPoint.series.pointXOffset;
+				}
+				if (leftPoint.series.barW !== UNDEFINED) {
+					point.plotX+=leftPoint.series.barW/2;
+				}
 				
 				if (leftPoint.x <= point.x && leftPoint.plotY !== UNDEFINED) {
 					if (point.x <= lastX) { // #803
