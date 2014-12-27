@@ -250,14 +250,31 @@ void handle_serial()
     }
     else if(cmdLength == 8 && !strncmp_P(cmd, PSTR("READ_ALL"), cmdLength))
     {
-      Serial.print(F("A:"));
-      Serial.println(cnt_a);
-      Serial.print(F("B:"));
-      Serial.println(cnt_b);
-      Serial.print(F("A total:"));
-      Serial.println(cnt_a_total);
-      Serial.print(F("B total:"));
-      Serial.println(cnt_b_total);
+      byte cnt_clear_mutex;
+      unsigned long cnt_total;
+      
+      // values of cnt_a_total and cnt_a can change at any time as they are updated from an interrupt
+      // if cnt_a_clear has not change during reading of cnt_a_total and cnt_a values, the result is consistent
+      do
+      {
+        cnt_clear_mutex = cnt_a_clear;
+        cnt_total = cnt_a_total + cnt_a;
+      }while(cnt_clear_mutex != cnt_a_clear);
+      Serial.print(F("A: "));
+      Serial.print(cnt_total);
+      Serial.println(F("Wh"));
+      
+      // values of cnt_b_total and cnt_b can change at any time as they are updated from an interrupt
+      // if cnt_b_clear has not change during reading of cnt_b_total and cnt_b values, the result is consistent
+      do
+      {
+        cnt_clear_mutex = cnt_a_clear;
+        cnt_total = cnt_b_total + cnt_b;
+      }while(cnt_clear_mutex != cnt_b_clear);
+      Serial.print(F("B: "));
+      Serial.print(cnt_total);
+      Serial.println(F("Wh"));
+      
       Serial.print(F("\r\n"));
     }
     else if(cmdLength == 12 && !strncmp_P(cmd, PSTR("READ_ERR_CNT"), cmdLength))
