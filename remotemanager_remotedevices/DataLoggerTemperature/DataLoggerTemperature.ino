@@ -227,8 +227,13 @@ void timerIsr()
     
   if(!digitalRead(CIRCULATOR_DETECTION_PIN))
   {
-    if(temperatureIn > 0 && temperatureOut > 0 && temperatureOut > temperatureIn)
-      last_cnt_inc=(uint32_t)(((uint32_t)(((uint32_t)((uint32_t)318 * (uint16_t)( (temperatureOut-64*16) + (temperatureIn-64*16) ) ) + (uint32_t)5689744) )/8) * (uint16_t)(temperatureOut-temperatureIn)) >> 20;
+    if(temperatureIn > 0 && temperatureOut > 0)
+    {
+      if(temperatureOut > temperatureIn)
+        last_cnt_inc=(uint32_t)(((uint32_t)(((uint32_t)((uint32_t)318 * (uint16_t)( (temperatureOut-64*16) + (temperatureIn-64*16) ) ) + (uint32_t)5689744) )/8) * (uint16_t)(temperatureOut-temperatureIn)) >> 20;
+      else
+        last_cnt_inc=0;
+    }
     else if(temperatureIn < -5 || temperatureOut < -5) //failed to read temperatureIn and/or temperatureOut for the last 5times
       last_cnt_inc=0xFFFF;
     
@@ -469,6 +474,13 @@ void handle_serial()
         Serial.println(F("OFF"));
       else
         Serial.println(F("ON"));
+
+      Serial.print(F("CNT: "));
+      if(cnt != 0xFFFF)
+        Serial.print(cnt_total+cnt);
+      else
+        Serial.print(cnt_total);
+      Serial.println(F("Wh"));
       Serial.print(F("\r\n"));
     }
     else if(cmdLength == 6 && !strncmp_P(cmd, PSTR("STATUS"), cmdLength))
@@ -528,14 +540,6 @@ void handle_serial()
       }
       else
         Serial.println(F("E04"));
-    }
-    else if(cmdLength == 13 && !strncmp_P(cmd, PSTR("SHOW_COUNTERS"), cmdLength))
-    {
-      Serial.print(F("CNT:"));
-      Serial.println(cnt);
-      Serial.print(F("CNT total:"));
-      Serial.println(cnt_total);
-      Serial.print(F("\r\n"));
     }
     else if(cmdLength == 12 && !strncmp_P(cmd, PSTR("READ_ERR_CNT"), cmdLength))
     {
