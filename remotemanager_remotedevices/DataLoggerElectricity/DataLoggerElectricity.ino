@@ -524,8 +524,7 @@ void handle_serial()
                   Serial.print('0');
                 if(sum < 0x10)
                   Serial.print('0');
-                Serial.print(sum, HEX);
-                Serial.print(F("\r\n"));
+                Serial.println(sum, HEX);
               }
               
             }
