@@ -22,11 +22,12 @@
 
 #include <avr/pgmspace.h>
 #include <avr/wdt.h>
+#include <avr/interrupt.h>
 #include <string.h>
 #include <SD.h>
 #include <Wire.h>
 #include <math.h>
-#include <TimerOne.h>
+//#include <TimerOne.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "DS1307.h"
@@ -54,7 +55,6 @@ DS1307 clock;//define a object of DS1307 class
 #define TEMPERATURE_PRECISION 12 //12bits resolution
 #define WH_PER_UNIT 1 //Wh per 0.0625°C
 
-
 #define T_S1_CIRCULATOR_ENABLE 950 //enable circulator if T(S1) >= 95.0°C
 #define T_S1_CIRCULATOR_DISABLE 900 //disable circulator if T(S1) < 90.0°C
 //#define T_DIFF_S1_S2_CIRCULATOR_ENABLE 60 //enable circulator if T(S1)-T(S2) > 6.0°C
@@ -63,20 +63,20 @@ DS1307 clock;//define a object of DS1307 class
 #define CIRCULATOR_DETECTION_PIN 9
 #define CIRCULATOR_RELAY_PIN 8
 
+#define WH_PER_PULSE 1
+#define MAX_PULSE_FREQUENCY 15625 // MAX_PULSE_FREQUENCY=16MHz/256/Fmax with (Fmax=4Hz)
+
 // We use 1bus per sensor
-#define ONE_WIRE_BUS1 2
-#define ONE_WIRE_BUS2 3
-#define ONE_WIRE_BUS3 5
+#define ONE_WIRE_BUS1 5
+#define ONE_WIRE_BUS2 6
 
 // Setup oneWire instances to communicate with OneWire devices
 OneWire oneWire1(ONE_WIRE_BUS1);
 OneWire oneWire2(ONE_WIRE_BUS2);
-OneWire oneWire3(ONE_WIRE_BUS3);
 
 // Pass oneWire references to Dallas Temperature. 
 DallasTemperature sensorIn(&oneWire1);
 DallasTemperature sensorOut(&oneWire2);
-DallasTemperature sensor(&oneWire3);
 
 volatile unsigned char err_flags = 0;
 volatile unsigned char ovf_flags = 0;
@@ -87,7 +87,6 @@ volatile byte lock_mutex = 0;
 volatile byte temp_clear = 0;
 volatile int tempIn = -1;
 volatile int tempOut = -1;
-volatile int temp = -1;
 volatile int tempS1 = -1;
 volatile int tempS2 = -1;
 volatile int tempS3 = -1;
@@ -97,6 +96,13 @@ volatile unsigned int cnt = 0;
 volatile byte cnt_clear = 0;
 volatile unsigned long cnt_total = 0;
 
+volatile byte cnt_a = 0;
+volatile byte cnt_b = 0;
+volatile byte cnt_a_clear = 0;
+volatile byte cnt_b_clear = 0;
+volatile unsigned long cnt_a_total = 0;
+volatile unsigned long cnt_b_total = 0;
+
 
 volatile unsigned int nbSavePoints_total=0;
 volatile unsigned int nbSavePoints_err=0;
@@ -105,13 +111,11 @@ volatile unsigned int sdCardErrCounter=0;
 volatile unsigned int rtcErrCounter=0;
 volatile unsigned int sensor1ErrCounter=0;
 volatile unsigned int sensor2ErrCounter=0;
-volatile unsigned int sensor3ErrCounter=0;
 
 volatile int8_t timeout;
 
 volatile int16_t temperatureIn=-1;
 volatile int16_t temperatureOut=-1;
-volatile int16_t temperature=-1;
 volatile int16_t temperatureS1=-1;
 volatile int16_t temperatureS2=-1;
 volatile int16_t temperatureS3=-1;
@@ -134,13 +138,55 @@ uint8_t int2hexDigit(uint8_t v)
   else return '?';
 }
 
-/// --------------------------
-/// Custom ISR Timer Routine
-/// --------------------------
-void timerIsr()
+void int0()
 {
-  static uint32_t temp_sum=0, tempIn_sum=0, tempOut_sum=0, tempS1_sum=0, tempS2_sum=0, tempS3_sum=0;
-  static uint8_t temp_nb=0, tempIn_nb=0, tempOut_nb=0, tempS1_nb=0, tempS2_nb=0, tempS3_nb=0;
+  if(TIFR1 & 0x02)
+  {
+    if(cnt_a_clear)
+    {
+      cnt_a_total+=cnt_a;
+      cnt_a=0;
+      cnt_a_clear=0;
+    }
+    
+    if(cnt_a < (0x100-WH_PER_PULSE))
+      cnt_a+=WH_PER_PULSE;
+    else
+      ovf_flags|=0x10;
+  
+    //Serial.print('p');
+  }
+  TIFR1 = 0x02; // clear OCF1A
+  OCR1A = TCNT1 + MAX_PULSE_FREQUENCY;
+}
+
+void int1()
+{
+  if(TIFR1 & 0x04)
+  {
+    if(cnt_b_clear)
+    {
+      cnt_b_total+=cnt_b;
+      cnt_b=0;
+      cnt_b_clear=0;
+    }
+    
+    if(cnt_b < (0x100-WH_PER_PULSE))
+      cnt_b+=WH_PER_PULSE;
+    else
+      ovf_flags|=0x20;
+      
+      //Serial.print('c');
+  }
+  TIFR1 = 0x04; // clear OCF1B
+  OCR1B = TCNT1 + MAX_PULSE_FREQUENCY;
+}
+
+//interrupt call on Timer1 overflow (every 1,048sec.)
+ISR(TIMER1_OVF_vect)
+{
+  static uint32_t tempIn_sum=0, tempOut_sum=0, tempS1_sum=0, tempS2_sum=0, tempS3_sum=0;
+  static uint8_t tempIn_nb=0, tempOut_nb=0, tempS1_nb=0, tempS2_nb=0, tempS3_nb=0;
   static unsigned int last_cnt_inc=0;
   int16_t var;
   
@@ -185,27 +231,7 @@ void timerIsr()
   }
   else
     temperatureOut=var;
-    
-  if (sensor.getResolutionByIndex(0) != TEMPERATURE_PRECISION)
-  {
-    initTemperatureSensor(&sensor);
-    var=-1;
-  }
-  else
-    var=sensor.getTempRawByIndex(0)+64*16;
-  if(var < 0)
-  {
-    if(temperature < 0)
-    {
-      if(temperature > -32000)
-        temperature-=1;
-    }
-    else
-      temperature=-1;
-  }
-  else
-    temperature=var;
-    
+  
   temperatureS1 = ((uint32_t)analogRead(A0)*6355)/1024 - 4233 + 640; //6303*(1800k+15k)/1800k=6355
   temperatureS2 = ((uint32_t)analogRead(A1)*6355)/1024 - 4233 + 640; //6303*(1800k+15k)/1800k=6355
   temperatureS3 = ((uint32_t)analogRead(A2)*6346)/1024 - 4233 + 640; //6303*(2200k+15k)/2200k=6346
@@ -214,8 +240,6 @@ void timerIsr()
     sensor1ErrCounter++;
   if(temperatureOut < 0)
     sensor2ErrCounter++;
-  if(temperature < 0)
-    sensor3ErrCounter++;
   
   if(cnt_clear)
   {
@@ -230,7 +254,7 @@ void timerIsr()
     if(temperatureIn > 0 && temperatureOut > 0)
     {
       if(temperatureOut > temperatureIn)
-        last_cnt_inc=(uint32_t)(((uint32_t)(((uint32_t)((uint32_t)318 * (uint16_t)( (temperatureOut-64*16) + (temperatureIn-64*16) ) ) + (uint32_t)5689744) )/8) * (uint16_t)(temperatureOut-temperatureIn)) >> 20;
+        last_cnt_inc=(uint32_t)(((uint32_t)(((uint32_t)((uint32_t)333 * (uint16_t)( (temperatureOut-64*16) + (temperatureIn-64*16) ) ) + (uint32_t)5966129) )/8) * (uint16_t)(temperatureOut-temperatureIn)) >> 20;
       else
         last_cnt_inc=0;
     }
@@ -253,9 +277,6 @@ void timerIsr()
     
     tempOut_sum=0;
     tempOut_nb=0;
-    
-    temp_sum=0;
-    temp_nb=0;
     
     tempS1_sum=0;
     tempS1_nb=0;
@@ -286,16 +307,6 @@ void timerIsr()
   }
   else if(!lock_mutex)
     tempOut=-1;
-    
-  if(temperature > 0)
-  {
-    temp_sum+=temperature;
-    temp_nb++;
-    if(!lock_mutex)
-        temp=temp_sum/temp_nb;
-  }
-  else if(!lock_mutex)
-    temp=-1;
     
   if(temperatureS1 > 0 && temperatureS1 < 2500)
   {
@@ -338,7 +349,6 @@ void timerIsr()
   //start conversions on all sensors
   sensorIn.requestTemperatures();
   sensorOut.requestTemperatures();
-  sensor.requestTemperatures();
   
   wdt_reset();
 }
@@ -377,16 +387,28 @@ void setup()
   // initialize temperature sensors
   initTemperatureSensor(&sensorIn);
   initTemperatureSensor(&sensorOut);
-  initTemperatureSensor(&sensor);
   
   delay(1000);
-  
-  Timer1.initialize(1000000); // set a timer of length 100000 microseconds (or 0.1 sec - or 10Hz => the led will blink 5 times, 5 cycles of on-and-off, per second)
-  Timer1.attachInterrupt( timerIsr ); // attach the service routine here
+
+  TCCR1A = 0x00;
+  TCCR1B = 0x00;
+  TCCR1C = 0x00;
+  TCNT1 = 0x0000;
+  TIMSK1 = 0x01; //enable interrupt on Timer1 overflow
+  OCR1A = MAX_PULSE_FREQUENCY;
+  OCR1B = MAX_PULSE_FREQUENCY;
+  TCCR1B = 0x04; // start the timer1 with prescaler 256, timer overflow at 0xFFFF (=256*65536/16000000Mhz=1,048sec.)
+  TIFR1 = 0x07; // clear OCF1A, OCF1B and TOV1
 
   // make sure that the default chip select pin is set to
   // output, even if you don't use it:
   pinMode(10, OUTPUT);
+  
+  //Configure INT0
+  pinMode(2, INPUT_PULLUP);
+  pinMode(3, INPUT_PULLUP);
+  attachInterrupt(0, int0, FALLING);
+  attachInterrupt(1, int1, FALLING);
 }
 
 int readRTC(char *buffer)
@@ -427,6 +449,9 @@ void handle_serial()
     }
     else if(cmdLength == 8 && !strncmp_P(cmd, PSTR("READ_ALL"), cmdLength))
     {
+      byte cnt_clear_mutex;
+      unsigned long cnt_total;
+      
       Serial.print(F("Tin: "));
       if(temperatureIn > 0)
         Serial.print(float(temperatureIn-64*16)/16, 1);
@@ -437,13 +462,6 @@ void handle_serial()
       Serial.print(F("Tout: "));
       if(temperatureOut > 0)
         Serial.print(float(temperatureOut-64*16)/16, 1);
-      else
-        Serial.print(F("???"));
-      Serial.println(F("°C"));
-        
-      Serial.print(F("T: "));
-      if(temperature > 0)
-        Serial.print(float(temperature-64*16)/16, 1);
       else
         Serial.print(F("???"));
       Serial.println(F("°C"));
@@ -481,6 +499,29 @@ void handle_serial()
       else
         Serial.print(cnt_total);
       Serial.println(F("Wh"));
+      
+      // values of cnt_a_total and cnt_a can change at any time as they are updated from an interrupt
+      // if cnt_a_clear has not change during reading of cnt_a_total and cnt_a values, the result is consistent
+      do
+      {
+        cnt_clear_mutex = cnt_a_clear;
+        cnt_total = cnt_a_total + cnt_a;
+      }while(cnt_clear_mutex != cnt_a_clear);
+      Serial.print(F("A: "));
+      Serial.print(cnt_total);
+      Serial.println(F("Wh"));
+      
+      // values of cnt_b_total and cnt_b can change at any time as they are updated from an interrupt
+      // if cnt_b_clear has not change during reading of cnt_b_total and cnt_b values, the result is consistent
+      do
+      {
+        cnt_clear_mutex = cnt_b_clear;
+        cnt_total = cnt_b_total + cnt_b;
+      }while(cnt_clear_mutex != cnt_b_clear);
+      Serial.print(F("B: "));
+      Serial.print(cnt_total);
+      Serial.println(F("Wh"));
+      
       Serial.print(F("\r\n"));
     }
     else if(cmdLength == 6 && !strncmp_P(cmd, PSTR("STATUS"), cmdLength))
@@ -553,8 +594,6 @@ void handle_serial()
       Serial.println(sensor1ErrCounter);
       Serial.print(F("Sensor2:"));
       Serial.println(sensor2ErrCounter);
-      Serial.print(F("Sensor3:"));
-      Serial.println(sensor3ErrCounter);
       Serial.print(F("Success:"));
       Serial.println(nbSavePoints_ok);
       Serial.print(F("\r\n"));
@@ -840,10 +879,6 @@ void loop()
       if (tempOut >= 0 && !temp_clear)
         err_flags |= addDataPoint(filename, tempOut);
         
-      filename[0]='T';
-      if (temp >= 0 && !temp_clear)
-        err_flags |= addDataPoint(filename, temp);
-        
       filename[0]='1';
       if (tempS1 >= 0 && !temp_clear)
         err_flags |= addDataPoint(filename, tempS1);
@@ -864,8 +899,22 @@ void loop()
       filename[0]='P';
       if(!cnt_clear && cnt != 0xFFFF)
         err_flags |= addDataPoint(filename, cnt/16);
-      
       cnt_clear=1;
+      
+      filename[0]='A';
+      filename[1]='_';
+      if(cnt_a_clear)
+        err_flags |= addDataPoint(filename, 0);
+      else
+        err_flags |= addDataPoint(filename, cnt_a);
+      cnt_a_clear=1;
+      
+      filename[0]='B';
+      if(cnt_b_clear)
+        err_flags |= addDataPoint(filename, 0);
+      else
+        err_flags |= addDataPoint(filename, cnt_b);
+      cnt_b_clear=1;
       
       if(err_flags&ERR_SD_CARD)
       {
