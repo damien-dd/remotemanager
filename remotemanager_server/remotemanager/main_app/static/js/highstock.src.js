@@ -19293,19 +19293,18 @@ seriesTypes.flags = extendClass(seriesTypes.column, {
 			while (i-- && points[cursor]) {
 				point = points[cursor];
 				leftPoint = onData[i];
-
-				point.plotX=leftPoint.plotX;
-				if (leftPoint.series.pointXOffset !== UNDEFINED) {
-					point.plotX+=leftPoint.series.pointXOffset;
-				}
-				if (leftPoint.series.barW !== UNDEFINED) {
-					point.plotX+=leftPoint.series.barW/2;
-				}
 				
 				if (leftPoint.x <= point.x && leftPoint.plotY !== UNDEFINED) {
 					if (point.x <= lastX) { // #803
 					
 						point.plotY = leftPoint.plotY;
+						point.plotX = leftPoint.plotX;
+						if (leftPoint.series.pointXOffset !== UNDEFINED) {
+							point.plotX+=leftPoint.series.pointXOffset;
+						}
+						if (leftPoint.series.barW !== UNDEFINED) {
+							point.plotX+=leftPoint.series.barW/2;
+						}
 					
 						// interpolate between points, #666
 						if (leftPoint.x < point.x && !step) { 
@@ -19347,6 +19346,7 @@ seriesTypes.flags = extendClass(seriesTypes.column, {
 				}
 				point.stackIndex = lastPoint.stackIndex + 1;
 			}
+
 					
 		});
 
