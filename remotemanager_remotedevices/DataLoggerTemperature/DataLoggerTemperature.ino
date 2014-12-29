@@ -64,7 +64,7 @@ DS1307 clock;//define a object of DS1307 class
 #define CIRCULATOR_RELAY_PIN 8
 
 #define WH_PER_PULSE 1
-#define MAX_PULSE_FREQUENCY 15625 // MAX_PULSE_FREQUENCY=16MHz/256/Fmax with (Fmax=4Hz)
+#define MIN_PULSE_INTERVAL 12500 // MIN_PULSE_INTERVAL=16MHz/256*Tmin with (Tmin=100ms)
 
 // We use 1bus per sensor
 #define ONE_WIRE_BUS1 5
@@ -153,11 +153,9 @@ void int0()
       cnt_a+=WH_PER_PULSE;
     else
       ovf_flags|=0x10;
-  
-    //Serial.print('p');
   }
   TIFR1 = 0x02; // clear OCF1A
-  OCR1A = TCNT1 + MAX_PULSE_FREQUENCY;
+  OCR1A = TCNT1 + MIN_PULSE_INTERVAL;
 }
 
 void int1()
@@ -175,11 +173,9 @@ void int1()
       cnt_b+=WH_PER_PULSE;
     else
       ovf_flags|=0x20;
-      
-      //Serial.print('c');
   }
   TIFR1 = 0x04; // clear OCF1B
-  OCR1B = TCNT1 + MAX_PULSE_FREQUENCY;
+  OCR1B = TCNT1 + MIN_PULSE_INTERVAL;
 }
 
 //interrupt call on Timer1 overflow (every 1,048sec.)
