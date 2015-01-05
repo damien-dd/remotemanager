@@ -17,4 +17,6 @@ urlpatterns = patterns('',
 	url(r'^serie/(?P<serie_id>\d+)/(?P<timestep>(hour|day|month|year|(minute\d{6}(\d{2}|xx))))/(?P<timezone>(UTC|(GMT[-+]\d{1,2})))/from/(?P<from_date>\d{8})/to/(?P<to_date>\d{8})/$', views.get_serie, name='serie'),
 	url(r'^serie/(?P<serie_id>\d+)/update/$', views.update_serie, name='serie_update'),
 	url(r'^test/$', views.test, name='test'),
+
+	url(r'^dev_choices/', views.dev_choices),
 )

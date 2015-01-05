@@ -14,11 +14,6 @@ from main_app import bluetooth
 from main_app.device_handler import DeviceHandler, BluetoothHostError, RemoteDeviceCurrentlyInUseError
 
 
-def validate_mac(mac):
-	if re.match('^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$', mac) is None:
-		raise ValidationError(unicode(mac)+_(' is not a valid MAC address'))
-
-
 class RemoteDevice(models.Model):
 	MODES = (
 		('BT', 'Bluetooth'),
@@ -26,8 +21,8 @@ class RemoteDevice(models.Model):
 
 	remotedevice_name = models.CharField(max_length=30, unique=True, verbose_name=_('Device name'))
 	remotedevice_mode = models.CharField(max_length=3, choices=MODES, default=MODES[0][0], verbose_name='Mode')
-	remotedevice_serial = models.CharField(max_length=30, verbose_name='Adresse MAC / N. serie')
-	remotedevice_dev = models.CharField(max_length=20, unique=True, verbose_name='Lien vers l\'interface', help_text='Format: <em>/dev/xxx</em>')
+	remotedevice_serial = models.CharField(max_length=30, blank=True, default = '', verbose_name='Adresse MAC / N. serie')
+	remotedevice_dev = models.CharField(max_length=20, unique=True, verbose_name='Lien vers l\'interface')
 
 	remotedevice_last_connection_attempt = models.DateTimeField(null=True, blank=True, default=None)
 	remotedevice_last_connection_status = models.CharField(max_length=10, blank=True, default = '')

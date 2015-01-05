@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import simplejson
 from django.db import connection
 from django.utils import timezone
+import os
 import subprocess
 import serial
 import datetime
@@ -29,6 +30,30 @@ task_test=None
 def logout_view(request):
 	logout(request)
 	return redirect('/')
+
+
+def dev_choices(request): 
+	dev_list = []
+	ChoiceUSB = ("on-false", "on-true")
+
+	mode = request.GET.get('mode')
+	if str(mode).lower() == 'usb':
+		ftdi_list = []
+		arduino_list = []
+		syst_dev_list = os.listdir('/dev')
+		for dev in syst_dev_list:
+			if dev.startswith('ftdi-'):
+				ftdi_list.append('/dev/'+dev)
+			elif dev.startswith('arduino-'):
+				arduino_list.append('/dev/'+dev)
+		choices = arduino_list + ftdi_list
+	else:
+		choices = ()
+
+	[dev_list.append((each, each)) for each in choices]
+	json = simplejson.dumps(dev_list)
+	return HttpResponse(json, mimetype='application/javascript')
+
 
 @login_required
 def index(request):
