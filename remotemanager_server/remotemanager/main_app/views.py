@@ -131,8 +131,8 @@ def get_serie(request, serie_id, timestep, timezone, from_date, to_date):
 			'month': '''1440*extract('days' from (date_trunc('month', datafield_timestamp at time zone \'GMT\' at time zone \'%s\' at time zone \'GMT\')+interval '1 month - 1 day'))''' % timezone,
 			'year':  '''1440*extract('days' from (date_trunc('year', datafield_timestamp at time zone \'GMT\' at time zone \'%s\' at time zone \'GMT\')+interval '1 year - 1 day'))''' % timezone,
 			}
-		fromDate=calendar.timegm(time.strptime(from_date, "%Y%m%d"))
-	        toDate=calendar.timegm(time.strptime(to_date, "%Y%m%d"))+24*60*60
+		fromDate=time.strftime("%Y-%m-%d", time.strptime(from_date, "%Y%m%d"))
+	        toDate=time.strftime("%Y-%m-%d", time.strptime(to_date, "%Y%m%d"))
 
 		cursor = connection.cursor()
 		query =\
@@ -143,6 +143,8 @@ def get_serie(request, serie_id, timestep, timezone, from_date, to_date):
 			'   MAX(%(total_minutes)s)-SUM(datafield_nb_points)'\
 			' from main_app_datafield'\
 			' where datafield_nb_points>0 and datafield_serie_id=%(serie_id)d'\
+			'   and datafield_timestamp at time zone \'GMT\' at time zone \'%(timezone)s\' at time zone \'GMT\' >= \'%(from_date)s\''\
+			'   and datafield_timestamp at time zone \'GMT\' at time zone \'%(timezone)s\' at time zone \'GMT\' <= \'%(to_date)s\''\
 			' group by timestamp order by timestamp' % {\
 				'timestep': timestep,
 				'serie_type': str(serie.serie_type),
@@ -150,7 +152,9 @@ def get_serie(request, serie_id, timestep, timezone, from_date, to_date):
 				'serie_multiplier': serie.serie_values_multiplier,
 				'total_minutes': total_minutes[timestep],
 				'serie_id': int(serie_id),
-				'timezone': timezone}
+				'timezone': timezone,
+				'from_date': fromDate,
+				'to_date':toDate}
 		#raise Exception(query)
 		cursor.execute(query)
 		data=cursor.fetchall()
@@ -162,8 +166,37 @@ def timeline_chart(request, timelinechart_id):
 	if request.method == 'POST':
 		form = DataHistoryForm(request.POST, request.FILES)
 		if form.is_valid():
+			timestep = form.cleaned_data['timestep']
+			timezone = form.cleaned_data['timezone']
+			limit_to = form.cleaned_data['limit_to']
+			if limit_to == 0:
+				limit_to = ''
+			else:
+				limit_to = 'limit %d' % limit_to
+			cursor = connection.cursor()
+			query =\
+				' select'\
+				'  date_trunc(\'day\', min(timestamp)) as from_date,'\
+				'  date_trunc(\'day\', max(timestamp)) as to_date'\
+				'  from ('\
+				'    select'\
+				'     date_trunc(\'%(timestep)s\', datafield_timestamp at time zone \'GMT\' at time zone \'%(timezone)s\' at time zone \'GMT\') as timestamp'\
+				'     from main_app_datafield'\
+				'     where datafield_nb_points>0 and datafield_serie_id in (%(serieIDs)s)'\
+				'     group by timestamp order by timestamp desc %(limit_to)s) as foo' % {\
+					'timestep': timestep,
+					'serieIDs': ','.join(list(str(i) for i in TimelineChart.objects.get(id=int(timelinechart_id)).timelinechart_series.values_list('id', flat=True))),
+					'timezone': timezone,
+					'limit_to': limit_to}
+			cursor.execute(query)
+			from_date, to_date = cursor.fetchone()
+			if from_date is None:
+				from_date = date(1970,01,01)
+			if to_date is None:
+				to_date = date(9999,12,31)
+
 			serieplots = SeriePlot.objects.filter(serieplot_timelinechart__id=int(timelinechart_id)).order_by('serieplot_rank')
-			return render_to_response('timeline_chart_plot.html', {'serieplots': serieplots, 'timestep': form.cleaned_data['timestep'], 'timezone': form.data['timezone'], 'from_date': date(2014,01,01), 'to_date': date(2014,01,01)}, context_instance=RequestContext(request))
+			return render_to_response('timeline_chart_plot.html', {'serieplots': serieplots, 'timestep': timestep, 'timezone': timezone, 'from_date': from_date, 'to_date': to_date}, context_instance=RequestContext(request))
 	else:
 		form = DataHistoryForm()
 
