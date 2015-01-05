@@ -33,7 +33,7 @@ class DataHistoryForm(forms.Form):
 
 	timestep = forms.ChoiceField(choices=TIMESTEPS, label=_('Timestep'))
 	timezone = forms.ChoiceField(choices=TIMEZONE_CHOICES, label=_('Timezone'))
-	limit_to = forms.IntegerField(min_value=0, initial=500, label=_('Limit number of points to'))
+	limit_to = forms.IntegerField(min_value=0, max_value=10000, initial=500, label=_('Limit number of points to'))
 
 	def __init__(self, *args, **kwargs):
 		super(DataHistoryForm, self).__init__(*args, **kwargs)

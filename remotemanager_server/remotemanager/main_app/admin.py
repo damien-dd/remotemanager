@@ -9,7 +9,7 @@ admin.site.register(Serie)
 
 
 class MyRemoteDeviceAdminForm(forms.ModelForm):
-	remotedevice_dev = forms.CharField(required=False, widget=forms.Select(choices=[]), label='Interface')
+	remotedevice_dev = forms.CharField(required=False, widget=forms.Select(choices=[]), label=_('Device interface'))
 
 	class Meta:
 		model = RemoteDevice
@@ -26,7 +26,7 @@ class MyRemoteDeviceAdminForm(forms.ModelForm):
 				if len(self.cleaned_data['remotedevice_serial']) == 0:
 					raise ValidationError(_('MAC address is missing'))
 				else:
-					raise ValidationError(_('Invalid MAC address: ')+self.cleaned_data['remotedevice_serial'])
+					raise ValidationError(_('Invalid MAC address')+': '+self.cleaned_data['remotedevice_serial'])
 			if re.match('^/dev/rfcomm\d+$', self.instance.remotedevice_dev) is None:
 				rfcomm_dev_list = RemoteDevice.objects.filter(remotedevice_mode='BT').values_list('remotedevice_dev', flat=True)
 				for rfcomm_num in range(100):
@@ -35,12 +35,12 @@ class MyRemoteDeviceAdminForm(forms.ModelForm):
 						self.cleaned_data['remotedevice_dev'] = rfcomm_dev
 						break
 				if re.match('^/dev/rfcomm\d+$', self.cleaned_data['remotedevice_dev']) is None:
-					raise ValidationError('No more rfcomm interfaces')
+					raise ValidationError(_('No more rfcomm interfaces available'))
 			else:
 				self.cleaned_data['remotedevice_dev'] = self.instance.remotedevice_dev
 		
 		if self.cleaned_data['remotedevice_mode'] == 'USB' and re.match('^/dev/(ftdi|arduino)', self.cleaned_data['remotedevice_dev']) is None:
-			raise ValidationError('Le lien vers l\'interface USB doit etre de la forme /dev/ftdi... ou /dev/arduino...')
+			raise ValidationError(_('The device interface must start with \'/dev/ftdi\' or \'/dev/arduino\''))
 		return self.cleaned_data
 
 

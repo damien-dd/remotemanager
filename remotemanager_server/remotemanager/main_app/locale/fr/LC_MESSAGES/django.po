@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-18 19:27+0100\n"
+"POT-Creation-Date: 2015-01-05 17:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: device_handler.py:120
+#: admin.py:12 models.py:25
+#, fuzzy
+#| msgid "Device name"
+msgid "Device interface"
+msgstr "Interface"
+
+#: admin.py:27
+msgid "MAC address is missing"
+msgstr "Adresse MAC manquante"
+
+#: admin.py:29
+#, fuzzy
+#| msgid " is not a valid MAC address"
+msgid "Invalid MAC address"
+msgstr "MAC adresse invalide"
+
+#: admin.py:38
+msgid "No more rfcomm interfaces available"
+msgstr "Il n'y a plus d'interface rfcomm disponible"
+
+#: admin.py:43
+msgid "The device interface must start with '/dev/ftdi' or '/dev/arduino'"
+msgstr ""
+"L'interface périphérique doit commencer par '/dev/ftdi' ou '/dev/arduino'"
+
+#: device_handler.py:137
 msgid "Unable to send command to the device"
 msgstr "Impossible d'envoyer une commande au périphérique"
 
-#: device_handler.py:130
+#: device_handler.py:147
 msgid "Unable to read response from the device"
 msgstr "Impossible de lire la réponse du périphérique"
 
@@ -50,73 +75,91 @@ msgstr "Pas"
 msgid "Timezone"
 msgstr "Fuseau horaire"
 
-#: models.py:19
-msgid " is not a valid MAC address"
-msgstr " n'est pas une adresse MAC valide"
+#: forms.py:36
+msgid "Limit number of points to"
+msgstr "Limiter le nombre de points à"
 
-#: models.py:27
+#: models.py:22
 msgid "Device name"
 msgstr "Nom du périphérique"
 
-#: models.py:55
+#: models.py:24
+msgid "MAC address"
+msgstr "Adresse MAC"
+
+#: models.py:30
+#, fuzzy
+#| msgid "System status"
+msgid "Status"
+msgstr "Statut système"
+
+#: models.py:50
 msgid "Device is currently in use"
 msgstr "Le périphérique est actuellement en cours d'utilisation"
 
-#: models.py:69
+#: models.py:55
 msgid "Connection status unknown"
 msgstr "Statut de connection inconnu"
 
-#: models.py:70
+#: models.py:56
 msgid "Connection has been successfully established"
 msgstr "La connexion a été établie avec succès"
 
-#: models.py:71
+#: models.py:57
 msgid "Cannot enable bluetooth"
 msgstr "Impossible d'activer le bluetooth"
 
-#: models.py:72
-msgid "Cannot bind bluetooth device"
-msgstr "Impossible de lier le périphérique bluetooth"
+#: models.py:58
+msgid "Bluetooth connection timeout"
+msgstr "La connection bluetooth n'aboutit pas"
 
-#: models.py:73
+#: models.py:59
 msgid "Unable to connect to the device"
 msgstr "Impossible de se connecter au périphérique"
 
-#: models.py:86
+#: models.py:72
 msgid "RTC has not been read"
 msgstr "L'horloge RTC n'a pas été lue"
 
-#: models.py:88
+#: models.py:74
 msgid "RTC offset cannot be determined because the system clock was not set"
 msgstr ""
 "Le décalage de l'horloge n'a pu être déterminé car l'horloge système n'était "
 "pas à l'heure"
 
-#: models.py:90
+#: models.py:76
 msgid "Error when reading RTC on the remote device"
 msgstr "Erreur lors de la lecture de l'horloge du périphérique distant"
 
-#: models.py:92
+#: models.py:78
 msgid "RTC offset has been determined successfully"
 msgstr "Le décalage de l'horloge a été déterminé avec succès"
 
-#: models.py:110
+#: models.py:96
 msgid "Sum"
 msgstr "Somme"
 
-#: models.py:111
+#: models.py:97
 msgid "Average"
 msgstr "Moyenne"
 
-#: models.py:217
+#: models.py:203
 msgid "Invalid response from the remote device: "
 msgstr "Réponse du périphérique distant invalide: "
 
-#: models.py:219
+#: models.py:205
 msgid "Communication error with the remote device"
 msgstr "Erreur de communication avec le périphérique distant"
 
-#: models.py:285
+#: models.py:261
+msgid "Title"
+msgstr ""
+
+#: models.py:262
+msgid "Y axis text"
+msgstr "Texte axe Y"
+
+#: models.py:271
 msgid "Color"
 msgstr "Couleur"
 
@@ -207,18 +250,21 @@ msgstr "Afficher"
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: templates/timeline_chart_plot.html:30 templates/timeline_chart_plot.html:69
+#: templates/timeline_chart_plot.html:30 templates/timeline_chart_plot.html:71
 msgid "Missing data"
 msgstr "Données manquantes"
 
-#: templates/timeline_chart_plot.html:89
+#: templates/timeline_chart_plot.html:91
 msgid "No data on the selected period."
 msgstr "Pas de données sur la période sélectionnée."
 
-#: templates/timeline_chart_plot.html:100
+#: templates/timeline_chart_plot.html:102
 msgid "Error when loading data from"
 msgstr "Erreur lors du chargement des données de"
 
 #: templates/timeline_charts.html:5
 msgid "Graphs"
 msgstr "Graphiques"
+
+#~ msgid "Cannot bind bluetooth device"
+#~ msgstr "Impossible de lier le périphérique bluetooth"

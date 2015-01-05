@@ -21,13 +21,13 @@ class RemoteDevice(models.Model):
 
 	remotedevice_name = models.CharField(max_length=30, unique=True, verbose_name=_('Device name'))
 	remotedevice_mode = models.CharField(max_length=3, choices=MODES, default=MODES[0][0], verbose_name='Mode')
-	remotedevice_serial = models.CharField(max_length=30, blank=True, default = '', verbose_name='Adresse MAC / N. serie')
-	remotedevice_dev = models.CharField(max_length=20, unique=True, verbose_name='Lien vers l\'interface')
+	remotedevice_serial = models.CharField(max_length=30, blank=True, default = '', verbose_name=_('MAC address'))
+	remotedevice_dev = models.CharField(max_length=20, unique=True, verbose_name=_('Device interface'))
 
 	remotedevice_last_connection_attempt = models.DateTimeField(null=True, blank=True, default=None)
 	remotedevice_last_connection_status = models.CharField(max_length=10, blank=True, default = '')
 	remotedevice_last_status_request = models.DateTimeField(null=True, blank=True, default=None)
-	remotedevice_last_status = models.CharField(max_length=4, blank=True, default = '', verbose_name='Status')
+	remotedevice_last_status = models.CharField(max_length=4, blank=True, default = '', verbose_name=_('Status'))
 	remotedevice_last_time_offset = models.IntegerField(null=True, blank=True, default=None)
 
 	def __unicode__(self):
@@ -258,8 +258,8 @@ class DataField(models.Model):
 		unique_together = ('datafield_serie', 'datafield_timestamp',)
 
 class TimelineChart(models.Model):
-	timelinechart_title = models.CharField(max_length=30, verbose_name='Titre')
-	timelinechart_yaxis_text = models.CharField(max_length=30, verbose_name='Axe Y, texte')
+	timelinechart_title = models.CharField(max_length=30, verbose_name=_('Title'))
+	timelinechart_yaxis_text = models.CharField(max_length=30, verbose_name=_('Y axis text'))
 	timelinechart_series = models.ManyToManyField(Serie, through='SeriePlot', verbose_name='Series')
 
 	def __unicode__(self):
