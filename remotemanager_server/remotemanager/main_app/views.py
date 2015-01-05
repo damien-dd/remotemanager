@@ -128,22 +128,17 @@ def get_serie(request, serie_id, timestep, timezone, from_date, to_date):
 		total_minutes = {
 			'hour':  '60',
 			'day':   '1440',
-			'month': '''1440*extract('days' from (date_trunc('month', datafield_timestamp)+interval '1 month - 1 day'))''',
-			'year':  '''1440*extract('days' from (date_trunc('year', datafield_timestamp)+interval '1 year - 1 day'))''',
+			'month': '''1440*extract('days' from (date_trunc('month', datafield_timestamp at time zone \'GMT\' at time zone \'%s\' at time zone \'GMT\')+interval '1 month - 1 day'))''' % timezone,
+			'year':  '''1440*extract('days' from (date_trunc('year', datafield_timestamp at time zone \'GMT\' at time zone \'%s\' at time zone \'GMT\')+interval '1 year - 1 day'))''' % timezone,
 			}
 		fromDate=calendar.timegm(time.strptime(from_date, "%Y%m%d"))
 	        toDate=calendar.timegm(time.strptime(to_date, "%Y%m%d"))+24*60*60
-        	timezone_offset = 0
-	        if timezone.startswith('GMT+'):
-        	        timezone_offset+=int(timezone[4:])*60*60
-	        elif timezone.startswith('GMT-'):
-        	        timezone_offset-=int(timezone[4:])*60*60
 
 		cursor = connection.cursor()
 		query =\
 			' select'\
-			'   (extract(epoch from date_trunc(\'%(timestep)s\','\
-			'     datafield_timestamp))+%(timezone_offset)d)::bigint*1000 as timestamp,'\
+			'   extract(epoch from date_trunc(\'%(timestep)s\','\
+			'      datafield_timestamp at time zone \'GMT\' at time zone \'%(timezone)s\' at time zone \'GMT\'))::bigint*1000 as timestamp,'\
 			'   %(serie_type)s((datafield_value-%(serie_offset)f)*%(serie_multiplier)f),'\
 			'   MAX(%(total_minutes)s)-SUM(datafield_nb_points)'\
 			' from main_app_datafield'\
@@ -155,7 +150,7 @@ def get_serie(request, serie_id, timestep, timezone, from_date, to_date):
 				'serie_multiplier': serie.serie_values_multiplier,
 				'total_minutes': total_minutes[timestep],
 				'serie_id': int(serie_id),
-				'timezone_offset': timezone_offset}
+				'timezone': timezone}
 		#raise Exception(query)
 		cursor.execute(query)
 		data=cursor.fetchall()
