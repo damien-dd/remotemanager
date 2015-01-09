@@ -67,3 +67,24 @@ def get_temp():
 			temperatures.append((name, value, TEMPERATURES_POS[name][0], TEMPERATURES_POS[name][1]))
 
 	return temperatures
+
+def read_all(deviceID):
+	device = RemoteDevice.objects.get(id=deviceID)
+	device_handler = DeviceHandler(device)
+
+	device_handler.send_command('READ_ALL')
+	
+	res = device_handler.read_response(1000, end_with='\r\n\r\n', timeout=3)
+	
+	device_handler.close()
+
+	measures = []
+	for measure in res.strip().split('\r\n'):
+		if ':' in measure:
+			name, value = measure.rsplit(':', 1)
+			name = name.strip()
+			value = value.strip()
+			measures.append((name, value))
+
+	return measures
+	

@@ -56,6 +56,13 @@ def dev_choices(request):
 
 
 @login_required
+@user_passes_test(lambda u: u.is_staff)
+def rtcmd_readall(request, deviceID):
+	values = realtime_cmd.read_all(int(deviceID))
+	json = simplejson.dumps(values)
+	return HttpResponse(json, mimetype='application/javascript')
+
+@login_required
 def index(request):
 	remotedevices = RemoteDevice.objects.all().order_by('remotedevice_name')
 	return render_to_response('home.html', {'remotedevices': remotedevices, 'system_uptime': calendar.timegm(time.gmtime()), 'uptime': (timezone.now()-timedelta(seconds=uptime.uptime()))}, context_instance=RequestContext(request))
