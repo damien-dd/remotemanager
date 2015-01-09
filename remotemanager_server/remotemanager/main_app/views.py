@@ -32,6 +32,8 @@ def logout_view(request):
 	return redirect('/')
 
 
+@login_required
+@user_passes_test(lambda u: u.is_staff)
 def dev_choices(request): 
 	dev_list = []
 	ChoiceUSB = ("on-false", "on-true")
