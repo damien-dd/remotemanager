@@ -140,6 +140,7 @@ def get_serie(request, serie_id, timestep, timezone, from_date, to_date):
 			}
 		fromDate=time.strftime("%Y-%m-%d", time.strptime(from_date, "%Y%m%d"))
 	        toDate=time.strftime("%Y-%m-%d", time.strptime(to_date, "%Y%m%d"))
+		toDate+=' 23:59'
 
 		cursor = connection.cursor()
 		query =\
