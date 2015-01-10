@@ -52,12 +52,14 @@ void loop() {
     cmdLength = Serial.readBytesUntil('\r', cmd, MAX_CMD_LENGTH);
 
     if(cmdLength == 0)
-      Serial.print("E01");
+      Serial.println("E01");
     else if(cmdLength == MAX_CMD_LENGTH)
-      Serial.print("E02");
-    else if(!strncmp(cmd, "PING", cmdLength))
-      Serial.print("p");
-    else if(!strncmp(cmd, "READ_ALL", cmdLength))
+      Serial.println("E02");
+    else if(cmdLength == 4 && !strncmp_P(cmd, PSTR("PING"), cmdLength))
+      Serial.println("p");
+    else if(cmdLength == 6 && !strncmp_P(cmd, PSTR("STATUS"), cmdLength))
+      Serial.println("e0"); //no detectable error
+    else if(cmdLength == 8 && !strncmp_P(cmd, PSTR("READ_ALL"), cmdLength))
     {
       int measuredVoltages[NUMBER_OF_RELAY_SHIELD*4+1];
       
@@ -104,8 +106,9 @@ void loop() {
           Serial.print("0");
         Serial.println(measuredVoltages[i]);
       }
+      Serial.print(F("\r\n"));
     }
     else
-      Serial.print("E09");
+      Serial.println("E09");
   }
 }
