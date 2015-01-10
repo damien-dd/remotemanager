@@ -31,7 +31,6 @@ def logout_view(request):
 	logout(request)
 	return redirect('/')
 
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def dev_choices(request): 
@@ -142,7 +141,6 @@ def get_serie(request, serie_id, timestep, timezone, from_date, to_date):
 			}
 		fromDate=time.strftime("%Y-%m-%d", time.strptime(from_date, "%Y%m%d"))
 	        toDate=time.strftime("%Y-%m-%d", time.strptime(to_date, "%Y%m%d"))
-		toDate+=' 23:59'
 
 		cursor = connection.cursor()
 		query =\
@@ -184,10 +182,15 @@ def timeline_chart(request, timelinechart_id):
 			else:
 				limit_to = 'limit %d' % limit_to
 			cursor = connection.cursor()
+			if timestep == 'hour':
+				timestep_bis = 'day'
+			else:
+				timestep_bis = timestep
+			
 			query =\
 				' select'\
 				'  date_trunc(\'day\', min(timestamp)) as from_date,'\
-				'  date_trunc(\'day\', max(timestamp)) as to_date'\
+				'  date_trunc(\'day\', max(timestamp))+\'1 %(timestep_bis)s\'::INTERVAL as to_date'\
 				'  from ('\
 				'    select'\
 				'     date_trunc(\'%(timestep)s\', datafield_timestamp at time zone \'GMT\' at time zone \'%(timezone)s\' at time zone \'GMT\') as timestamp'\
@@ -195,6 +198,7 @@ def timeline_chart(request, timelinechart_id):
 				'     where datafield_nb_points>0 and datafield_serie_id in (%(serieIDs)s)'\
 				'     group by timestamp order by timestamp desc %(limit_to)s) as foo' % {\
 					'timestep': timestep,
+					'timestep_bis': timestep_bis,
 					'serieIDs': ','.join(list(str(i) for i in TimelineChart.objects.get(id=int(timelinechart_id)).timelinechart_series.values_list('id', flat=True))),
 					'timezone': timezone,
 					'limit_to': limit_to}
@@ -206,7 +210,7 @@ def timeline_chart(request, timelinechart_id):
 				to_date = date(9999,12,31)
 
 			serieplots = SeriePlot.objects.filter(serieplot_timelinechart__id=int(timelinechart_id)).order_by('serieplot_rank')
-			return render_to_response('timeline_chart_plot.html', {'serieplots': serieplots, 'timestep': timestep, 'timezone': timezone, 'from_date': from_date, 'to_date': to_date}, context_instance=RequestContext(request))
+			return render_to_response('timeline_chart_plot.html', {'serieplots': serieplots, 'timestep': timestep, 'timezone': timezone, 'from_date': from_date, 'to_date': to_date, 'query': query}, context_instance=RequestContext(request))
 	else:
 		form = DataHistoryForm()
 
