@@ -37,6 +37,7 @@
 #define ERR_EXISTING_DATA 1
 #define ERR_SD_CARD 2
 #define ERR_RTC 4
+#define ERR_SENSOR 8
 
 // On the Ethernet Shield, CS is pin 4. Note that even if it's not
 // used as the CS pin, the hardware CS pin (10 on most Arduino boards,
@@ -391,8 +392,8 @@ void setup()
   TCCR1C = 0x00;
   TCNT1 = 0x0000;
   TIMSK1 = 0x01; //enable interrupt on Timer1 overflow
-  OCR1A = MAX_PULSE_FREQUENCY;
-  OCR1B = MAX_PULSE_FREQUENCY;
+  OCR1A = MIN_PULSE_INTERVAL;
+  OCR1B = MIN_PULSE_INTERVAL;
   TCCR1B = 0x04; // start the timer1 with prescaler 256, timer overflow at 0xFFFF (=256*65536/16000000Mhz=1,048sec.)
   TIFR1 = 0x07; // clear OCF1A, OCF1B and TOV1
 
@@ -864,28 +865,38 @@ void loop()
       filename[11]='g';
       filename[12]=0;
       
-      err_flags &= ~(ERR_SD_CARD|ERR_EXISTING_DATA);
+      err_flags &= ~(ERR_SD_CARD|ERR_EXISTING_DATA|ERR_SENSOR);
       lock_mutex=1;
       
       filename[0]='I';
       if (tempIn >= 0 && !temp_clear)
         err_flags |= addDataPoint(filename, tempIn);
+      else
+        err_flags |= ERR_SENSOR;
         
       filename[0]='O';
       if (tempOut >= 0 && !temp_clear)
         err_flags |= addDataPoint(filename, tempOut);
+      else
+        err_flags |= ERR_SENSOR;
         
       filename[0]='1';
       if (tempS1 >= 0 && !temp_clear)
         err_flags |= addDataPoint(filename, tempS1);
+      else
+        err_flags |= ERR_SENSOR;
         
       filename[0]='2';
       if (tempS2 >= 0 && !temp_clear)
         err_flags |= addDataPoint(filename, tempS2);
+      else
+        err_flags |= ERR_SENSOR;
         
       filename[0]='3';
       if (tempS3 >= 0 && !temp_clear)
         err_flags |= addDataPoint(filename, tempS3);
+      else
+        err_flags |= ERR_SENSOR;
       
         
       lock_mutex=0;
