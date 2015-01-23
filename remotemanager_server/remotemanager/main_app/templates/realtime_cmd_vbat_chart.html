@@ -59,9 +59,26 @@ $(function() {
 
 
 {% block content %}
-{{ block.super }}
-<h2>{% trans 'Current battery voltages' %}</h2>
 
-<h3>{% trans 'Total voltage' %}: {{voltageTotal}}V</h3>
-<div id="container" style="height: 350px; min-width: 500px"></div>
+
+
+<script type="text/javascript">
+$('#nav-rtcmd').addClass('active');
+</script>
+<div class="panel panel-default">
+	<div class="panel-heading"><h4>{% trans 'Current battery voltages' %}</h4></div>
+
+	<div class="panel-body">
+	{% if error %}
+	<div class="bs-callout bs-callout-danger">
+	<h4>{{error.0}}</h4>
+	{{error.1}}
+	</div>
+	{% else %}
+	<h4>{% trans 'Total voltage' %}: {{voltageTotal}}V</h4>
+	<div id="container" style="height: 350px; min-width: 500px"></div>
+	{% endif %}
+	</div>
+</div>
+
 {% endblock %}

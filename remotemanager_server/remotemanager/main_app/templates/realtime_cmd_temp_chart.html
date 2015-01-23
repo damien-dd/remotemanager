@@ -8,18 +8,29 @@
 
 
 {% block content %}
-{{ block.super }}
-<h2>Temperatures</h2>
-{% if error %}
-<p>{{error}}</p>
-{% else %}
-<div style="height:600px;width:471px;margin:10px;position:relative;text-align:center;" id="container">
-	<img style="position:absolute;left:0;top:0;" src="/static/img/waterSystem.png"/>
 
-{% for name, value, pox_x, pos_y in temperatures %}
-<div style="background: white;border: 2px solid black;padding:2px;z-index:100;position:absolute;text-align:center;font-size:12px;font-weight:bold;left:{{pox_x}}px;top:{{pos_y}}px;">{{value}}</div>
-{% endfor %}
+<script type="text/javascript">
+$('#nav-rtcmd').addClass('active');
+</script>
+<div class="panel panel-default">
+	<div class="panel-heading"><h4>Temperatures</h4></div>
+
+	<div class="panel-body">
+	{% if error %}
+	<div class="bs-callout bs-callout-danger">
+	<h4>{{error.0}}</h4>
+	{{error.1}}
+	</div>
+	{% else %}
+	<div style="height:600px;width:471px;margin:10px;position:relative;text-align:center;" id="container">
+		<img style="position:absolute;left:0;top:0;" src="/static/img/waterSystem.png"/>
+
+	{% for name, value, pox_x, pos_y in temperatures %}
+	<div style="background: white;border: 2px solid black;padding:2px;z-index:100;position:absolute;text-align:center;font-size:12px;font-weight:bold;left:{{pox_x}}px;top:{{pos_y}}px;">{{value}}</div>
+	{% endfor %}
+	</div>
+	{% endif %}
+	</div>
 </div>
-{% endif %}
 
 {% endblock %}

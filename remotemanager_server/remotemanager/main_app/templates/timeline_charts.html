@@ -1,9 +1,39 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+
 {% block content %}
-<h2>{% trans 'Graphs' %}</h2>
-{% for chart in charts %}
-<a href="/chart/timeline/{{chart.id}}/">{{chart.timelinechart_title}}</a><br />
-{% endfor %}
+<script type="text/javascript">
+$('#nav-stats').addClass('active');
+</script>
+
+<div class="panel panel-default">
+	<table class="table table-bordered table-condensed">
+	<thead>
+		<tr>
+		<th>{% trans 'Graph name' %}</th>
+		<th>{% trans 'Data' %}</th>
+		<th>{% trans 'Unit' %}</th>
+		<th>{% trans 'Last update' %}</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for chart in charts %}
+	{% if chart.serieplot_set.count > 0 %}
+		<tr>
+			<td rowspan="{{chart.serieplot_set.count}}"><a href="/chart/timeline/{{chart.id}}/">{{chart.timelinechart_title}}</a></td>
+		{% for serieplot in chart.serieplot_set.all %}
+{% if not forloop.first %}
+		<tr>
+{% endif %}
+			<td><span style="color:{{serieplot.serieplot_color}};" class="glyphicon glyphicon-stop" aria-hidden="true"></span> {{serieplot.serieplot_serie.serie_name}}</td>
+			<td>{{serieplot.serieplot_serie.serie_unit}}</td>
+			<td>{{serieplot.serieplot_serie.serie_last_timestamp|timesince}}</td>
+		</tr>
+		{% endfor %}
+	{% endif %}
+	{% endfor %}
+	</tbody>
+	</table>
+</div>
 {% endblock %}

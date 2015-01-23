@@ -5,60 +5,85 @@
 
 <head>
 	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-	<link rel='stylesheet' type='text/css' href='/static/css/style.css' />
+	<script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+	
+	<link rel="stylesheet" media="all" href="/static/css/bootstrap.min.css" type="text/css"/>
+	
+	<link rel="stylesheet" media="all" href="/static/css/base.css" type="text/css"/>
 	<title>Remote Manager</title>
 	{% block head %}
 	{% endblock %}
 </head>
 
 <body>
+<div class="container-full">
+	<div class="row">
+		{% if user.is_authenticated %}
 
-	<div id="page-wrap">
-
-        <header>
-		<div class="langselect-container">
-		{% get_language_info for LANGUAGE_CODE as lang %}
-		<form class="langselect" name="setLangFrench" action="/i18n/setlang/" method="POST">{% csrf_token %}
-		<input name="next" type="hidden" value="/" />
-		<input type="hidden" name="language" value="fr" />
-		<a href="#" onclick="document.setLangFrench.submit();return false;"><img {% iconsrc 'fr' %} class="icon icon-link{% if lang.code == 'fr' %} icon-selected{% else %} icon-unselected{% endif %}"></a>
-		</form>
-		<form class="langselect" name="setLangEnglish" action="/i18n/setlang/" method="POST">{% csrf_token %}
-		<input name="next" type="hidden" value="/" />
-		<input type="hidden" name="language" value="en" />
-		<a href="#" onclick="document.setLangEnglish.submit();return false;"><img {% iconsrc 'en' %} class="icon icon-link{% if lang.code == 'en' %} icon-selected{% else %} icon-unselected{% endif %}"></a>
-		</form>
+	<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand active" href="/">{% trans 'System status' %}</a>
 		</div>
 
-		<h1>Remote Manager</h1>
-		{% if user.is_authenticated %}
-		<p>{% icon 'user' %} <em>{{ user.username }}</em>, <a href="/logout/">{% trans 'Log out' %}</a></p>
-		
-		<nav>
-			<ul class="group">
-				
-				<li><a href="/">{% trans 'System status' %}</a></li>
-				<li><a href="/charts/timeline/">{% trans 'Statistics' %}</a></li>
-				<li><a href="/rtcmd/">{% trans 'Real-time commands' %}</a></li>
-				<li><a href="/loader/">Program loader</a></li>
-				
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="navbar">
+			<ul class="nav navbar-nav">
+				<li id="nav-stats"><a href="/charts/timeline/">{% trans 'Statistics' %}</a></li>
+				<li id="nav-rtcmd"><a href="/rtcmd/">{% trans 'Real-time commands' %}</a></li>
+			{% if user.is_superuser %}
+				<li id="nav-loader"><a href="/loader/">Program loader</a></li>
+			{% endif %}
 			</ul>
-		</nav>
+			
+			<ul class="nav navbar-nav navbar-right">
+				
+
+				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="badge"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> {{ user.username }}</span> <span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="/logout/">{% trans 'Log out' %}</a></li>
+					</ul>
+				</li>
+				<li class="navbar-form">
+				<form class="langselect" name="setLangFrench" action="/i18n/setlang/" method="POST">{% csrf_token %}
+				<input name="next" type="hidden" value="/" />
+				<input type="hidden" name="language" value="fr" />
+				</form>
+				<form class="langselect" name="setLangEnglish" action="/i18n/setlang/" method="POST">{% csrf_token %}
+				<input name="next" type="hidden" value="/" />
+				<input type="hidden" name="language" value="en" />
+				</form>
+				<div class="btn-group">
+					<a href="#" onclick="document.setLangFrench.submit();return false;" class="btn btn-default btn-sm{% if lang.code == 'fr' %} active{% endif %}"><img {% iconsrc 'fr' %} class="icon icon-lang"></a>
+
+			
+					<a href="#" onclick="document.setLangEnglish.submit();return false;" class="btn btn-default btn-sm{% if lang.code == 'en' %} active{% endif %}"><img {% iconsrc 'en' %} class="icon icon-lang"></a>
+				</div>
+				</li>
+			</ul>
+
+			
+
+		</div><!-- /.navbar-collapse -->
+	</div><!-- /.container-fluid -->
+	</nav>
 		{% endif %}
-	</header>
 		
-		<section id="main-content">
-		<div id="guts">
 		{% block content %}
 		{% endblock %}
-		</div>
-		</section>
-		
 	</div>
 	
-	<footer>
+	<div class="row footer">
 	  Remote Management system - &copy;2013 Damien Dando
-	</footer>
-
+	</div>
+</div>
 </body>
 </html>

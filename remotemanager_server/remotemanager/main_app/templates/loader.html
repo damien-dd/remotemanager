@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
-<h2>Program loader</h2>
+<script type="text/javascript">
+$('#nav-loader').addClass('active');
+</script>
+<div class="panel panel-default">
+	<div class="panel-heading"><h4>{% trans 'Program loader' %}</h4></div>
+
+	<div class="panel-body">
+	{% block subcontent %}
+	{% endblock %}
+	</div>
+</div>
 {% endblock %}

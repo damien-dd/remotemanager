@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import simplejson
 from django.db import connection
 from django.utils import timezone
+from django.utils.encoding import force_text
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.cache import never_cache
+from django.contrib.auth.views import login
 import os
 import subprocess
 import serial
@@ -22,10 +26,16 @@ from main_app.models import RemoteDevice, Serie, DataField, TimelineChart, Serie
 from main_app import bluetooth
 from main_app import realtime_cmd
 from main_app.program_loader import handle_uploaded_file
-from main_app.forms import ProgramLoaderForm, DataHistoryForm
+from main_app.forms import ProgramLoaderForm, DataHistoryForm, CustomAuthenticationForm
 from main_app import tasks
 
 task_test=None
+
+@csrf_protect
+@never_cache
+def login_view(request):
+	return login(request, authentication_form=CustomAuthenticationForm, template_name='login.html')
+
 
 def logout_view(request):
 	logout(request)
@@ -77,7 +87,7 @@ def rtcmd(request):
 	return render_to_response('realtime_cmd.html', context_instance=RequestContext(request))
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: u.is_superuser)
 def program_loader(request):
 	if request.method == 'POST':
 		form = ProgramLoaderForm(request.POST, request.FILES)
@@ -94,24 +104,29 @@ def program_loader(request):
 def get_vbat(request):
 	
 	voltages = realtime_cmd.get_vbat()
-	voltagesElements = voltages[:-1]
-	voltageTotal = voltages[-1]
 	if type(voltages) is list:
+		voltagesElements = voltages[:-1]
+		voltageTotal = voltages[-1]
 		return render_to_response('realtime_cmd_vbat_chart.html', {'voltagesElements': voltagesElements, 'voltageTotal': voltageTotal}, context_instance=RequestContext(request))
 	else:
-		return HttpResponse(repr(voltages))
+		error_type = type(voltages).__name__
+		error_msg = force_text(voltages)
+		error = (error_type, error_msg)
+		return render_to_response('realtime_cmd_vbat_chart.html', {'error': error}, context_instance=RequestContext(request))
 
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def get_temp(request):
 	
-	error = None
 	temperatures = realtime_cmd.get_temp()
-	if type(temperatures) is type(str()):
-		error = temperatures
-
-	return render_to_response('realtime_cmd_temp_chart.html', {'temperatures': temperatures, 'error': error}, context_instance=RequestContext(request))
+	if type(temperatures) is list:
+		return render_to_response('realtime_cmd_temp_chart.html', {'temperatures': temperatures}, context_instance=RequestContext(request))
+	else:
+		error_type = type(temperatures).__name__
+		error_msg = force_text(temperatures)
+		error = (error_type, error_msg)
+		return render_to_response('realtime_cmd_temp_chart.html', {'error': error}, context_instance=RequestContext(request))
 
 @login_required
 def timeline_charts(request):

@@ -1,11 +1,10 @@
 {% extends 'loader.html' %}
+{% load i18n %}
+{% load bootstrap3 %}
 
-{% block content %}
-{{ block.super }}
-<p>
-<form enctype="multipart/form-data" action="/loader/" method="post">{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="Submit" />
+{% block subcontent %}
+<form class="form-horizontal" enctype="multipart/form-data" action="/loader/" method="post">{% csrf_token %}
+{% bootstrap_form form layout="horizontal" %}
+{% buttons submit='OK' reset='Cancel' layout='horizontal' %}{% endbuttons %} 
 </form>
-</p>
 {% endblock %}

@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from celery import task
 import time
+import subprocess
 
 from main_app.models import DataField, Serie, RemoteDevice
 from main_app.device_handler import DeviceHandler
@@ -33,6 +34,10 @@ def update_serie(serieId):
 		serie = Serie.objects.get(serie_name=serieId)
 
 	return serie.update(10)
+
+@task()
+def dbbackup():
+	return subprocess.check_output('python /srv/remotemanager/manage.py dbbackup --compress --clean'.split(' '))
 
 @task()
 def test_task_db(date_str):

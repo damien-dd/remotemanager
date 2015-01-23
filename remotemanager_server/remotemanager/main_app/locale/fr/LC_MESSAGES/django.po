@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-05 17:46+0100\n"
+"POT-Creation-Date: 2015-01-23 15:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,39 +43,47 @@ msgid "The device interface must start with '/dev/ftdi' or '/dev/arduino'"
 msgstr ""
 "L'interface périphérique doit commencer par '/dev/ftdi' ou '/dev/arduino'"
 
-#: device_handler.py:137
+#: device_handler.py:150
 msgid "Unable to send command to the device"
 msgstr "Impossible d'envoyer une commande au périphérique"
 
-#: device_handler.py:147
+#: device_handler.py:160
 msgid "Unable to read response from the device"
 msgstr "Impossible de lire la réponse du périphérique"
 
-#: forms.py:18
+#: forms.py:12
+msgid "Username"
+msgstr ""
+
+#: forms.py:13
+msgid "Password"
+msgstr ""
+
+#: forms.py:26
 msgid "Hourly"
 msgstr "Horaire"
 
-#: forms.py:19
+#: forms.py:27
 msgid "Daily"
 msgstr "Journalier"
 
-#: forms.py:20
+#: forms.py:28
 msgid "Monthly"
 msgstr "Mensuel"
 
-#: forms.py:21
+#: forms.py:29
 msgid "Yearly"
 msgstr "Annuel"
 
-#: forms.py:34
+#: forms.py:42
 msgid "Timestep"
 msgstr "Pas"
 
-#: forms.py:35
+#: forms.py:43
 msgid "Timezone"
 msgstr "Fuseau horaire"
 
-#: forms.py:36
+#: forms.py:44
 msgid "Limit number of points to"
 msgstr "Limiter le nombre de points à"
 
@@ -91,7 +99,7 @@ msgstr "Adresse MAC"
 #, fuzzy
 #| msgid "System status"
 msgid "Status"
-msgstr "Statut système"
+msgstr "Statut"
 
 #: models.py:50
 msgid "Device is currently in use"
@@ -143,81 +151,89 @@ msgstr "Somme"
 msgid "Average"
 msgstr "Moyenne"
 
-#: models.py:203
+#: models.py:204
 msgid "Invalid response from the remote device: "
 msgstr "Réponse du périphérique distant invalide: "
 
-#: models.py:205
+#: models.py:206
 msgid "Communication error with the remote device"
 msgstr "Erreur de communication avec le périphérique distant"
 
-#: models.py:261
-msgid "Title"
-msgstr ""
-
 #: models.py:262
+msgid "Title"
+msgstr "Titre"
+
+#: models.py:263
 msgid "Y axis text"
 msgstr "Texte axe Y"
 
-#: models.py:271
+#: models.py:272
 msgid "Color"
 msgstr "Couleur"
 
-#: templates/base.html:35
-msgid "Log out"
-msgstr ""
-
-#: templates/base.html:40 templates/home.html:44
+#: templates/base.html:34 templates/home.html:44
 msgid "System status"
 msgstr "Statut système"
 
-#: templates/base.html:41
+#: templates/base.html:40
 msgid "Statistics"
 msgstr "Statistiques"
 
-#: templates/base.html:42 templates/realtime_cmd.html:5
+#: templates/base.html:41 templates/realtime_cmd.html:9
 msgid "Real-time commands"
 msgstr "Commandes temps-réel"
 
-#: templates/home.html:48
+#: templates/base.html:52
+msgid "Log out"
+msgstr ""
+
+#: templates/home.html:52
 msgid "RemoteDevice name"
 msgstr "Nom du périphérique distant"
 
-#: templates/home.html:49
+#: templates/home.html:53
 msgid "Last connection"
 msgstr "Dernière connexion"
 
-#: templates/home.html:50
+#: templates/home.html:54
 msgid "Last status request"
 msgstr "Dernière requête de status"
 
-#: templates/home.html:51
+#: templates/home.html:55
 msgid "Clock"
 msgstr "Horloge"
 
-#: templates/home.html:66
+#: templates/home.html:71
 msgid "System clock"
 msgstr "Horloge système"
 
-#: templates/home.html:67
+#: templates/home.html:72
 msgid "Last system reboot"
 msgstr "Dernier redémarrage du système"
 
-#: templates/login.html:5 templates/login.html.py:24
-msgid "Log in"
+#: templates/loader.html:9
+msgid "Program loader"
 msgstr ""
 
-#: templates/login.html:8
+#: templates/login.html:10
+msgid "Sign in"
+msgstr "Se connecter"
+
+#: templates/login.html:40
 msgid "Your username and password didn't match. Please try again."
 msgstr ""
 "Le nom d'utilisateur et le mot de passe ne correspondent pas. Essayez à "
 "nouveau."
 
-#: templates/realtime_cmd.html:6
+#: templates/login.html:46
+msgid "Log in"
+msgstr ""
+
+#: templates/realtime_cmd.html:13
 msgid "Measure battery voltages"
 msgstr "Mesurer les tensions des batteries"
 
-#: templates/realtime_cmd.html:8
+#: templates/realtime_cmd.html:14
 msgid "Measure temperature"
 msgstr "Mesurer les températures"
 
@@ -230,19 +246,19 @@ msgstr "Tensions batteries"
 msgid "Voltage"
 msgstr "Tension"
 
-#: templates/realtime_cmd_vbat_chart.html:63
+#: templates/realtime_cmd_vbat_chart.html:69
 msgid "Current battery voltages"
 msgstr "Tension batterie actuelle"
 
-#: templates/realtime_cmd_vbat_chart.html:65
+#: templates/realtime_cmd_vbat_chart.html:78
 msgid "Total voltage"
 msgstr "Tension totale"
 
-#: templates/timeline_chart.html:5
+#: templates/timeline_chart.html:9
 msgid "Data history"
 msgstr "Historique des données"
 
-#: templates/timeline_chart_form.html:8
+#: templates/timeline_chart_form.html:9
 msgid "Display"
 msgstr "Afficher"
 
@@ -262,9 +278,21 @@ msgstr "Pas de données sur la période sélectionnée."
 msgid "Error when loading data from"
 msgstr "Erreur lors du chargement des données de"
 
-#: templates/timeline_charts.html:5
-msgid "Graphs"
-msgstr "Graphiques"
+#: templates/timeline_charts.html:14
+msgid "Graph name"
+msgstr "Nom du graphique"
+
+#: templates/timeline_charts.html:15
+msgid "Data"
+msgstr "Données"
+
+#: templates/timeline_charts.html:16
+msgid "Unit"
+msgstr "Unité"
+
+#: templates/timeline_charts.html:17
+msgid "Last update"
+msgstr "Dernière mise à jour"
 
 #~ msgid "Cannot bind bluetooth device"
 #~ msgstr "Impossible de lier le périphérique bluetooth"

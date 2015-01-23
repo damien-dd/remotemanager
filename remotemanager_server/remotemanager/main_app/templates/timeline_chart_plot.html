@@ -207,7 +207,9 @@ function(data) {
 {% endblock %}
 
 
-{% block content %}
-{{ block.super }}
+{% block subcontent %}
 <div id="container"></div>
+{% if user.is_superuser %}
+<!--for debug <p>{{query}}</p>-->
+{% endif %}
 {% endblock %}

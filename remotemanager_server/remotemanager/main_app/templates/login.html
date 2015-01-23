@@ -1,28 +1,55 @@
 {% extends 'base.html' %}
 {% load i18n %}
-
+{% load icons %}
 {% block content %}
-<h2>{% trans 'Log in' %}</h2>
 
-{% if form.errors %}
-<p>{% trans "Your username and password didn't match. Please try again." %}</p>
-{% endif %}
+<div id="loginbox" style="margin-top:50px;" class="mainbox col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2">
+<div class="panel panel-info" >
+	<div class="panel-heading clearfix">
+		{% get_language_info for LANGUAGE_CODE as lang %}
+		<div class="panel-title pull-left">{% trans 'Sign in' %}</div>
+		<form class="langselect" name="setLangFrench" action="/i18n/setlang/" method="POST">{% csrf_token %}
+		<input name="next" type="hidden" value="/" />
+		<input type="hidden" name="language" value="fr" />
+		</form>
+		<form class="langselect" name="setLangEnglish" action="/i18n/setlang/" method="POST">{% csrf_token %}
+		<input name="next" type="hidden" value="/" />
+		<input type="hidden" name="language" value="en" />
+		</form>
+		<div class="btn-group pull-right">
+			<a href="#" onclick="document.setLangFrench.submit();return false;" class="btn btn-default btn-sm{% if lang.code == 'fr' %} active{% endif %}"><img {% iconsrc 'fr' %} class="icon icon-lang"></a>
 
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
+			
+			<a href="#" onclick="document.setLangEnglish.submit();return false;" class="btn btn-default btn-sm{% if lang.code == 'en' %} active{% endif %}"><img {% iconsrc 'en' %} class="icon icon-lang"></a>
+		</div>
+	</div>
 
-<input type="submit" value="{% trans 'Log in' %}" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
+	<div style="padding-top:30px" class="panel-body" >							
+	<form method="post" class="form-horizontal" action="{% url 'main_app.views.login_view' %}"><!--<form id="loginform"  role="form">-->
+	{% csrf_token %}
+		<div style="margin-bottom: 25px" class="input-group">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>{{ form.username }}
+		</div>
+
+		<div style="margin-bottom: 25px" class="input-group">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>{{ form.password }}
+		</div>
+
+	{% if form.errors %}
+		<div class="alert alert-danger col-sm-12">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> {% trans "Your username and password didn't match. Please try again." %}
+		</div>
+	{% endif %}
+
+		<div style="margin-top:10px" class="form-group">
+			<div class="col-sm-12 controls">
+			<input class="btn btn-primary" type="submit" value="{% trans 'Log in' %}" />
+			<input type="hidden" name="next" value="{{ next }}" />
+			</div>
+		</div>
+	</form>
+	</div>
+</div>
+</div>
 
 {% endblock %}

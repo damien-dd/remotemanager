@@ -142,6 +142,7 @@ class Serie(models.Model):
 					device_handler.close()
 				self.serie_last_update = '%s,%03d' % (list_header[2:], index+nb_files-1)
 				output['last_update'] = self.serie_last_update
+				self.serie_last_timestamp = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
 				self.save()
 			else:
 				device_handler.close()

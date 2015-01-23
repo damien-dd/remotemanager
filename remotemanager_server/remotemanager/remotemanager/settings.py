@@ -143,7 +143,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 LANGUAGES = (
     ('fr', _('Francais')),
-    ('en', _('Anglais')),
+    ('en', _('English')),
 )
 DEFAULT_LANGUAGE = 1
 
@@ -166,6 +166,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'dbbackup',
+    'bootstrap3',
     'main_app',
 #    'menus',
     # Uncomment the next line to enable the admin:

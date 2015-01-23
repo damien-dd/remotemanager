@@ -1,8 +1,16 @@
 import datetime
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.forms import AuthenticationForm
+from django.forms.widgets import PasswordInput, TextInput
 
 from main_app.models import RemoteDevice
+
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+	username = forms.CharField(widget=TextInput(attrs={'class': 'form-control','placeholder': _('Username')}))
+	password = forms.CharField(widget=PasswordInput(attrs={'class': 'form-control','placeholder':_('Password')}))
 
 class ProgramLoaderForm(forms.Form):
 	device = forms.ModelChoiceField(queryset = RemoteDevice.objects.all())

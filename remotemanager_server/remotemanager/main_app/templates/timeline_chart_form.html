@@ -1,10 +1,11 @@
 {% extends 'timeline_chart.html' %}
 {% load i18n %}
+{% load bootstrap3 %}
 
-{% block content %}
-{{ block.super }}
-<form action="." method="post">{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="{% trans 'Display' %}" />
+{% block subcontent %}
+<form action="." class="form-horizontal" method="post">
+	{% csrf_token %}
+	{% bootstrap_form form layout="horizontal" %}
+	{% buttons submit=_("Display") layout='horizontal' %}{% endbuttons %}
 </form>
 {% endblock %}

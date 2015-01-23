@@ -40,9 +40,13 @@
 {% endblock %}
 
 {% block content %}
+<div class="panel panel-default">
+	<div class="panel-heading"><h4>{% trans 'System status' %}</h4></div>
 
-<h2>{% trans 'System status' %}</h2>
-	<table class="list">
+	<div class="panel-body">
+
+	<div class="panel panel-default">
+	<table class="table table-bordered table-condensed table-hover">
 		<thead>
 			<tr>
 				<th>{% trans 'RemoteDevice name' %}</th>
@@ -62,7 +66,15 @@
 		{% endfor %}
 		</tbody>
 	</table>
+	</div>
 
-<p>{% trans 'System clock' %}: <span id="systemClock"></span></p>
-<p>{% trans 'Last system reboot' %}: {{uptime|timesince}}</p>
+	<dl class="dl-horizontal">
+		<dt>{% trans 'System clock' %}</dt>
+		<dd><span id="systemClock"></span></dd>
+
+		<dt>{% trans 'Last system reboot' %}</dt>
+		<dd>{{uptime|timesince}}</dd>
+	</dl>
+</div>
+</div>
 {% endblock %}

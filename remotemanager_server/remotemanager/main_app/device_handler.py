@@ -16,27 +16,33 @@ MAX_RESPONSE_SIZE = 5000
 
 
 class RemoteDeviceConnectionError(Exception):
-    pass
+	pass
 
 class BluetoothHostError(RemoteDeviceConnectionError):
-    pass
+	pass
 
 class RemoteDeviceCurrentlyInUseError(RemoteDeviceConnectionError):
-    pass
+	pass
 
 class RemoteDeviceOpenError(RemoteDeviceConnectionError):
-    pass
+	pass
 
 
 
 class RemoteDeviceCommunicationError(Exception):
-    pass
+	pass
 
 class RemoteDeviceReadError(RemoteDeviceCommunicationError):
-    pass
+	pass
 
 class RemoteDeviceWriteError(RemoteDeviceCommunicationError):
-    pass
+	pass
+
+class RemoteDeviceNoResponseError(RemoteDeviceCommunicationError):
+	pass
+
+class RemoteDeviceInvalidResponseError(RemoteDeviceCommunicationError):
+	pass
 
 
 class DeviceHandler:
@@ -57,8 +63,15 @@ class DeviceHandler:
 			wait_time += 0.2
 
 		if dev_connected:
-			self.serial = serial.Serial(str(device.remotedevice_dev), 115200, timeout=READING_TIMEOUT)
-			p.terminate()
+			try:
+				self.serial = serial.Serial(str(device.remotedevice_dev), 115200, timeout=READING_TIMEOUT)
+			except serial.SerialException:
+				self.device.remotedevice_last_connection_status = 'OPEN_ERR'
+				p.terminate()
+				self.close()
+				self.device.save()
+				raise RemoteDeviceOpenError(self.device.get_last_connection_status_msg())
+			
 			self.serial.flushInput()
 			self.device.remotedevice_last_connection_status = 'OK'
 		else:

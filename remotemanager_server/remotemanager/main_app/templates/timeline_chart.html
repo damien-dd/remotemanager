@@ -2,5 +2,15 @@
 {% load i18n %}
 
 {% block content %}
-<h2>{% trans 'Data history' %}</h2>
+<script type="text/javascript">
+$('#nav-stats').addClass('active');
+</script>
+<div class="panel panel-default">
+	<div class="panel-heading"><h4>{% trans 'Data history' %}</h4></div>
+
+	<div class="panel-body">
+	{% block subcontent %}
+	{% endblock %}
+	</div>
+</div>
 {% endblock %}

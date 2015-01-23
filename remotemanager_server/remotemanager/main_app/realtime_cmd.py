@@ -3,7 +3,7 @@ import re
 
 from main_app import bluetooth
 from main_app.models import RemoteDevice
-from main_app.device_handler import DeviceHandler
+from main_app.device_handler import DeviceHandler, RemoteDeviceConnectionError, RemoteDeviceCommunicationError, RemoteDeviceCurrentlyInUseError, RemoteDeviceNoResponseError, RemoteDeviceInvalidResponseError
 
 
 TEMPERATURES_POS = {
@@ -18,19 +18,30 @@ TEMPERATURES_POS = {
 def get_vbat():
 
 	device = RemoteDevice.objects.get(remotedevice_name='BatteryVoltageMonitor')
-	device_handler = DeviceHandler(device)
+	try:
+		device_handler = DeviceHandler(device)
+	except RemoteDeviceConnectionError, err:
+		if not type(err) is type(RemoteDeviceCurrentlyInUseError()):
+			try:
+				device_handler.close()
+			except UnboundLocalError:
+				pass
+		return err
 
+	try:
+		device_handler.send_command('READ_ALL')
+		res = device_handler.read_response((3+2)*13, timeout=3)
+	except RemoteDeviceCommunicationError, err:
+		device_handler.close()
+		return err
 	
-	device_handler.send_command('READ_ALL')
-	
-	res = device_handler.read_response((3+2)*13, timeout=3)
 	device_handler.close()
 
 	if res == '':
-		return 'No response from remote device'
+		return RemoteDeviceNoResponseError()
 
 	if re.match('^([0-9]{3}\r\n){13}$', res) is None:
-		return 'Invalid response from remote device: %s' % repr(res)
+		return RemoteDeviceInvalidResponseError(repr(res))
 
 	res = res.strip().split('\r\n')
 	
@@ -46,16 +57,27 @@ def get_vbat():
 def get_temp():
 
 	device = RemoteDevice.objects.get(remotedevice_name='DataLoggerTemperature')
-	device_handler = DeviceHandler(device)
+	try:
+		device_handler = DeviceHandler(device)
+	except RemoteDeviceConnectionError, err:
+		if not type(err) is type(RemoteDeviceCurrentlyInUseError()):
+			try:
+				device_handler.close()
+			except UnboundLocalError:
+				pass
+		return err
 
-	device_handler.send_command('READ_ALL')
-	
-	res = device_handler.read_response(1000, end_with='\r\n\r\n', timeout=3)
+	try:
+		device_handler.send_command('READ_ALL')
+		res = device_handler.read_response(1000, end_with='\r\n\r\n', timeout=3)
+	except RemoteDeviceCommunicationError, err:
+		device_handler.close()
+		return err
 	
 	device_handler.close()
 
 	if res == '':
-		return 'No response from remote device'
+		return RemoteDeviceNoResponseError()
 
 	temperatures = []
 	for temperature in res.strip().split('\r\n'):
@@ -70,11 +92,23 @@ def get_temp():
 
 def read_all(deviceID):
 	device = RemoteDevice.objects.get(id=deviceID)
-	device_handler = DeviceHandler(device)
 
-	device_handler.send_command('READ_ALL')
-	
-	res = device_handler.read_response(1000, end_with='\r\n\r\n', timeout=3)
+	try:
+		device_handler = DeviceHandler(device)
+	except RemoteDeviceConnectionError, err:
+		if not type(err) is type(RemoteDeviceCurrentlyInUseError()):
+			try:
+				device_handler.close()
+			except UnboundLocalError:
+				pass
+		return err
+
+	try:
+		device_handler.send_command('READ_ALL')
+		res = device_handler.read_response(1000, end_with='\r\n\r\n', timeout=3)
+	except RemoteDeviceCommunicationError, err:
+		device_handler.close()
+		return err
 	
 	device_handler.close()
 

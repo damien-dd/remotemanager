@@ -2,8 +2,19 @@
 {% load i18n %}
 
 {% block content %}
-<h2>{% trans 'Real-time commands' %}</h2>
-<a href="/rtcmd/get/vbat/">{% trans 'Measure battery voltages' %}</a>
-<br />
-<a href="/rtcmd/get/temp/">{% trans 'Measure temperature' %}</a>
+<script type="text/javascript">
+$('#nav-rtcmd').addClass('active');
+</script>
+<div class="panel panel-default">
+	<div class="panel-heading"><h4>{% trans 'Real-time commands' %}</h4></div>
+
+	<div class="panel-body">
+	<div class="list-group">
+	<a href="/rtcmd/get/vbat/" class="list-group-item">{% trans 'Measure battery voltages' %}</a>
+	<a href="/rtcmd/get/temp/" class="list-group-item">{% trans 'Measure temperature' %}</a>
+	</div>
+	</div>
+</div>
+
+
 {% endblock %}
