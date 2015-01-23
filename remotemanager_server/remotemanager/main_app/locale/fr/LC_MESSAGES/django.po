@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-23 15:30+0100\n"
+"POT-Creation-Date: 2015-01-23 16:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -203,13 +203,13 @@ msgstr "Dernière requête de status"
 msgid "Clock"
 msgstr "Horloge"
 
-#: templates/home.html:71
+#: templates/home.html:72
 msgid "System clock"
 msgstr "Horloge système"
 
-#: templates/home.html:72
-msgid "Last system reboot"
-msgstr "Dernier redémarrage du système"
+#: templates/home.html:75
+msgid "Last reboot"
+msgstr "Dernier redémarrage"
 
 #: templates/loader.html:9
 msgid "Program loader"
