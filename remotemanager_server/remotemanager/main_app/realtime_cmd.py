@@ -20,7 +20,7 @@ def get_vbat():
 	device = RemoteDevice.objects.get(remotedevice_name='BatteryVoltageMonitor')
 	try:
 		device_handler = DeviceHandler(device)
-	except RemoteDeviceConnectionError, err:
+	except (RemoteDeviceConnectionError, RemoteDeviceCommunicationError), err:
 		if not type(err) is type(RemoteDeviceCurrentlyInUseError()):
 			try:
 				device_handler.close()
@@ -59,7 +59,7 @@ def get_temp():
 	device = RemoteDevice.objects.get(remotedevice_name='DataLoggerTemperature')
 	try:
 		device_handler = DeviceHandler(device)
-	except RemoteDeviceConnectionError, err:
+	except (RemoteDeviceConnectionError, RemoteDeviceCommunicationError), err:
 		if not type(err) is type(RemoteDeviceCurrentlyInUseError()):
 			try:
 				device_handler.close()
