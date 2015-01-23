@@ -7,7 +7,8 @@ import pytz
 import subprocess
 
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.encoding import force_text
 
 from main_app import bluetooth
 
@@ -70,7 +71,7 @@ class DeviceHandler:
 				p.terminate()
 				self.close()
 				self.device.save()
-				raise RemoteDeviceOpenError(self.device.get_last_connection_status_msg())
+				raise RemoteDeviceOpenError(force_text(self.device.get_last_connection_status_msg()))
 			
 			self.serial.flushInput()
 			self.device.remotedevice_last_connection_status = 'OK'
@@ -81,7 +82,7 @@ class DeviceHandler:
 				self.device.remotedevice_last_connection_status = 'TIMEOUT'
 			self.close()
 			self.device.save()
-			raise RemoteDeviceOpenError(self.device.get_last_connection_status_msg())
+			raise RemoteDeviceOpenError(force_text(self.device.get_last_connection_status_msg()))
 
 		self.device.save()
 
@@ -147,7 +148,7 @@ class DeviceHandler:
 			self.serial.write(command+'\r')
 		except Exception:
 			self.close()
-			raise RemoteDeviceWriteError(_('Unable to send command to the device'))
+			raise RemoteDeviceWriteError(ugettext('Unable to send command to the device'))
 
 	def read_response(self, length=MAX_RESPONSE_SIZE, end_with=None, timeout=1):
 		eleapsed_time=0
@@ -157,7 +158,7 @@ class DeviceHandler:
 				response += self.serial.read(length - len(response))
 			except Exception:
 				self.close()
-				raise RemoteDeviceReadError(_('Unable to read response from the device'))
+				raise RemoteDeviceReadError(ugettext('Unable to read response from the device'))
 			eleapsed_time += READING_TIMEOUT
 		return response
 
