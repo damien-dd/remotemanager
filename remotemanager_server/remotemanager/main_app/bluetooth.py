@@ -1,3 +1,4 @@
+import re
 import subprocess
 
 
@@ -14,21 +15,29 @@ def get_status():
 	except subprocess.CalledProcessError:
 		return None
 
+def get_free_rfcomm():
+	rfcomm_interfaces_taken = []
+	rfcomm_interfaces = subprocess.check_output('/usr/bin/rfcomm').strip().split('\n')
+	for rfcomm_interface in rfcomm_interfaces:
+		if re.match('^rfcomm\d+:', rfcomm_interface):
+			rfcomm_interfaces_taken.append(int(rfcomm_interface.split(':',1)[0][6:]))
+
+	for n in range(256):
+		if n not in rfcomm_interfaces_taken:
+			return '/dev/rfcomm%d' % n
+
+	return None
+
 
 def get_rfcomm_status(remotedevice):
 	dev = str(remotedevice.remotedevice_dev)
+	mac = str(remotedevice.remotedevice_serial).upper()
 	rfcomm_interfaces = subprocess.check_output('/usr/bin/rfcomm').strip().split('\n')
 	for rfcomm_interface in rfcomm_interfaces:
-		if ':' in rfcomm_interface:
-			rfcomm_dev, rfcomm_output = rfcomm_interface.strip().split(':', 1)
-			if 'channel 1' in rfcomm_output:
-				rfcomm_mac, rfcomm_output = rfcomm_output.strip().split('channel 1', 1)
-				rfcomm_mac = rfcomm_mac.split()[-1]
-				rfcomm_state = rfcomm_output.split()[0]
-				if dev.endswith(rfcomm_dev):
-					return (rfcomm_mac.upper(), rfcomm_state)
+		if mac in rfcomm_interface and 'connected' in rfcomm_interface:
+			return (mac, 'connected')
 
-	return (None, None)
+	return (mac, None)
 
 def bind_device(remotedevice):
 
