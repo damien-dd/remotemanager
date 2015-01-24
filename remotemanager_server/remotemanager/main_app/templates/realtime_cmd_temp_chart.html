@@ -26,7 +26,7 @@ $('#nav-rtcmd').addClass('active');
 		<img style="position:absolute;left:0;top:0;" src="/static/img/waterSystem.png"/>
 
 	{% for name, value, pox_x, pos_y in temperatures %}
-	<div style="background: white;border: 2px solid black;padding:2px;z-index:100;position:absolute;text-align:center;font-size:12px;font-weight:bold;left:{{pox_x}}px;top:{{pos_y}}px;">{{value}}</div>
+	<div style="background: white;color: black;border: 2px solid black;padding:2px;z-index:100;position:absolute;text-align:center;font-size:12px;font-weight:bold;left:{{pox_x}}px;top:{{pos_y}}px;">{{value}}</div>
 	{% endfor %}
 	</div>
 	{% endif %}
