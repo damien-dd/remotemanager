@@ -59,7 +59,7 @@ class DeviceHandler:
 			raise BluetoothHostError(force_text(self.device.get_last_connection_status_msg()))
 
 		dev_connected=False
-		p=subprocess.Popen(['/usr/bin/rfcomm', 'connect', self.rfcomm_dev, str(device.remotedevice_serial), '1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+		p=subprocess.Popen(['sudo', '/usr/bin/rfcomm', 'connect', self.rfcomm_dev, str(device.remotedevice_serial), '1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 		wait_time = 0
 		while p.poll() == None and not dev_connected and wait_time < 10:
 			rfcomm_mac, rfcomm_status = bluetooth.get_rfcomm_status(device)
@@ -83,11 +83,12 @@ class DeviceHandler:
 		else:
 			if p.poll() != None:
 				self.device.remotedevice_last_connection_status = 'OPEN_ERR'
+				stdoutdata, stderrdata = p.communicate()
 			else:
 				self.device.remotedevice_last_connection_status = 'TIMEOUT'
 			self.close()
 			self.device.save()
-			raise RemoteDeviceOpenError(force_text(self.device.get_last_connection_status_msg()))
+			raise RemoteDeviceOpenError(stderrdata)
 
 		self.device.save()
 
