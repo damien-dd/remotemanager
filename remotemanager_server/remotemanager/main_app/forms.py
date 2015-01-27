@@ -1,4 +1,6 @@
 import datetime
+import pytz
+from django.utils.timezone import get_current_timezone
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import AuthenticationForm
@@ -46,3 +48,11 @@ class DataHistoryForm(forms.Form):
 	def __init__(self, *args, **kwargs):
 		super(DataHistoryForm, self).__init__(*args, **kwargs)
 		self.initial['timestep'] = 'day'
+		tz_offset = datetime.datetime.now(get_current_timezone()).utcoffset()
+		if tz_offset:
+			tz_offset_hours = tz_offset.days*24+tz_offset.seconds/3600
+			if tz_offset_hours in range(1,13)+range(-14,0):
+				self.initial['timezone'] = 'GMT%+d' % tz_offset_hours
+			else:
+				self.initial['timezone'] = 'UTC'
+
