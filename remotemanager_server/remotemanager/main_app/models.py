@@ -125,7 +125,7 @@ class Serie(models.Model):
 		cmd = 'GET_DATA_FILES_LIST:%s%s,%03d,%03d' % (str(self.serie_tag), str(file_list_header), int(file_list_index), nb_file_max)
 		output['cmd']=cmd
 		device_handler.send_command(cmd)
-		resp_header = device_handler.read_response(8+4+4+2, timeout=2)
+		resp_header = device_handler.read_response(8+4+4+2, timeout=3)
 		output['resp_header']=resp_header
 		if re.match('^%s\d{6},\d{3},\d{3}\r\n$'%str(self.serie_tag), resp_header):
 			list_header, index, nb_files = resp_header.split(',')
@@ -147,10 +147,10 @@ class Serie(models.Model):
 				self.save()
 			else:
 				device_handler.close()
-				raise Exception('resp_body: %s' % repr(resp_body))
+				raise Exception('resp_body: %s, cmd: %s' % (repr(resp_body), repr(cmd)))
 		else:
 			device_handler.close()
-			raise Exception('resp_header: %s' % repr(resp_header))
+			raise Exception('resp_header: %s, cmd: %s' % (repr(resp_header), repr(cmd)))
 
 		return output
 
@@ -203,7 +203,7 @@ class Serie(models.Model):
 				output['datafields_updated']= datafield_updated
 			else:
 				device_handler.close()
-				raise Exception(_('Invalid response from the remote device: ')+ repr(resp)+', output: '+repr(output))
+				raise Exception(_('Invalid response from the remote device: ')+ repr(resp)+', cmd: '+repr(cmd))
 		except serial.SerialException, err:
 			device_handler.close()
 			raise Exception(_('Communication error with the remote device'))
