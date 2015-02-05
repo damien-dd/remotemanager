@@ -168,7 +168,7 @@ class Serie(models.Model):
 			cmd += '%02d%02d%02d' % (year%100, month, day)
 			output['cmd']=cmd
 			device_handler.send_command(cmd)
-			resp = device_handler.read_response({'SUM': 360, 'AVG': 312}[str(self.serie_type)], timeout=2)
+			resp = device_handler.read_response({'SUM': 360, 'AVG': 312}[str(self.serie_type)], timeout=3)
 
 			existing_datafields_list = {}
 		
@@ -203,7 +203,7 @@ class Serie(models.Model):
 				output['datafields_updated']= datafield_updated
 			else:
 				device_handler.close()
-				raise Exception(_('Invalid response from the remote device: ')+ repr(resp))
+				raise Exception(_('Invalid response from the remote device: ')+ repr(resp)+', output: '+repr(output))
 		except serial.SerialException, err:
 			device_handler.close()
 			raise Exception(_('Communication error with the remote device'))
