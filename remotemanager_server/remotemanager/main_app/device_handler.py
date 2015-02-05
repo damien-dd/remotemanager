@@ -111,6 +111,7 @@ class DeviceHandler:
 					if time_offset > -2147483648 and time_offset < 2147483647:
 						return time_offset
 					else:
+						self.close()
 						raise ValueError('Clock offset out of range')
 				except ValueError:
 					return None

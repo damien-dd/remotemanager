@@ -202,8 +202,10 @@ class Serie(models.Model):
 				output['datafields_added']=len(new_datafields_list)
 				output['datafields_updated']= datafield_updated
 			else:
+				device_handler.close()
 				raise Exception(_('Invalid response from the remote device: ')+ repr(resp))
 		except serial.SerialException, err:
+			device_handler.close()
 			raise Exception(_('Communication error with the remote device'))
 
 		return output
