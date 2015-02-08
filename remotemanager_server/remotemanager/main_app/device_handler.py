@@ -52,28 +52,33 @@ class DeviceHandler:
 		self.device = device
 		self.device.enable()
 		time.sleep(0.5)
-		self.rfcomm_dev = bluetooth.get_free_rfcomm()
-		if self.rfcomm_dev is None:
-			self.device.remotedevice_last_connection_status = 'RFCOMM_ERR'
-			self.device.save()
-			raise BluetoothHostError(force_text(self.device.get_last_connection_status_msg()))
+		if self.device.remotedevice_mode == 'BT':
+			self.rfcomm_dev = bluetooth.get_free_rfcomm()
+			if self.rfcomm_dev is None:
+				self.device.remotedevice_last_connection_status = 'RFCOMM_ERR'
+				self.device.save()
+				raise BluetoothHostError(force_text(self.device.get_last_connection_status_msg()))
 
-		dev_connected=False
-		p=subprocess.Popen(['sudo', '/usr/bin/rfcomm', 'connect', self.rfcomm_dev, str(device.remotedevice_serial), '1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-		wait_time = 0
-		while p.poll() == None and not dev_connected and wait_time < 10:
-			rfcomm_mac, rfcomm_status = bluetooth.get_rfcomm_status(device)
-			if rfcomm_status == 'connected':
-				dev_connected=True
-			time.sleep(0.2)
-			wait_time += 0.2
+			dev_connected=False
+			p=subprocess.Popen(['sudo', '/usr/bin/rfcomm', 'connect', self.rfcomm_dev, str(device.remotedevice_serial), '1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+			wait_time = 0
+			while p.poll() == None and not dev_connected and wait_time < 10:
+				rfcomm_mac, rfcomm_status = bluetooth.get_rfcomm_status(device)
+				if rfcomm_status == 'connected':
+					dev_connected=True
+				time.sleep(0.2)
+				wait_time += 0.2
+		else:
+			self.rfcomm_dev = self.device.remotedevice_dev
+			dev_connected=True
 
 		if dev_connected:
 			try:
 				self.serial = serial.Serial(self.rfcomm_dev, 115200, timeout=READING_TIMEOUT)
 			except serial.SerialException:
 				self.device.remotedevice_last_connection_status = 'OPEN_ERR'
-				p.terminate()
+				if self.device.remotedevice_mode == 'BT':
+					p.terminate()
 				self.close()
 				self.device.save()
 				raise RemoteDeviceOpenError(force_text(self.device.get_last_connection_status_msg()))
