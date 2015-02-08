@@ -22,7 +22,7 @@ class RemoteDevice(models.Model):
 	remotedevice_name = models.CharField(max_length=30, unique=True, verbose_name=_('Device name'))
 	remotedevice_mode = models.CharField(max_length=3, choices=MODES, default=MODES[0][0], verbose_name='Mode')
 	remotedevice_serial = models.CharField(max_length=30, blank=True, default = '', verbose_name=_('MAC address'))
-	remotedevice_dev = models.CharField(max_length=20, unique=True, verbose_name=_('Device interface'))
+	remotedevice_dev = models.CharField(max_length=40, unique=True, verbose_name=_('Device interface'))
 
 	remotedevice_last_connection_attempt = models.DateTimeField(null=True, blank=True, default=None)
 	remotedevice_last_connection_status = models.CharField(max_length=10, blank=True, default = '')
