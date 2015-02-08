@@ -125,14 +125,14 @@ class Serie(models.Model):
 		cmd = 'GET_DATA_FILES_LIST:%s%s,%03d,%03d' % (str(self.serie_tag), str(file_list_header), int(file_list_index), nb_file_max)
 		output['cmd']=cmd
 		device_handler.send_command(cmd)
-		resp_header = device_handler.read_response(8+4+4+2, timeout=3)
+		resp_header = device_handler.read_response(8+4+4+2, timeout=4)
 		output['resp_header']=resp_header
 		if re.match('^%s\d{6},\d{3},\d{3}\r\n$'%str(self.serie_tag), resp_header):
 			list_header, index, nb_files = resp_header.split(',')
 			nb_files=int(nb_files)
 			index=int(index)
 			resp_body_length=nb_files*10
-			resp_body=device_handler.read_response(resp_body_length, timeout=1)
+			resp_body=device_handler.read_response(resp_body_length, timeout=2)
 			output['resp_body'] = resp_body
 
 			if re.match('^(%s\d{6}\r\n){%d}$'%(str(self.serie_tag), nb_files), resp_body):
@@ -168,7 +168,7 @@ class Serie(models.Model):
 			cmd += '%02d%02d%02d' % (year%100, month, day)
 			output['cmd']=cmd
 			device_handler.send_command(cmd)
-			resp = device_handler.read_response({'SUM': 360, 'AVG': 312}[str(self.serie_type)], timeout=3)
+			resp = device_handler.read_response({'SUM': 360, 'AVG': 312}[str(self.serie_type)], timeout=4)
 
 			existing_datafields_list = {}
 		
@@ -227,9 +227,9 @@ class Serie(models.Model):
 		device_handler.send_command(cmd)
 
 		if hour == 'xx':
-			resp = device_handler.read_response((5+60*(1+3))*24, timeout=2)
+			resp = device_handler.read_response((5+60*(1+3))*24, timeout=5)
 		else:
-			resp = device_handler.read_response(5+60*(1+3), timeout=2)
+			resp = device_handler.read_response(5+60*(1+3), timeout=4)
 
 		if re.match('^(\r\n\d{2}h:([0-9A-F]{2,3}|\?{2,3})(,([0-9A-F]{2,3}|\?{2,3})){0,59})+$', resp):
 			output['data'] = {}

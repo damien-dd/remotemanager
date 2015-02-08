@@ -100,7 +100,7 @@ class DeviceHandler:
 		# check if system clock has been set (if not it will most show 01/01/2000 + uptime)
 		if calendar.timegm(time.gmtime()) > calendar.timegm(datetime.datetime(2014,1,1).timetuple()):
 			self.send_command('GET_TIME')
-			datetime_str = self.read_response(length=19, end_with='\r\n', timeout=3).strip()
+			datetime_str = self.read_response(length=19, end_with='\r\n', timeout=4).strip()
 			if re.match('^\d{1,2}/\d{1,2}/\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}$', datetime_str):
 				date_str, time_str = datetime_str.split(' ')
 				day_str, month_str, year_str = date_str.split('/')
@@ -125,7 +125,7 @@ class DeviceHandler:
 
 	def request_status(self):
 		self.send_command('STATUS')
-		status = self.read_response(length=5, end_with='\r\n', timeout=2).strip()
+		status = self.read_response(length=5, end_with='\r\n', timeout=4).strip()
 		self.device.remotedevice_last_status_request = timezone.now()
 		self.device.remotedevice_last_status = status
 		rtc_offset = self.get_rtc_offset()
