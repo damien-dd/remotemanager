@@ -41,6 +41,19 @@ def icon(icon_name, *args, **kwargs):
         styles + ' />'
     )
 
+@register.simple_tag
+def iconsrc(icon_name, *args, **kwargs):
+    """
+    Adds icon as inline image.
+
+    Example usage:
+    <p><img {% iconsrc 'webcam' %} /> See me on-line!</p>
+    """
+
+    return (
+        'src="' + settings.STATIC_URL + 'icons/' + icon_name + '.png"'
+    )
+
 
 @register.simple_tag
 def bgicon(icon_name, *args, **kwargs):
