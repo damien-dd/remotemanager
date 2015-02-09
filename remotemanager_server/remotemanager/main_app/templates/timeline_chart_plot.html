@@ -21,8 +21,20 @@ function(data) {
 
 			var dataLength = data.length, j;
 			var serieValues = [], serieMissingPoints = [];
+			{% if timestep == 'hour' %}
+			var timestep_msec = 1.5*3600*1000;
+			{% elif timestep == 'day' %}
+			var timestep_msec = 1.5*24*3600*1000;
+			{% elif timestep == 'month' %}
+			var timestep_msec = 1.5*30*24*3600*1000;
+			{% else %}
+			var timestep_msec = 1.5*365*24*3600*1000;
+			{% endif %}
 			
 			for (j = 0; j < dataLength; j++) {
+				if(j > 0 && data[j][0]-data[j-1][0] > timestep_msec) {
+					serieValues.push([data[j-1][0]+timestep_msec, null]);
+				}
 				serieValues.push([
 					data[j][0], // the date
 					data[j][1]  // the value
