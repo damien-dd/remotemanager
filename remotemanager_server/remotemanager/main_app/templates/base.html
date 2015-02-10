@@ -31,13 +31,13 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand active" href="/">{% trans 'System status' %}</a>
+			<a class="navbar-brand active" href="/"><span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span> {% trans 'System status' %}</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="navbar">
 			<ul class="nav navbar-nav">
-				<li id="nav-stats"><a href="/charts/timeline/">{% trans 'Statistics' %}</a></li>
+				<li id="nav-stats"><a href="/charts/timeline/"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> {% trans 'Statistics' %}</a></li>
 				<li id="nav-rtcmd"><a href="/rtcmd/">{% trans 'Real-time commands' %}</a></li>
 			{% if user.is_superuser %}
 				<li id="nav-loader"><a href="/loader/">Program loader</a></li>
