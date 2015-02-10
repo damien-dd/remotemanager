@@ -21,7 +21,7 @@ $('#nav-stats').addClass('active');
 	{% for chart in charts %}
 	{% if chart.serieplot_set.count > 0 %}
 		<tr>
-			<td rowspan="{{chart.serieplot_set.count}}"><a href="/chart/timeline/{{chart.id}}/">{{chart.timelinechart_title}}</a></td>
+			<td rowspan="{{chart.serieplot_set.count}}"><a style="color:#DAA520;" href="/chart/timeline/{{chart.id}}/">{{chart.timelinechart_title}}</a></td>
 		{% for serieplot in chart.serieplot_set.all %}
 {% if not forloop.first %}
 		<tr>

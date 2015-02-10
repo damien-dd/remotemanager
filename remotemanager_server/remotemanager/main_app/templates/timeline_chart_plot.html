@@ -5,6 +5,8 @@
 {{ block.super }}
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
 <script src="/static/js/highstock.js"></script>
+<script src="/static/js/tooltip-delay.js"></script>
+
 <script src="/static/js/themes/gray.js"></script>
 <script src="/static/js/modules/exporting.js"></script>
 <script type="text/javascript">
@@ -120,7 +122,6 @@ function(data) {
 	function createChart() {
 	// create the chart
 	$('#container').highcharts('StockChart', {
-		    
 		rangeSelector: {
 			selected: 0,
 			buttons: [
@@ -138,8 +139,7 @@ function(data) {
 				count: 72,
 				text: '72h'
 			},
-			{% endif %}
-			{% if timestep == 'day' %}
+			{% elif timestep == 'day' %}
 			{
 				type: 'day',
 				count: 10,
@@ -149,8 +149,7 @@ function(data) {
 				count: 30,
 				text: '30j'
 			},
-			{% endif %}
-			{% if timestep == 'month' %}
+			{% elif timestep == 'month' %}
 			{
 				type: 'month',
 				count: 3,
@@ -178,16 +177,13 @@ function(data) {
 			{% if timestep == 'hour' %}
 			minTickInterval: 60*60*3600,
 			minRange: 2*60*60*3600,
-			{% endif %}
-			{% if timestep == 'day' %}
+			{% elif timestep == 'day' %}
 			minTickInterval: 24*60*60*3600,
 			minRange: 2*24*60*60*3600,
-			{% endif %}
-			{% if timestep == 'month' %}
+			{% elif timestep == 'month' %}
 			minTickInterval: 28*24*60*60*3600,
 			minRange: 2*28*24*60*60*3600,
-			{% endif %}
-			{% if timestep == 'year' %}
+			{% elif timestep == 'year' %}
 			minTickInterval: 364*24*60*60*3600,
 			minRange: 2*364*24*60*60*3600,
 			{% endif %}
@@ -199,16 +195,14 @@ function(data) {
 			lineWidth: 2
 		}],
 		tooltip: {
+			delayForDisplay: 400,
 			{% if timestep == 'hour' %}
 			xDateFormat: '%d/%m/%Y %Hh'
-			{% endif %}
-			{% if timestep == 'day' %}
+			{% elif timestep == 'day' %}
 			xDateFormat: '%d/%m/%Y'
-			{% endif %}
-			{% if timestep == 'month' %}
+			{% elif timestep == 'month' %}
 			xDateFormat: '%m/%Y'
-			{% endif %}
-			{% if timestep == 'year' %}
+			{% elif timestep == 'year' %}
 			xDateFormat: '%Y'
 			{% endif %}
 		},
