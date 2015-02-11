@@ -3,6 +3,7 @@
 
 {% block content %}
 <script type="text/javascript">
+$(window).unload(function(){});
 $('#nav-rtcmd').addClass('active');
 </script>
 <div class="panel panel-default">
@@ -10,8 +11,18 @@ $('#nav-rtcmd').addClass('active');
 
 	<div class="panel-body">
 	<div class="list-group">
-	<a href="/rtcmd/get/vbat/" class="list-group-item">{% trans 'Measure battery voltages' %}</a>
-	<a href="/rtcmd/get/temp/" class="list-group-item">{% trans 'Measure temperature' %}</a>
+	<a href="/rtcmd/get/vbat/" class="list-group-item rtcmd">{% trans 'Measure battery voltages' %}</a>
+	<a href="/rtcmd/get/temp/" class="list-group-item rtcmd">{% trans 'Measure temperature' %}</a>
+	<script type="text/javascript">
+	$(".rtcmd").click(function (event) {
+		if ($(this).hasClass("clickdisabled")) {
+			event.preventDefault();
+		} else {
+			$(this).html("<span class='glyphicon glyphicon-hourglass' aria-hidden='true'></span> remote device request in progress, please wait for few seconds...");
+			$(".rtcmd").addClass("clickdisabled");
+		}
+	});
+	</script>
 	</div>
 	</div>
 </div>
