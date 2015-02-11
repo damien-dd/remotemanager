@@ -447,7 +447,7 @@ void handle_serial()
     else if(cmdLength == 8 && !strncmp_P(cmd, PSTR("READ_ALL"), cmdLength))
     {
       byte cnt_clear_mutex;
-      unsigned long cnt_total;
+      unsigned long cnt_total_tmp;
       
       Serial.print(F("Tin: "));
       if(temperatureIn > 0)
@@ -490,11 +490,15 @@ void handle_serial()
       else
         Serial.println(F("ON"));
 
+      do
+      {
+        cnt_clear_mutex = cnt_clear;
+        cnt_total_tmp = cnt_total;
+        if(cnt != 0xFFFF)
+          cnt_total_tmp += cnt;
+      }while(cnt_clear_mutex != cnt_clear);
       Serial.print(F("CNT: "));
-      if(cnt != 0xFFFF)
-        Serial.print(cnt_total+cnt);
-      else
-        Serial.print(cnt_total);
+      Serial.print(cnt_total_tmp);
       Serial.println(F("Wh"));
       
       // values of cnt_a_total and cnt_a can change at any time as they are updated from an interrupt
@@ -502,10 +506,10 @@ void handle_serial()
       do
       {
         cnt_clear_mutex = cnt_a_clear;
-        cnt_total = cnt_a_total + cnt_a;
+        cnt_total_tmp = cnt_a_total + cnt_a;
       }while(cnt_clear_mutex != cnt_a_clear);
       Serial.print(F("A: "));
-      Serial.print(cnt_total);
+      Serial.print(cnt_total_tmp);
       Serial.println(F("Wh"));
       
       // values of cnt_b_total and cnt_b can change at any time as they are updated from an interrupt
@@ -513,10 +517,10 @@ void handle_serial()
       do
       {
         cnt_clear_mutex = cnt_b_clear;
-        cnt_total = cnt_b_total + cnt_b;
+        cnt_total_tmp = cnt_b_total + cnt_b;
       }while(cnt_clear_mutex != cnt_b_clear);
       Serial.print(F("B: "));
-      Serial.print(cnt_total);
+      Serial.print(cnt_total_tmp);
       Serial.println(F("Wh"));
       
       Serial.print(F("\r\n"));
