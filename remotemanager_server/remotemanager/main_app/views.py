@@ -69,9 +69,17 @@ def dev_choices(request):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def rtcmd_readall(request, deviceID):
+	remotedevice = RemoteDevice.objects.get(id=int(deviceID))
 	values = realtime_cmd.read_all(int(deviceID))
-	json = simplejson.dumps(values)
-	return HttpResponse(json, mimetype='application/javascript')
+	
+	if type(values) is list:
+		return render_to_response('realtime_cmd_readall.html', {'remotedevice': remotedevice, 'values': values}, context_instance=RequestContext(request))
+	else:
+		error_type = type(values).__name__
+		error_msg = force_text(values)
+		error = (error_type, error_msg)
+		return render_to_response('realtime_cmd_readall.html', {'remotedevice': remotedevice, 'error': error}, context_instance=RequestContext(request))
+
 
 @login_required
 def index(request):
@@ -84,7 +92,8 @@ def bluetooth_status(request):
 
 @login_required
 def rtcmd(request):
-	return render_to_response('realtime_cmd.html', context_instance=RequestContext(request))
+	remotedevices = RemoteDevice.objects.all().order_by('remotedevice_name')
+	return render_to_response('realtime_cmd.html', {'remotedevices': remotedevices}, context_instance=RequestContext(request))
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)

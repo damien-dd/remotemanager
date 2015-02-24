@@ -13,6 +13,11 @@ $('#nav-rtcmd').addClass('active');
 	<div class="list-group">
 	<a href="/rtcmd/get/vbat/" class="list-group-item rtcmd">{% trans 'Measure battery voltages' %}</a>
 	<a href="/rtcmd/get/temp/" class="list-group-item rtcmd">{% trans 'Measure temperature' %}</a>
+	</div>
+	<div class="list-group">
+	{% for remotedevice in remotedevices %}
+		<a href="/rtcmd/readall/{{remotedevice.id}}/" class="list-group-item rtcmd">Read all values from {{remotedevice.remotedevice_name}}</a>
+	{% endfor %}
 	<script type="text/javascript">
 	$(".rtcmd").click(function (event) {
 		if ($(this).hasClass("clickdisabled")) {

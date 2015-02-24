@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+
+{% block content %}
+
+
+
+<script type="text/javascript">
+$('#nav-rtcmd').addClass('active');
+</script>
+<div class="panel panel-default">
+	<div class="panel-heading"><h4>{{remotedevice.remotedevice_name}}</h4></div>
+
+	<div class="panel-body">
+	{% if error %}
+	<div class="bs-callout bs-callout-danger">
+	<h4>{{error.0}}</h4>
+	{{error.1}}
+	</div>
+	{% else %}
+	<dl class="dl-horizontal">
+		{% for label, value in values %}
+			<dt>{{label}}</dt>
+			<dd>{{value}}</dd>
+		{% endfor %}
+	</dl>
+	{% endif %}
+	</div>
+</div>
+
+{% endblock %}

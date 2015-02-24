@@ -112,6 +112,9 @@ def read_all(deviceID):
 	
 	device_handler.close()
 
+	if res == '':
+		return RemoteDeviceNoResponseError()
+
 	measures = []
 	for measure in res.strip().split('\r\n'):
 		if ':' in measure:
