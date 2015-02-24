@@ -142,8 +142,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 LANGUAGES = (
-    ('fr', _('Francais')),
-    ('en', _('English')),
+    ('fr', 'Francais'),
+    ('en', 'English'),
 )
 DEFAULT_LANGUAGE = 1
 
